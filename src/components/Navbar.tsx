@@ -99,12 +99,14 @@ export function Navbar() {
                 <Button variant="gold" size="default" className="w-full mt-2">Dashboard</Button>
               </Link>
             ) : (
-              <Link to="/login" onClick={() => setIsOpen(false)}>
-                <Button variant="navyOutline" size="default" className="w-full mt-2">Login</Button>
-              </Link>
-              <Link to="/login" search={{ mode: "signup" }} onClick={() => setIsOpen(false)}>
-                <Button variant="gold" size="default" className="w-full mt-2">Sign Up</Button>
-              </Link>
+              <>
+                <Link to="/login" onClick={() => setIsOpen(false)}>
+                  <Button variant="navyOutline" size="default" className="w-full mt-2">Login</Button>
+                </Link>
+                <Link to="/login" search={{ mode: "signup" }} onClick={() => setIsOpen(false)}>
+                  <Button variant="gold" size="default" className="w-full mt-2">Sign Up</Button>
+                </Link>
+              </>
             )}
           </div>
         )}
