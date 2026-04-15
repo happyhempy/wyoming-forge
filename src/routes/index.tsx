@@ -4,6 +4,7 @@ import { TrustBar } from "@/components/landing/TrustBar";
 import { PainSection } from "@/components/landing/PainSection";
 import { SolutionSection } from "@/components/landing/SolutionSection";
 import { HowItWorks } from "@/components/landing/HowItWorks";
+import { DashboardPreviewSection } from "@/components/landing/DashboardPreviewSection";
 import { TimelineSection } from "@/components/landing/TimelineSection";
 import { PricingSection } from "@/components/landing/PricingSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
@@ -19,10 +20,10 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "US LLC Formation — Open Your LLC Fast | Wyoming Specialists" },
-      { name: "description", content: "Open your US LLC in 48-72 hours. Wyoming LLC formation for international entrepreneurs. EIN, Registered Agent, and Mercury bank account included." },
-      { property: "og:title", content: "US LLC Formation — Open Your LLC Fast" },
-      { property: "og:description", content: "Open your US LLC in 48-72 hours. Wyoming LLC formation for international entrepreneurs." },
+      { title: "US LLC Formation — Open Your LLC in 48 Hours | Trusted by 500+ Entrepreneurs" },
+      { name: "description", content: "Open your US LLC in 48-72 hours. Full-service LLC formation for international entrepreneurs. EIN, Registered Agent, bank account, and a personal dashboard to track every step." },
+      { property: "og:title", content: "US LLC Formation — Open Your LLC in 48 Hours" },
+      { property: "og:description", content: "Full-service US LLC formation. Track your progress in a personal dashboard. Trusted by 500+ entrepreneurs worldwide." },
     ],
   }),
 });
@@ -37,9 +38,10 @@ function Index() {
         <PainSection />
         <SolutionSection />
         <HowItWorks />
-        <TimelineSection />
+        <DashboardPreviewSection />
         <PricingSection />
         <TestimonialsSection />
+        <TimelineSection />
         <CPASection />
         <FAQSection />
         <LeadCaptureSection />
