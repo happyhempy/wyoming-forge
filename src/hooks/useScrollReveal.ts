@@ -2,11 +2,22 @@ import { useEffect, useRef, useState } from "react";
 
 export function useScrollReveal(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  // Start visible to prevent SSR/hydration flash of invisible content
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    // If element is already in viewport, keep visible
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight) {
+      setIsVisible(true);
+      return;
+    }
+
+    // Otherwise, hide and animate on scroll
+    setIsVisible(false);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
