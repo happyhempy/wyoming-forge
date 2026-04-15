@@ -321,11 +321,28 @@ function SuperAdminPanel() {
                 </div>
                 <Button variant="gold" onClick={async () => {
                   if (!adminEmail || !adminPassword || !adminName) return;
-                  // Note: In production, this should be done via a server function with admin privileges
-                  alert("Admin creation requires a server function with service role access. This will be implemented with the payments setup.");
-                  setAdminEmail("");
-                  setAdminPassword("");
-                  setAdminName("");
+                  try {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-admin`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${session?.access_token}`,
+                      },
+                      body: JSON.stringify({ email: adminEmail, password: adminPassword, fullName: adminName }),
+                    });
+                    const result = await res.json();
+                    if (result.error) {
+                      alert(`Error: ${result.error}`);
+                    } else {
+                      alert("Admin created successfully!");
+                      setAdminEmail("");
+                      setAdminPassword("");
+                      setAdminName("");
+                    }
+                  } catch (err: any) {
+                    alert(`Error: ${err.message}`);
+                  }
                 }}>
                   Create Admin
                 </Button>
