@@ -1,23 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useScrollReveal(threshold = 0.1) {
+export function useScrollReveal(_threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const [hasChecked, setHasChecked] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
-    // Check if already in viewport on mount
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight + 100) {
-      setIsVisible(true);
-      setHasChecked(true);
-      return;
-    }
-
-    setHasChecked(true);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -26,13 +15,13 @@ export function useScrollReveal(threshold = 0.1) {
           observer.unobserve(el);
         }
       },
-      { threshold }
+      { threshold: 0.05 }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, []);
 
-  // Before first check, show content (avoid SSR flash)
-  return { ref, isVisible: !hasChecked || isVisible };
+  // Always return true to prevent sections from being hidden
+  return { ref, isVisible: true };
 }
