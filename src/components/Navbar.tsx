@@ -1,22 +1,37 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsLoggedIn(!!session);
+      setUserEmail(session?.user?.email ?? null);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(!!session);
+      setUserEmail(session?.user?.email ?? null);
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const links = [
     { to: "/" as const, label: "Home" },
@@ -25,6 +40,11 @@ export function Navbar() {
     { to: "/blog" as const, label: "Blog" },
     { to: "/contact" as const, label: "Contact" },
   ];
+
+  const getInitials = (email: string | null) => {
+    if (!email) return "U";
+    return email.charAt(0).toUpperCase();
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-navy/95 backdrop-blur-md border-b border-navy-light/20">
@@ -53,13 +73,37 @@ export function Navbar() {
               </Link>
             ))}
             {isLoggedIn ? (
-              <Link to="/dashboard">
-                <Button variant="gold" size="default">Dashboard</Button>
-              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-gold/50 rounded-full">
+                    <Avatar className="h-8 w-8 border-2 border-gold/30">
+                      <AvatarFallback className="bg-gold/20 text-gold text-sm font-semibold">
+                        {getInitials(userEmail)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="cursor-pointer">
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings" className="cursor-pointer">
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 focus:text-red-500">
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <div className="flex items-center gap-3">
                 <Link to="/login">
-                  <Button variant="navyOutline" size="default">Login</Button>
+                  <Button variant="navyOutline" size="default">Log in</Button>
                 </Link>
                 <Link to="/login" search={{ mode: "signup" }}>
                   <Button variant="gold" size="default">Sign Up</Button>
@@ -97,13 +141,21 @@ export function Navbar() {
               </Link>
             ))}
             {isLoggedIn ? (
-              <Link to="/dashboard" onClick={() => setIsOpen(false)}>
-                <Button variant="gold" size="default" className="w-full mt-2">Dashboard</Button>
-              </Link>
+              <>
+                <Link to="/dashboard" onClick={() => setIsOpen(false)}>
+                  <Button variant="gold" size="default" className="w-full mt-2">Dashboard</Button>
+                </Link>
+                <Link to="/settings" onClick={() => setIsOpen(false)}>
+                  <Button variant="outline" size="default" className="w-full mt-2">Settings</Button>
+                </Link>
+                <Button variant="ghost" size="default" className="w-full mt-2 text-red-500" onClick={() => { handleLogout(); setIsOpen(false); }}>
+                  Logout
+                </Button>
+              </>
             ) : (
               <>
                 <Link to="/login" onClick={() => setIsOpen(false)}>
-                  <Button variant="navyOutline" size="default" className="w-full mt-2">Login</Button>
+                  <Button variant="navyOutline" size="default" className="w-full mt-2">Log in</Button>
                 </Link>
                 <Link to="/login" search={{ mode: "signup" }} onClick={() => setIsOpen(false)}>
                   <Button variant="gold" size="default" className="w-full mt-2">Sign Up</Button>
