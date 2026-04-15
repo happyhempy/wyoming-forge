@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { Link } from "@tanstack/react-router";
 
 const packages = [
   {
@@ -92,9 +93,11 @@ export function PricingSection() {
                   ))}
                 </ul>
 
-                <Button variant={isPopular ? "gold" : "navyOutline"} size="lg" className="w-full">
-                  Get Started
-                </Button>
+                <Link to="/checkout" search={{ package: pkg.name.toLowerCase() }} className="w-full">
+                  <Button variant={isPopular ? "gold" : "navyOutline"} size="lg" className="w-full">
+                    Get Started
+                  </Button>
+                </Link>
               </div>
             );
           })}
