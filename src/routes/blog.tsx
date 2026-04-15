@@ -1,8 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Button } from "@/components/ui/button";
+import type { Database } from "@/integrations/supabase/types";
+
+type BlogPost = Database["public"]["Tables"]["blog_posts"]["Row"];
 
 export const Route = createFileRoute("/blog")({
   component: BlogPage,
@@ -16,50 +21,26 @@ export const Route = createFileRoute("/blog")({
   }),
 });
 
-const articles = [
-  {
-    slug: "how-to-open-us-llc-non-resident",
-    title: "How to Open a US LLC as a Non-Resident in 2024",
-    excerpt: "A complete step-by-step guide for international entrepreneurs looking to form a US LLC without being a US citizen or resident.",
-    date: "March 15, 2024",
-    color: "bg-navy",
-  },
-  {
-    slug: "wyoming-vs-delaware",
-    title: "Wyoming vs Delaware — Which State is Best for Your LLC?",
-    excerpt: "We compare the two most popular states for LLC formation and explain why Wyoming is often the better choice for non-residents.",
-    date: "March 8, 2024",
-    color: "bg-navy-light",
-  },
-  {
-    slug: "what-is-ein",
-    title: "What is an EIN and Why Does Your LLC Need One?",
-    excerpt: "Everything you need to know about the Employer Identification Number — what it is, how to get one, and why it's essential.",
-    date: "February 28, 2024",
-    color: "bg-gold-dark",
-  },
-  {
-    slug: "mercury-bank-account",
-    title: "How to Open a Mercury Business Bank Account for Your LLC",
-    excerpt: "Mercury is one of the best banking options for non-resident LLC owners. Here's how to open your account step by step.",
-    date: "February 20, 2024",
-    color: "bg-navy",
-  },
-  {
-    slug: "top-5-reasons-wyoming",
-    title: "Top 5 Reasons Entrepreneurs Choose Wyoming for Their LLC",
-    excerpt: "From privacy protections to low fees — discover why Wyoming is the #1 state for LLC formation among international business owners.",
-    date: "February 12, 2024",
-    color: "bg-navy-light",
-  },
-];
-
 function BlogPage() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("blog_posts")
+      .select("*")
+      .eq("published", true)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        setPosts(data ?? []);
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <>
       <Navbar />
       <main>
-        {/* Hero */}
         <section className="bg-navy text-primary-foreground pt-32 pb-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-up">
             <h1 className="text-4xl sm:text-5xl font-bold mb-4">Blog</h1>
@@ -69,33 +50,46 @@ function BlogPage() {
           </div>
         </section>
 
-        {/* Articles */}
         <section className="py-20 bg-background">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {articles.map((article, i) => (
-                <article
-                  key={i}
-                  className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 animate-fade-up"
-                  style={{ animationDelay: `${i * 100}ms` }}
-                >
-                  {/* Cover placeholder */}
-                  <div className={`h-48 ${article.color} flex items-center justify-center`}>
-                    <span className="text-primary-foreground/30 text-6xl">📄</span>
-                  </div>
-                  <div className="p-6">
-                    <p className="text-xs text-muted-foreground mb-2">{article.date}</p>
-                    <h2 className="font-bold text-foreground text-lg mb-2 line-clamp-2">{article.title}</h2>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{article.excerpt}</p>
-                    <Button variant="navyOutline" size="sm">Read More</Button>
-                  </div>
-                </article>
-              ))}
-            </div>
+            {loading ? (
+              <p className="text-center text-muted-foreground">Loading posts...</p>
+            ) : posts.length === 0 ? (
+              <p className="text-center text-muted-foreground">No blog posts yet. Check back soon!</p>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {posts.map((post, i) => (
+                  <article
+                    key={post.id}
+                    className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 animate-fade-up"
+                    style={{ animationDelay: `${i * 100}ms` }}
+                  >
+                    <div className="h-48 bg-navy flex items-center justify-center">
+                      {post.cover_image ? (
+                        <img src={post.cover_image} alt={post.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-primary-foreground/30 text-6xl">📄</span>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <p className="text-xs text-muted-foreground mb-2">
+                        {new Date(post.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                      </p>
+                      <h2 className="font-bold text-foreground text-lg mb-2 line-clamp-2">{post.title}</h2>
+                      {post.excerpt && (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
+                      )}
+                      <Link to="/blog/$slug" params={{ slug: post.slug }}>
+                        <Button variant="navyOutline" size="sm">Read More</Button>
+                      </Link>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
-        {/* CTA */}
         <section className="py-16 bg-navy text-primary-foreground">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-2xl font-bold mb-4">Ready to get started?</h2>

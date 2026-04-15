@@ -17,6 +17,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated._admin'
 import { Route as AuthenticatedAdminSuperAdminRouteImport } from './routes/_authenticated._admin.super-admin'
@@ -61,6 +62,11 @@ const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
   path: '/return',
   getParentRoute: () => CheckoutRoute,
 } as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -85,11 +91,12 @@ const AuthenticatedAdminAdminRoute = AuthenticatedAdminAdminRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/blog': typeof BlogRoute
+  '/blog': typeof BlogRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/admin': typeof AuthenticatedAdminAdminRoute
   '/super-admin': typeof AuthenticatedAdminSuperAdminRoute
@@ -97,11 +104,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/blog': typeof BlogRoute
+  '/blog': typeof BlogRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/admin': typeof AuthenticatedAdminAdminRoute
   '/super-admin': typeof AuthenticatedAdminSuperAdminRoute
@@ -111,12 +119,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
-  '/blog': typeof BlogRoute
+  '/blog': typeof BlogRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/_admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRoute
   '/_authenticated/_admin/super-admin': typeof AuthenticatedAdminSuperAdminRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/dashboard'
+    | '/blog/$slug'
     | '/checkout/return'
     | '/admin'
     | '/super-admin'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/dashboard'
+    | '/blog/$slug'
     | '/checkout/return'
     | '/admin'
     | '/super-admin'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/_admin'
     | '/_authenticated/dashboard'
+    | '/blog/$slug'
     | '/checkout/return'
     | '/_authenticated/_admin/admin'
     | '/_authenticated/_admin/super-admin'
@@ -166,7 +178,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AboutRoute: typeof AboutRoute
-  BlogRoute: typeof BlogRoute
+  BlogRoute: typeof BlogRouteWithChildren
   CheckoutRoute: typeof CheckoutRouteWithChildren
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -230,6 +242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutReturnRouteImport
       parentRoute: typeof CheckoutRoute
     }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -288,6 +307,16 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
 interface CheckoutRouteChildren {
   CheckoutReturnRoute: typeof CheckoutReturnRoute
 }
@@ -304,7 +333,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AboutRoute: AboutRoute,
-  BlogRoute: BlogRoute,
+  BlogRoute: BlogRouteWithChildren,
   CheckoutRoute: CheckoutRouteWithChildren,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
