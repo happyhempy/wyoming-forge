@@ -3,8 +3,6 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ProgressTracker } from "@/components/dashboard/ProgressTracker";
 import { FileUploadZone } from "@/components/dashboard/FileUploadZone";
 import { DocumentsList } from "@/components/dashboard/DocumentsList";
@@ -12,6 +10,7 @@ import { MessagesPanel } from "@/components/dashboard/MessagesPanel";
 import { LLCDetailsCard } from "@/components/dashboard/LLCDetailsCard";
 import { ActionAlerts } from "@/components/dashboard/ActionAlerts";
 import { UpsellSection } from "@/components/dashboard/UpsellSection";
+import { IntakeForm } from "@/components/dashboard/IntakeForm";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
