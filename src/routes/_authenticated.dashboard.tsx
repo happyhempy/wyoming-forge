@@ -9,6 +9,9 @@ import { ProgressTracker } from "@/components/dashboard/ProgressTracker";
 import { FileUploadZone } from "@/components/dashboard/FileUploadZone";
 import { DocumentsList } from "@/components/dashboard/DocumentsList";
 import { MessagesPanel } from "@/components/dashboard/MessagesPanel";
+import { LLCDetailsCard } from "@/components/dashboard/LLCDetailsCard";
+import { ActionAlerts } from "@/components/dashboard/ActionAlerts";
+import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -146,6 +149,16 @@ function DashboardPage() {
             </p>
           </div>
 
+          {/* Action Alerts */}
+          <div className="mb-6">
+            <ActionAlerts userCase={userCase} steps={steps} documents={documents} />
+          </div>
+
+          {/* LLC Details Card */}
+          <div className="mb-8">
+            <LLCDetailsCard userCase={userCase} />
+          </div>
+
           {/* Intake Form */}
           {showIntake && (
             <div className="bg-card border border-gold/30 rounded-2xl p-6 mb-8">
@@ -223,9 +236,14 @@ function DashboardPage() {
           </div>
 
           {/* Messages */}
-          <div className="bg-card border border-border rounded-2xl p-6">
+          <div className="bg-card border border-border rounded-2xl p-6 mb-8">
             <h2 className="text-xl font-bold mb-4">Messages</h2>
             <MessagesPanel messages={messages} caseId={userCase.id} onMessageSent={loadDashboard} />
+          </div>
+
+          {/* Upsell Services */}
+          <div className="mb-8">
+            <UpsellSection />
           </div>
         </div>
       </div>

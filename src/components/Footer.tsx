@@ -4,8 +4,8 @@ export function Footer() {
   return (
     <footer className="bg-navy text-primary-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid md:grid-cols-4 gap-8">
-          <div className="md:col-span-2">
+        <div className="grid md:grid-cols-5 gap-8">
+          <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
                 <span className="text-navy-dark font-bold text-sm">US</span>
@@ -20,8 +20,18 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-gold">Quick Links</h4>
             <div className="space-y-2">
               <Link to="/" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Home</Link>
+              <Link to="/why-wyoming" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Why Wyoming</Link>
               <Link to="/about" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">About Us</Link>
               <Link to="/blog" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Blog</Link>
+              <Link to="/contact" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Contact</Link>
+            </div>
+          </div>
+          <div>
+            <h4 className="font-semibold mb-4 text-gold">Legal</h4>
+            <div className="space-y-2">
+              <Link to="/privacy" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Privacy Policy</Link>
+              <Link to="/terms" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Terms of Service</Link>
+              <Link to="/refund-policy" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Refund Policy</Link>
             </div>
           </div>
           <div>
