@@ -31,8 +31,8 @@ export function HeroSection() {
         </h1>
 
         <p className="mt-6 text-lg sm:text-xl text-primary-foreground/80 max-w-2xl mx-auto animate-fade-up delay-200">
-          We handle <strong className="text-primary-foreground">everything</strong> — from filing to EIN to your bank account.
-          Sign up, track your progress in your personal dashboard, and chat with us directly. No guesswork.
+          Whether you sell on Amazon, offer freelance services, or run an online course — we handle <strong className="text-primary-foreground">everything</strong>.
+          From filing to EIN to your bank account. Track it all in your personal dashboard.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">
