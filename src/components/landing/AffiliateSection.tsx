@@ -1,15 +1,28 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { supabase } from "@/integrations/supabase/client";
 
 export function AffiliateSection() {
   const { ref, isVisible } = useScrollReveal();
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Save to Supabase affiliates table + notify admin
-    setSubmitted(true);
+    setLoading(true);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const { error } = await supabase.from("affiliates").insert({
+      full_name: formData.get("full_name") as string,
+      email: formData.get("email") as string,
+      website: (formData.get("website") as string) || null,
+      promotion_plan: (formData.get("promotion_plan") as string) || null,
+    });
+
+    setLoading(false);
+    if (!error) setSubmitted(true);
   };
 
   return (
@@ -34,22 +47,22 @@ export function AffiliateSection() {
           <form onSubmit={handleSubmit} className={`bg-navy-light/30 border border-primary-foreground/10 rounded-2xl p-8 space-y-5 ${isVisible ? "animate-fade-up delay-200" : "opacity-0"}`}>
             <div>
               <label className="block text-sm font-medium text-primary-foreground mb-1.5">Full Name</label>
-              <input required type="text" className="w-full rounded-lg border border-primary-foreground/20 bg-navy-light/40 px-4 py-3 text-sm text-primary-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors placeholder:text-primary-foreground/40" placeholder="Jane Smith" />
+              <input required name="full_name" type="text" maxLength={255} className="w-full rounded-lg border border-primary-foreground/20 bg-navy-light/40 px-4 py-3 text-sm text-primary-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors placeholder:text-primary-foreground/40" placeholder="Jane Smith" />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary-foreground mb-1.5">Email</label>
-              <input required type="email" className="w-full rounded-lg border border-primary-foreground/20 bg-navy-light/40 px-4 py-3 text-sm text-primary-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors placeholder:text-primary-foreground/40" placeholder="jane@example.com" />
+              <input required name="email" type="email" maxLength={255} className="w-full rounded-lg border border-primary-foreground/20 bg-navy-light/40 px-4 py-3 text-sm text-primary-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors placeholder:text-primary-foreground/40" placeholder="jane@example.com" />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary-foreground mb-1.5">Website or Social Media Link</label>
-              <input type="url" className="w-full rounded-lg border border-primary-foreground/20 bg-navy-light/40 px-4 py-3 text-sm text-primary-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors placeholder:text-primary-foreground/40" placeholder="https://yoursite.com" />
+              <input name="website" type="url" className="w-full rounded-lg border border-primary-foreground/20 bg-navy-light/40 px-4 py-3 text-sm text-primary-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors placeholder:text-primary-foreground/40" placeholder="https://yoursite.com" />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary-foreground mb-1.5">How do you plan to promote us?</label>
-              <textarea required rows={3} className="w-full rounded-lg border border-primary-foreground/20 bg-navy-light/40 px-4 py-3 text-sm text-primary-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors placeholder:text-primary-foreground/40 resize-none" placeholder="Tell us about your audience and promotion strategy..." />
+              <textarea required name="promotion_plan" rows={3} maxLength={2000} className="w-full rounded-lg border border-primary-foreground/20 bg-navy-light/40 px-4 py-3 text-sm text-primary-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors placeholder:text-primary-foreground/40 resize-none" placeholder="Tell us about your audience and promotion strategy..." />
             </div>
-            <Button variant="gold" size="lg" type="submit" className="w-full">
-              Apply to Become an Affiliate
+            <Button variant="gold" size="lg" type="submit" className="w-full" disabled={loading}>
+              {loading ? "Submitting..." : "Apply to Become an Affiliate"}
             </Button>
           </form>
         )}
