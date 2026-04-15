@@ -1,15 +1,27 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const links = [
-    { to: "/", label: "Home" },
-    { to: "/about", label: "About Us" },
-    { to: "/blog", label: "Blog" },
+    { to: "/" as const, label: "Home" },
+    { to: "/about" as const, label: "About Us" },
+    { to: "/blog" as const, label: "Blog" },
   ];
 
   return (
@@ -38,9 +50,15 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link to="/">
-              <Button variant="gold" size="default">Get Started</Button>
-            </Link>
+            {isLoggedIn ? (
+              <Link to="/dashboard">
+                <Button variant="gold" size="default">Dashboard</Button>
+              </Link>
+            ) : (
+              <Link to="/login">
+                <Button variant="gold" size="default">Login</Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -71,9 +89,15 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link to="/" onClick={() => setIsOpen(false)}>
-              <Button variant="gold" size="default" className="w-full mt-2">Get Started</Button>
-            </Link>
+            {isLoggedIn ? (
+              <Link to="/dashboard" onClick={() => setIsOpen(false)}>
+                <Button variant="gold" size="default" className="w-full mt-2">Dashboard</Button>
+              </Link>
+            ) : (
+              <Link to="/login" onClick={() => setIsOpen(false)}>
+                <Button variant="gold" size="default" className="w-full mt-2">Login</Button>
+              </Link>
+            )}
           </div>
         )}
       </div>

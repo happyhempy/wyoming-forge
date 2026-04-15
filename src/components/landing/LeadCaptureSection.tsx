@@ -1,15 +1,28 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { supabase } from "@/integrations/supabase/client";
 
 export function LeadCaptureSection() {
   const { ref, isVisible } = useScrollReveal();
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Save to Supabase leads table + notify admin
-    setSubmitted(true);
+    setLoading(true);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const { error } = await supabase.from("leads").insert({
+      full_name: formData.get("full_name") as string,
+      email: formData.get("email") as string,
+      phone: (formData.get("phone") as string) || null,
+      business_type: formData.get("business_type") as string,
+    });
+
+    setLoading(false);
+    if (!error) setSubmitted(true);
   };
 
   return (
@@ -32,19 +45,19 @@ export function LeadCaptureSection() {
           <form onSubmit={handleSubmit} className={`bg-card rounded-2xl border border-border p-8 shadow-sm space-y-5 ${isVisible ? "animate-fade-up delay-200" : "opacity-0"}`}>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Full Name</label>
-              <input required type="text" className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors" placeholder="John Doe" />
+              <input required name="full_name" type="text" maxLength={255} className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors" placeholder="John Doe" />
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
-              <input required type="email" className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors" placeholder="john@example.com" />
+              <input required name="email" type="email" maxLength={255} className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors" placeholder="john@example.com" />
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Phone</label>
-              <input type="tel" className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors" placeholder="+1 (555) 000-0000" />
+              <input name="phone" type="tel" className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors" placeholder="+1 (555) 000-0000" />
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Business Type</label>
-              <select required className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors">
+              <select required name="business_type" className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors">
                 <option value="">Select...</option>
                 <option>E-Commerce</option>
                 <option>Amazon FBA</option>
@@ -53,8 +66,8 @@ export function LeadCaptureSection() {
                 <option>Other</option>
               </select>
             </div>
-            <Button variant="gold" size="lg" type="submit" className="w-full">
-              Send me details
+            <Button variant="gold" size="lg" type="submit" className="w-full" disabled={loading}>
+              {loading ? "Sending..." : "Send me details"}
             </Button>
           </form>
         )}
