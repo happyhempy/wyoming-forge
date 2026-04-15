@@ -4,42 +4,48 @@ import { Link } from "@tanstack/react-router";
 
 const packages = [
   {
-    name: "Essential",
+    name: "Basic Formation",
     price: 299,
     badge: null,
+    description: "Ideal for entrepreneurs who only need a legal U.S. company.",
     features: [
-      "Wyoming LLC Articles of Organization filing",
-      "EIN from the IRS",
-      "Registered Agent — Year 1",
-      "LLC ready in 48-72 hours",
+      "Get your Wyoming LLC formed in 48–72 hours",
+      "Registered Agent included for the first year — no extra fees",
+      "Full compliance with U.S. state requirements",
+      "Personal dashboard to track every step in real time",
     ],
+    cta: "Get Started",
+    packageKey: "essential",
   },
   {
-    name: "Business",
+    name: "Formation + EIN",
     price: 399,
     badge: "⭐ MOST POPULAR",
+    description: "Best for sellers who want to operate and receive payments in the U.S.",
     features: [
-      "Wyoming LLC Articles of Organization filing",
-      "EIN from the IRS",
-      "Registered Agent — Year 1",
-      "Mercury Business bank account opening",
-      "LLC ready in 48-72 hours",
+      "Everything in Basic Formation",
+      "EIN (Tax ID) from the IRS — required to open a bank account",
+      "Accept payments through Stripe, PayPal & more",
+      "Start selling on Amazon, Shopify, or any U.S. platform",
+      "Dedicated support throughout the entire process",
     ],
+    cta: "Get Started",
+    packageKey: "business",
   },
   {
-    name: "Premium",
+    name: "Full Setup",
     price: 699,
-    badge: "💎 PREMIUM",
+    badge: "💎 COMPLETE",
+    description: "Complete solution for running a compliant U.S. business — stress-free.",
     features: [
-      "Wyoming LLC Articles of Organization filing",
-      "EIN from the IRS",
-      "Registered Agent — Year 1",
-      "Mercury Business bank account opening",
-      "Registered Agent renewal — Year 2",
-      "Wyoming Annual Report — Year 2",
-      "All mandatory state payments for 2 years fully covered",
-      "LLC ready in 48-72 hours",
+      "Everything in Formation + EIN",
+      "Annual tax filing covered for the following year",
+      "Stay compliant with zero paperwork on your end",
+      "All mandatory state fees for 2 years fully included",
+      "Priority support — we handle everything for you",
     ],
+    cta: "Get Started",
+    packageKey: "premium",
   },
 ];
 
@@ -49,14 +55,25 @@ export function PricingSection() {
   return (
     <section ref={ref} id="pricing" className="py-20 bg-background">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`text-center mb-14 ${isVisible ? "animate-fade-up" : "opacity-0"}`}>
+        <div className={`text-center mb-4 ${isVisible ? "animate-fade-up" : "opacity-0"}`}>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Simple, transparent pricing 💰
+            Simple, transparent pricing
           </h2>
-          <p className="text-muted-foreground">No hidden fees. No surprises. Everything included.</p>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            No hidden fees. No surprises. Choose the plan that fits your business — and we'll handle the rest.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className={`flex justify-center mb-12 ${isVisible ? "animate-fade-up" : "opacity-0"}`}>
+          <div className="inline-flex items-center gap-2 bg-muted/50 rounded-full px-4 py-2 text-sm text-muted-foreground">
+            <svg className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" />
+            </svg>
+            Trusted by 500+ entrepreneurs worldwide
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
           {packages.map((pkg, i) => {
             const isPopular = i === 1;
             return (
@@ -66,10 +83,11 @@ export function PricingSection() {
                   isPopular
                     ? "border-gold bg-card shadow-lg scale-[1.02]"
                     : "border-border bg-card shadow-sm"
-                } ${isVisible ? `animate-fade-up delay-${(i + 1) * 100}` : "opacity-0"}`}
+                } ${isVisible ? "animate-fade-up" : "opacity-0"}`}
+                style={{ animationDelay: `${(i + 1) * 100}ms` }}
               >
                 {pkg.badge && (
-                  <div className={`absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold ${
+                  <div className={`absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
                     isPopular ? "bg-gold text-navy-dark" : "bg-navy text-primary-foreground"
                   }`}>
                     {pkg.badge}
@@ -77,6 +95,8 @@ export function PricingSection() {
                 )}
 
                 <h3 className="text-xl font-bold text-foreground mb-2">{pkg.name}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{pkg.description}</p>
+
                 <div className="mb-6">
                   <span className="text-4xl font-bold text-foreground">${pkg.price}</span>
                   <span className="text-muted-foreground text-sm ml-1">one-time</span>
@@ -93,14 +113,20 @@ export function PricingSection() {
                   ))}
                 </ul>
 
-                <Link to="/checkout" search={{ package: pkg.name.toLowerCase() }} className="w-full">
+                <Link to="/checkout" search={{ package: pkg.packageKey }} className="w-full">
                   <Button variant={isPopular ? "gold" : "navyOutline"} size="lg" className="w-full">
-                    Get Started
+                    {pkg.cta}
                   </Button>
                 </Link>
               </div>
             );
           })}
+        </div>
+
+        <div className={`mt-12 text-center ${isVisible ? "animate-fade-up" : "opacity-0"}`}>
+          <p className="text-sm text-muted-foreground">
+            🔒 Secure payment · 📞 24/7 WhatsApp support · ⚡ LLC ready in 48–72 hours
+          </p>
         </div>
       </div>
     </section>
