@@ -55,9 +55,14 @@ export function Navbar() {
                 <Button variant="gold" size="default">Dashboard</Button>
               </Link>
             ) : (
-              <Link to="/login">
-                <Button variant="gold" size="default">Login</Button>
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link to="/login">
+                  <Button variant="navyOutline" size="default">Login</Button>
+                </Link>
+                <Link to="/login" search={{ mode: "signup" }}>
+                  <Button variant="gold" size="default">Sign Up</Button>
+                </Link>
+              </div>
             )}
           </div>
 
@@ -95,7 +100,10 @@ export function Navbar() {
               </Link>
             ) : (
               <Link to="/login" onClick={() => setIsOpen(false)}>
-                <Button variant="gold" size="default" className="w-full mt-2">Login</Button>
+                <Button variant="navyOutline" size="default" className="w-full mt-2">Login</Button>
+              </Link>
+              <Link to="/login" search={{ mode: "signup" }} onClick={() => setIsOpen(false)}>
+                <Button variant="gold" size="default" className="w-full mt-2">Sign Up</Button>
               </Link>
             )}
           </div>
