@@ -1,0 +1,215 @@
+import { useState, useRef, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Upload, FileText, Check, AlertCircle, Loader2 } from "lucide-react";
+
+interface FileUploadZoneProps {
+  caseId: string;
+  onUploadComplete: () => void;
+}
+
+const DOCUMENT_TYPES = [
+  { value: "passport", label: "Passport Copy" },
+  { value: "proof_of_address", label: "Proof of Address" },
+  { value: "id_card", label: "ID Card" },
+  { value: "other", label: "Other Document" },
+];
+
+type UploadStatus = "idle" | "uploading" | "success" | "error";
+
+export function FileUploadZone({ caseId, onUploadComplete }: FileUploadZoneProps) {
+  const [dragActive, setDragActive] = useState(false);
+  const [status, setStatus] = useState<UploadStatus>("idle");
+  const [progress, setProgress] = useState(0);
+  const [fileName, setFileName] = useState("");
+  const [docType, setDocType] = useState("passport");
+  const [errorMsg, setErrorMsg] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = useCallback(async (file: File) => {
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      setStatus("error");
+      setErrorMsg("File too large. Maximum 10MB.");
+      return;
+    }
+
+    const allowed = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      setStatus("error");
+      setErrorMsg("Only PDF, JPG, PNG or WEBP files are accepted.");
+      return;
+    }
+
+    setFileName(file.name);
+    setStatus("uploading");
+    setProgress(20);
+    setErrorMsg("");
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      setProgress(40);
+      const filePath = `${user.id}/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from("documents")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+      setProgress(70);
+
+      const { error: dbError } = await supabase.from("documents").insert({
+        case_id: caseId,
+        uploaded_by: user.id,
+        file_url: filePath,
+        file_name: file.name,
+        document_type: docType,
+      });
+
+      if (dbError) throw dbError;
+      setProgress(100);
+      setStatus("success");
+      onUploadComplete();
+
+      setTimeout(() => {
+        setStatus("idle");
+        setProgress(0);
+        setFileName("");
+      }, 3000);
+    } catch (err: any) {
+      setStatus("error");
+      setErrorMsg(err.message || "Upload failed");
+    }
+  }, [caseId, docType, onUploadComplete]);
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
+    else if (e.type === "dragleave") setDragActive(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files?.[0]) handleFile(e.dataTransfer.files[0]);
+  }, [handleFile]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) handleFile(e.target.files[0]);
+  }, [handleFile]);
+
+  return (
+    <div className="space-y-4">
+      {/* Document type selector */}
+      <div className="flex flex-wrap gap-2">
+        {DOCUMENT_TYPES.map((dt) => (
+          <button
+            key={dt.value}
+            onClick={() => setDocType(dt.value)}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+              docType === dt.value
+                ? "bg-gold text-navy-dark"
+                : "bg-muted text-muted-foreground hover:bg-muted/80"
+            }`}
+          >
+            {dt.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Drop zone */}
+      <div
+        onDragEnter={handleDrag}
+        onDragOver={handleDrag}
+        onDragLeave={handleDrag}
+        onDrop={handleDrop}
+        onClick={() => status === "idle" && inputRef.current?.click()}
+        className={`relative flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 transition-all cursor-pointer ${
+          dragActive
+            ? "border-gold bg-gold/5 scale-[1.01]"
+            : status === "success"
+            ? "border-green-500 bg-green-500/5"
+            : status === "error"
+            ? "border-destructive bg-destructive/5"
+            : "border-border hover:border-gold/50 hover:bg-muted/30"
+        }`}
+      >
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".pdf,.jpg,.jpeg,.png,.webp"
+          onChange={handleChange}
+          className="hidden"
+        />
+
+        {status === "idle" && (
+          <>
+            <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
+              <Upload className="w-6 h-6 text-muted-foreground" />
+            </div>
+            <div className="text-center">
+              <p className="font-medium text-foreground">
+                Drag & drop your file here
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                or click to browse · PDF, JPG, PNG · Max 10MB
+              </p>
+            </div>
+          </>
+        )}
+
+        {status === "uploading" && (
+          <>
+            <Loader2 className="w-8 h-8 text-gold animate-spin" />
+            <div className="text-center w-full">
+              <p className="font-medium text-foreground">Uploading {fileName}...</p>
+              <div className="mt-3 w-full max-w-xs mx-auto bg-muted rounded-full h-2 overflow-hidden">
+                <div
+                  className="h-full bg-gold rounded-full transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {status === "success" && (
+          <>
+            <div className="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center">
+              <Check className="w-6 h-6 text-green-500" />
+            </div>
+            <p className="font-medium text-green-500">
+              {fileName} uploaded successfully!
+            </p>
+          </>
+        )}
+
+        {status === "error" && (
+          <>
+            <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center">
+              <AlertCircle className="w-6 h-6 text-destructive" />
+            </div>
+            <div className="text-center">
+              <p className="font-medium text-destructive">{errorMsg}</p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setStatus("idle");
+                  setErrorMsg("");
+                }}
+              >
+                Try Again
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
