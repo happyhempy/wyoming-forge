@@ -124,6 +124,8 @@ export type Database = {
       cases: {
         Row: {
           assigned_admin: string | null
+          business_purpose: string | null
+          business_start_date: string | null
           created_at: string
           current_step: number
           first_name: string | null
@@ -133,13 +135,17 @@ export type Database = {
           package: Database["public"]["Enums"]["package_type"]
           passport_url: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          products_services: string | null
           sole_owner: boolean | null
           stripe_session_id: string | null
+          trade_name: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           assigned_admin?: string | null
+          business_purpose?: string | null
+          business_start_date?: string | null
           created_at?: string
           current_step?: number
           first_name?: string | null
@@ -149,13 +155,17 @@ export type Database = {
           package?: Database["public"]["Enums"]["package_type"]
           passport_url?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          products_services?: string | null
           sole_owner?: boolean | null
           stripe_session_id?: string | null
+          trade_name?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           assigned_admin?: string | null
+          business_purpose?: string | null
+          business_start_date?: string | null
           created_at?: string
           current_step?: number
           first_name?: string | null
@@ -165,8 +175,10 @@ export type Database = {
           package?: Database["public"]["Enums"]["package_type"]
           passport_url?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          products_services?: string | null
           sole_owner?: boolean | null
           stripe_session_id?: string | null
+          trade_name?: string | null
           updated_at?: string
           user_id?: string
         }

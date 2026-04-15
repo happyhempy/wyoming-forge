@@ -3,8 +3,6 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ProgressTracker } from "@/components/dashboard/ProgressTracker";
 import { FileUploadZone } from "@/components/dashboard/FileUploadZone";
 import { DocumentsList } from "@/components/dashboard/DocumentsList";
@@ -12,6 +10,7 @@ import { MessagesPanel } from "@/components/dashboard/MessagesPanel";
 import { LLCDetailsCard } from "@/components/dashboard/LLCDetailsCard";
 import { ActionAlerts } from "@/components/dashboard/ActionAlerts";
 import { UpsellSection } from "@/components/dashboard/UpsellSection";
+import { IntakeForm } from "@/components/dashboard/IntakeForm";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -33,13 +32,6 @@ function DashboardPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [showIntake, setShowIntake] = useState(false);
-
-  // Intake form
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [llcName, setLlcName] = useState("");
-  const [soleOwner, setSoleOwner] = useState(true);
-  const [partners, setPartners] = useState<{ full_name: string; email: string; ownership_percentage: number }[]>([]);
 
   const loadDashboard = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -71,30 +63,6 @@ function DashboardPage() {
   }, []);
 
   useEffect(() => { loadDashboard(); }, [loadDashboard]);
-
-  const handleIntakeSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userCase) return;
-
-    const { error } = await supabase
-      .from("cases")
-      .update({ first_name: firstName, last_name: lastName, llc_name: llcName, sole_owner: soleOwner })
-      .eq("id", userCase.id);
-
-    if (error) return;
-
-    if (!soleOwner && partners.length > 0) {
-      const total = partners.reduce((s, p) => s + p.ownership_percentage, 0);
-      if (total !== 100) {
-        alert("Partner ownership must total exactly 100%");
-        return;
-      }
-      await supabase.from("partners").insert(partners.map((p) => ({ ...p, case_id: userCase.id })));
-    }
-
-    setShowIntake(false);
-    loadDashboard();
-  };
 
   if (loading) {
     return (
@@ -161,64 +129,7 @@ function DashboardPage() {
 
           {/* Intake Form */}
           {showIntake && (
-            <div className="bg-card border border-gold/30 rounded-2xl p-6 mb-8">
-              <h2 className="text-xl font-bold mb-1">Complete Your Details</h2>
-              <p className="text-sm text-muted-foreground mb-4">We need a few details to start your LLC formation.</p>
-              <form onSubmit={handleIntakeSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label>First Name (as on passport)</Label>
-                    <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="mt-1" />
-                  </div>
-                  <div>
-                    <Label>Last Name (as on passport)</Label>
-                    <Input value={lastName} onChange={(e) => setLastName(e.target.value)} required className="mt-1" />
-                  </div>
-                </div>
-                <div>
-                  <Label>Desired LLC Name</Label>
-                  <Input value={llcName} onChange={(e) => setLlcName(e.target.value)} required className="mt-1" />
-                </div>
-                <div>
-                  <Label>Ownership Structure</Label>
-                  <div className="mt-2 flex gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" checked={soleOwner} onChange={() => setSoleOwner(true)} />
-                      <span className="text-sm">Sole Owner</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" checked={!soleOwner} onChange={() => setSoleOwner(false)} />
-                      <span className="text-sm">I have partners</span>
-                    </label>
-                  </div>
-                </div>
-
-                {!soleOwner && (
-                  <div className="space-y-3 border border-border rounded-lg p-4">
-                    <div className="flex justify-between items-center">
-                      <Label>Partners</Label>
-                      <Button type="button" variant="outline" size="sm" onClick={() => setPartners([...partners, { full_name: "", email: "", ownership_percentage: 0 }])}>
-                        + Add Partner
-                      </Button>
-                    </div>
-                    {partners.map((p, i) => (
-                      <div key={i} className="grid grid-cols-3 gap-2">
-                        <Input placeholder="Full Name" value={p.full_name} onChange={(e) => { const np = [...partners]; np[i].full_name = e.target.value; setPartners(np); }} />
-                        <Input placeholder="Email" value={p.email} onChange={(e) => { const np = [...partners]; np[i].email = e.target.value; setPartners(np); }} />
-                        <Input type="number" placeholder="%" value={p.ownership_percentage || ""} onChange={(e) => { const np = [...partners]; np[i].ownership_percentage = Number(e.target.value); setPartners(np); }} />
-                      </div>
-                    ))}
-                    {partners.length > 0 && (
-                      <p className="text-sm text-muted-foreground">
-                        Total: {partners.reduce((s, p) => s + p.ownership_percentage, 0)}% — must equal 100%
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                <Button type="submit" variant="gold">Submit Details</Button>
-              </form>
-            </div>
+            <IntakeForm userCase={userCase} onComplete={() => { setShowIntake(false); loadDashboard(); }} />
           )}
 
           {/* Progress Tracker */}
@@ -226,9 +137,9 @@ function DashboardPage() {
             <ProgressTracker steps={steps} packageType={userCase.package} />
           </div>
 
-          {/* Documents & Upload */}
+          {/* Passport Upload & Documents */}
           <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-            <h2 className="text-xl font-bold mb-4">Documents</h2>
+            <h2 className="text-xl font-bold mb-4">Passport & Documents</h2>
             <FileUploadZone caseId={userCase.id} onUploadComplete={loadDashboard} />
             <div className="mt-6">
               <DocumentsList documents={documents} />
