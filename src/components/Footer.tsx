@@ -4,8 +4,8 @@ export function Footer() {
   return (
     <footer className="bg-navy text-primary-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid md:grid-cols-4 gap-8">
-          <div className="md:col-span-2">
+        <div className="grid md:grid-cols-5 gap-8">
+          <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
                 <span className="text-navy-dark font-bold text-sm">US</span>
