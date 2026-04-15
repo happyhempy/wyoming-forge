@@ -14,16 +14,370 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      affiliates: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          promotion_plan: string | null
+          status: Database["public"]["Enums"]["affiliate_status"]
+          website: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          promotion_plan?: string | null
+          status?: Database["public"]["Enums"]["affiliate_status"]
+          website?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          promotion_plan?: string | null
+          status?: Database["public"]["Enums"]["affiliate_status"]
+          website?: string | null
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          content: string | null
+          cover_image: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          published: boolean
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          content?: string | null
+          cover_image?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published?: boolean
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          content?: string | null
+          cover_image?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published?: boolean
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      case_steps: {
+        Row: {
+          case_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          status: Database["public"]["Enums"]["step_status"]
+          step_name: string
+          step_number: number
+        }
+        Insert: {
+          case_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["step_status"]
+          step_name: string
+          step_number: number
+        }
+        Update: {
+          case_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["step_status"]
+          step_name?: string
+          step_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_steps_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cases: {
+        Row: {
+          assigned_admin: string | null
+          created_at: string
+          current_step: number
+          first_name: string | null
+          id: string
+          last_name: string | null
+          llc_name: string | null
+          package: Database["public"]["Enums"]["package_type"]
+          passport_url: string | null
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          sole_owner: boolean | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_admin?: string | null
+          created_at?: string
+          current_step?: number
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          llc_name?: string | null
+          package?: Database["public"]["Enums"]["package_type"]
+          passport_url?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          sole_owner?: boolean | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_admin?: string | null
+          created_at?: string
+          current_step?: number
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          llc_name?: string | null
+          package?: Database["public"]["Enums"]["package_type"]
+          passport_url?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          sole_owner?: boolean | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      documents: {
+        Row: {
+          case_id: string
+          created_at: string
+          document_type: string
+          file_name: string
+          file_url: string
+          id: string
+          uploaded_by: string
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          document_type: string
+          file_name: string
+          file_url: string
+          id?: string
+          uploaded_by: string
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          document_type?: string
+          file_name?: string
+          file_url?: string
+          id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          business_type: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          phone: string | null
+        }
+        Insert: {
+          business_type: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          phone?: string | null
+        }
+        Update: {
+          business_type?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          case_id: string
+          content: string
+          created_at: string
+          id: string
+          sender_id: string
+          sender_role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          case_id: string
+          content: string
+          created_at?: string
+          id?: string
+          sender_id: string
+          sender_role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          case_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+          sender_role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partners: {
+        Row: {
+          case_id: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          ownership_percentage: number
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          ownership_percentage: number
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          ownership_percentage?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partners_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_any_admin_role: { Args: { _user_id: string }; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      affiliate_status: "pending" | "approved" | "rejected"
+      app_role: "superadmin" | "admin" | "client"
+      package_type: "basic" | "popular" | "premium"
+      payment_status: "pending" | "completed" | "failed" | "refunded"
+      step_status: "pending" | "in_progress" | "completed" | "locked"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +504,12 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      affiliate_status: ["pending", "approved", "rejected"],
+      app_role: ["superadmin", "admin", "client"],
+      package_type: ["basic", "popular", "premium"],
+      payment_status: ["pending", "completed", "failed", "refunded"],
+      step_status: ["pending", "in_progress", "completed", "locked"],
+    },
   },
 } as const
