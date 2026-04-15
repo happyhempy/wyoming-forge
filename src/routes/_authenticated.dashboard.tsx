@@ -33,13 +33,6 @@ function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [showIntake, setShowIntake] = useState(false);
 
-  // Intake form
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [llcName, setLlcName] = useState("");
-  const [soleOwner, setSoleOwner] = useState(true);
-  const [partners, setPartners] = useState<{ full_name: string; email: string; ownership_percentage: number }[]>([]);
-
   const loadDashboard = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
