@@ -36,7 +36,7 @@ export function HeroSection() {
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">
-          <Link to="/login">
+          <Link to="/pricing">
             <Button variant="gold" size="xl">
               Start Your LLC Now →
             </Button>
