@@ -2,36 +2,43 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-bg.jpg";
 
+const stats = [
+  { value: "500+", label: "LLCs Opened" },
+  { value: "48h", label: "Average Turnaround" },
+  { value: "4.9★", label: "Client Rating" },
+];
+
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background */}
       <div className="absolute inset-0">
         <img src={heroBg} alt="" className="w-full h-full object-cover" width={1920} height={1080} />
-        <div className="absolute inset-0 bg-navy-dark/60" />
+        <div className="absolute inset-0 bg-navy-dark/70" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
         <div className="animate-fade-up">
           <div className="inline-flex items-center gap-2 bg-gold/15 border border-gold/30 rounded-full px-4 py-1.5 mb-6">
-            <span className="w-2 h-2 bg-gold rounded-full" />
-            <span className="text-gold text-sm font-medium">Wyoming LLC Specialists</span>
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            <span className="text-gold text-sm font-medium">Trusted by entrepreneurs worldwide</span>
           </div>
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-foreground leading-tight animate-fade-up delay-100">
-          Open Your US LLC —{" "}
-          <span className="text-gold">Fast, Simple, From Anywhere</span>
+          Your US LLC —{" "}
+          <span className="text-gold">Ready in 48 Hours</span>
         </h1>
 
         <p className="mt-6 text-lg sm:text-xl text-primary-foreground/80 max-w-2xl mx-auto animate-fade-up delay-200">
-          We handle everything for you. LLC ready in 48-72 hours. Hundreds of entrepreneurs already opened their US company with us.
+          We handle <strong className="text-primary-foreground">everything</strong> — from filing to EIN to your bank account.
+          Sign up, track your progress in your personal dashboard, and chat with us directly. No guesswork.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">
           <Link to="/login">
             <Button variant="gold" size="xl">
-              Get Started Now
+              Start Your LLC Now →
             </Button>
           </Link>
           <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer">
@@ -40,6 +47,16 @@ export function HeroSection() {
               Chat on WhatsApp
             </Button>
           </a>
+        </div>
+
+        {/* Social proof stats */}
+        <div className="mt-14 grid grid-cols-3 gap-6 max-w-md mx-auto animate-fade-up delay-400">
+          {stats.map((stat, i) => (
+            <div key={i} className="text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-gold">{stat.value}</div>
+              <div className="text-xs sm:text-sm text-primary-foreground/60 mt-1">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
 
