@@ -5,7 +5,7 @@ const trustItems = [
   { icon: "⚡", text: "LLC in 48-72 Hours" },
   { icon: "👨‍💼", text: "Licensed CPA Partner" },
   { icon: "🔒", text: "Stripe Secure Payments" },
-  { icon: "🌎", text: "Wyoming Specialists" },
+  { icon: "🌎", text: "US LLC Experts" },
 ];
 
 export function TrustBar() {
