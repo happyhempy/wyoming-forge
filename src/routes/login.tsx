@@ -46,7 +46,7 @@ function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -55,8 +55,13 @@ function LoginPage() {
         },
       });
       if (error) throw error;
-      setMode("login");
-      setError("Check your email to confirm your account.");
+      // If auto-confirm is on, session exists → go to dashboard
+      if (data.session) {
+        navigate({ to: "/dashboard" });
+      } else {
+        setMode("login");
+        setError("Check your email to confirm your account.");
+      }
     } catch (err: any) {
       setError(err.message || "Signup failed");
     } finally {
