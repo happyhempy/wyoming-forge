@@ -1,19 +1,12 @@
 import { useState, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Upload, FileText, Check, AlertCircle, Loader2 } from "lucide-react";
+import { Upload, Check, AlertCircle, Loader2 } from "lucide-react";
 
 interface FileUploadZoneProps {
   caseId: string;
   onUploadComplete: () => void;
 }
-
-const DOCUMENT_TYPES = [
-  { value: "passport", label: "Passport Copy" },
-  { value: "proof_of_address", label: "Proof of Address" },
-  { value: "id_card", label: "ID Card" },
-  { value: "other", label: "Other Document" },
-];
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
@@ -22,12 +15,11 @@ export function FileUploadZone({ caseId, onUploadComplete }: FileUploadZoneProps
   const [status, setStatus] = useState<UploadStatus>("idle");
   const [progress, setProgress] = useState(0);
   const [fileName, setFileName] = useState("");
-  const [docType, setDocType] = useState("passport");
   const [errorMsg, setErrorMsg] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = useCallback(async (file: File) => {
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
       setStatus("error");
       setErrorMsg("File too large. Maximum 10MB.");
@@ -64,7 +56,7 @@ export function FileUploadZone({ caseId, onUploadComplete }: FileUploadZoneProps
         uploaded_by: user.id,
         file_url: filePath,
         file_name: file.name,
-        document_type: docType,
+        document_type: "passport",
       });
 
       if (dbError) throw dbError;
@@ -81,7 +73,7 @@ export function FileUploadZone({ caseId, onUploadComplete }: FileUploadZoneProps
       setStatus("error");
       setErrorMsg(err.message || "Upload failed");
     }
-  }, [caseId, docType, onUploadComplete]);
+  }, [caseId, onUploadComplete]);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -102,25 +94,11 @@ export function FileUploadZone({ caseId, onUploadComplete }: FileUploadZoneProps
   }, [handleFile]);
 
   return (
-    <div className="space-y-4">
-      {/* Document type selector */}
-      <div className="flex flex-wrap gap-2">
-        {DOCUMENT_TYPES.map((dt) => (
-          <button
-            key={dt.value}
-            onClick={() => setDocType(dt.value)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-              docType === dt.value
-                ? "bg-gold text-navy-dark"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
-            }`}
-          >
-            {dt.label}
-          </button>
-        ))}
-      </div>
+    <div className="space-y-3">
+      <p className="text-sm text-muted-foreground">
+        📄 Please upload a clear copy of your <span className="font-semibold text-foreground">passport</span> (the page with your photo and details).
+      </p>
 
-      {/* Drop zone */}
       <div
         onDragEnter={handleDrag}
         onDragOver={handleDrag}
@@ -152,7 +130,7 @@ export function FileUploadZone({ caseId, onUploadComplete }: FileUploadZoneProps
             </div>
             <div className="text-center">
               <p className="font-medium text-foreground">
-                Drag & drop your file here
+                Drag & drop your passport here
               </p>
               <p className="text-sm text-muted-foreground mt-1">
                 or click to browse · PDF, JPG, PNG · Max 10MB
