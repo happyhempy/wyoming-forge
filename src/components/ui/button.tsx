@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
   {
     variants: {
       variant: {
@@ -16,11 +16,17 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        hero: "bg-navy text-primary-foreground shadow-lg hover:bg-navy-light hover:shadow-xl hover:-translate-y-0.5",
+        heroOutline: "border-2 border-gold text-gold bg-transparent hover:bg-gold hover:text-navy-dark shadow-lg hover:shadow-xl hover:-translate-y-0.5",
+        whatsapp: "bg-whatsapp text-primary-foreground shadow-lg hover:bg-whatsapp-dark hover:shadow-xl hover:-translate-y-0.5",
+        gold: "bg-gold text-navy-dark font-semibold shadow-lg hover:bg-gold-light hover:shadow-xl hover:-translate-y-0.5",
+        navyOutline: "border-2 border-navy text-navy bg-transparent hover:bg-navy hover:text-primary-foreground",
       },
       size: {
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
+        lg: "h-12 rounded-lg px-8 text-base",
+        xl: "h-14 rounded-lg px-10 text-lg",
         icon: "h-9 w-9",
       },
     },
