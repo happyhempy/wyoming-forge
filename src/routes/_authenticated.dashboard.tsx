@@ -64,15 +64,82 @@ function DashboardPage() {
 
   useEffect(() => { loadDashboard(); }, [loadDashboard]);
 
-
   if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-background pt-20 flex items-center justify-center">
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+            <p className="text-muted-foreground">Loading your dashboard...</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (!userCase) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-background pt-20 flex items-center justify-center">
+          <div className="text-center max-w-md px-4">
+            <div className="w-16 h-16 bg-gold/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">📋</span>
+            </div>
+            <h1 className="text-2xl font-bold mb-3">No Active Case</h1>
+            <p className="text-muted-foreground mb-6">
+              You don't have an active LLC formation case yet. Get started by choosing a package.
+            </p>
+            <a href="/#pricing">
+              <Button variant="gold" size="lg">View Packages</Button>
+            </a>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold">Your Dashboard</h1>
+            <p className="text-muted-foreground mt-1">
+              {userCase.llc_name && (
+                <span className="font-semibold text-foreground">{userCase.llc_name}</span>
+              )}
+              {userCase.llc_name && " · "}
+              Package: <span className="font-semibold capitalize text-gold">{userCase.package}</span>
+            </p>
+          </div>
+
+          {/* Action Alerts */}
+          <div className="mb-6">
+            <ActionAlerts userCase={userCase} steps={steps} documents={documents} />
+          </div>
+
+          {/* LLC Details Card */}
+          <div className="mb-8">
+            <LLCDetailsCard userCase={userCase} />
+          </div>
+
+          {/* Intake Form */}
+          {showIntake && (
+            <IntakeForm userCase={userCase} onComplete={() => { setShowIntake(false); loadDashboard(); }} />
+          )}
+
+          {/* Progress Tracker */}
           <div className="mb-8">
             <ProgressTracker steps={steps} packageType={userCase.package} />
           </div>
 
-          {/* Documents & Upload */}
+          {/* Passport Upload & Documents */}
           <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-            <h2 className="text-xl font-bold mb-4">Documents</h2>
+            <h2 className="text-xl font-bold mb-4">Passport & Documents</h2>
             <FileUploadZone caseId={userCase.id} onUploadComplete={loadDashboard} />
             <div className="mt-6">
               <DocumentsList documents={documents} />
