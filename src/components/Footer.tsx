@@ -20,8 +20,18 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-gold">Quick Links</h4>
             <div className="space-y-2">
               <Link to="/" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Home</Link>
+              <Link to="/why-wyoming" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Why Wyoming</Link>
               <Link to="/about" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">About Us</Link>
               <Link to="/blog" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Blog</Link>
+              <Link to="/contact" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Contact</Link>
+            </div>
+          </div>
+          <div>
+            <h4 className="font-semibold mb-4 text-gold">Legal</h4>
+            <div className="space-y-2">
+              <Link to="/privacy" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Privacy Policy</Link>
+              <Link to="/terms" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Terms of Service</Link>
+              <Link to="/refund-policy" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Refund Policy</Link>
             </div>
           </div>
           <div>

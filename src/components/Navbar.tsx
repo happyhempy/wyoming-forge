@@ -20,8 +20,10 @@ export function Navbar() {
 
   const links = [
     { to: "/" as const, label: "Home" },
+    { to: "/why-wyoming" as const, label: "Why Wyoming" },
     { to: "/about" as const, label: "About Us" },
     { to: "/blog" as const, label: "Blog" },
+    { to: "/contact" as const, label: "Contact" },
   ];
 
   return (
