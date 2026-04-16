@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -25,6 +26,10 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
   const [numMembers, setNumMembers] = useState(1);
   const [partners, setPartners] = useState<{ full_name: string; email: string; ownership_percentage: number }[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [einAuthorized, setEinAuthorized] = useState(false);
+  const [signatureName, setSignatureName] = useState("");
+
+  const includesEIN = userCase.package === "popular" || userCase.package === "premium";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
