@@ -32,11 +32,13 @@ export const Route = createRootRoute({
       { title: "US LLC Formation — Open Your LLC Fast | Wyoming Specialists" },
       { name: "description", content: "Open your US LLC in 48-72 hours. Wyoming LLC formation for international entrepreneurs. EIN, Registered Agent, and Mercury bank account included." },
       { name: "author", content: "US LLC Formation" },
-      { property: "og:title", content: "US LLC Formation — Open Your LLC Fast" },
-      { property: "og:description", content: "Open your US LLC in 48-72 hours. Wyoming LLC formation for international entrepreneurs." },
+      { property: "og:title", content: "US LLC Formation — Open Your LLC Fast | Wyoming Specialists" },
+      { property: "og:description", content: "Open your US LLC in 48-72 hours. Wyoming LLC formation for international entrepreneurs. EIN, Registered Agent, and Mercury bank account included." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "US LLC Formation — Open Your LLC Fast | Wyoming Specialists" },
+      { name: "twitter:description", content: "Open your US LLC in 48-72 hours. Wyoming LLC formation for international entrepreneurs. EIN, Registered Agent, and Mercury bank account included." },
     ],
     links: [
       {
