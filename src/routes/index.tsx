@@ -41,6 +41,7 @@ function Index() {
         <DashboardPreviewSection />
         <PricingSection />
         <TestimonialsSection />
+        <MiniTestimonialsSection />
         <TimelineSection />
         <CPASection />
         <FAQSection />
