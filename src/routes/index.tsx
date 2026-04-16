@@ -50,7 +50,7 @@ function Index() {
         <AffiliateSection />
       </main>
       <Footer />
-      <WhatsAppButton />
+      <ChatWidget />
     </>
   );
 }
