@@ -7,7 +7,7 @@ import { HowItWorks } from "@/components/landing/HowItWorks";
 import { DashboardPreviewSection } from "@/components/landing/DashboardPreviewSection";
 import { TimelineSection } from "@/components/landing/TimelineSection";
 import { PricingSection } from "@/components/landing/PricingSection";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
+import { TestimonialsSection, MiniTestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { CPASection } from "@/components/landing/CPASection";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { LeadCaptureSection } from "@/components/landing/LeadCaptureSection";
@@ -41,6 +41,7 @@ function Index() {
         <DashboardPreviewSection />
         <PricingSection />
         <TestimonialsSection />
+        <MiniTestimonialsSection />
         <TimelineSection />
         <CPASection />
         <FAQSection />
