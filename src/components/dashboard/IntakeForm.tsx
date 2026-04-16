@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -25,6 +26,10 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
   const [numMembers, setNumMembers] = useState(1);
   const [partners, setPartners] = useState<{ full_name: string; email: string; ownership_percentage: number }[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [einAuthorized, setEinAuthorized] = useState(false);
+  const [signatureName, setSignatureName] = useState("");
+
+  const includesEIN = userCase.package === "popular" || userCase.package === "premium";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -200,7 +205,53 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
           </div>
         </div>
 
-        <Button type="submit" variant="gold" size="lg" disabled={submitting} className="w-full sm:w-auto">
+        {/* Section 5: EIN Authorization (only for packages with EIN) */}
+        {includesEIN && (
+          <div className="border border-gold/30 rounded-lg p-5 bg-gold/5">
+            <h3 className="text-sm font-semibold text-gold uppercase tracking-wide mb-3">
+              EIN Authorization (IRS Form SS-4)
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              To apply for your EIN (Employer Identification Number) with the IRS, we need your authorization to submit Form SS-4 on your behalf as a Third Party Designee.
+            </p>
+
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  id="ein-auth"
+                  checked={einAuthorized}
+                  onCheckedChange={(checked) => setEinAuthorized(checked === true)}
+                  className="mt-0.5"
+                />
+                <label htmlFor="ein-auth" className="text-sm leading-relaxed cursor-pointer">
+                  I hereby authorize <strong>Amer LLC</strong> to act as my Third Party Designee and submit IRS Form SS-4 on my behalf to obtain an Employer Identification Number (EIN) for my LLC. I understand this authorization is limited solely to the EIN application process.
+                </label>
+              </div>
+
+              <div>
+                <Label>Digital Signature (type your full legal name)</Label>
+                <Input
+                  value={signatureName}
+                  onChange={(e) => setSignatureName(e.target.value)}
+                  placeholder="e.g. John Smith"
+                  className="mt-1 italic font-serif text-lg"
+                  required={includesEIN}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  By typing your name above, you confirm this serves as your electronic signature - Date: {new Date().toLocaleDateString("en-US")}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Button
+          type="submit"
+          variant="gold"
+          size="lg"
+          disabled={submitting || (includesEIN && (!einAuthorized || !signatureName.trim()))}
+          className="w-full sm:w-auto"
+        >
           {submitting ? "Saving..." : "Submit Details"}
         </Button>
       </form>
