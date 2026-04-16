@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { Link } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 
 const priceMap: Record<string, { priceId: string; name: string; price: number }> = {
   essential: { priceId: "llc_basic_price", name: "Essential", price: 299 },
@@ -9,16 +11,30 @@ const priceMap: Record<string, { priceId: string; name: string; price: number }>
   premium: { priceId: "llc_premium_price", name: "Premium", price: 699 },
 };
 
-export const Route = createFileRoute("/checkout")({
+export const Route = createFileRoute("/_authenticated/checkout")({
   validateSearch: (search) => ({
     package: (search.package as string) || "business",
   }),
   component: CheckoutPage,
+  head: () => ({
+    meta: [{ title: "Checkout — US LLC Formation" }],
+  }),
 });
 
 function CheckoutPage() {
   const { package: pkg } = Route.useSearch();
   const selected = priceMap[pkg] || priceMap.business;
+  const [userId, setUserId] = useState<string | undefined>();
+  const [userEmail, setUserEmail] = useState<string | undefined>();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUserId(user.id);
+        setUserEmail(user.email ?? undefined);
+      }
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -35,11 +51,15 @@ function CheckoutPage() {
             ${selected.price} one-time payment
           </p>
         </div>
-        <StripeEmbeddedCheckout
-          priceId={selected.priceId}
-          metadata={{ package: pkg }}
-          returnUrl={`${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`}
-        />
+        {userId && (
+          <StripeEmbeddedCheckout
+            priceId={selected.priceId}
+            userId={userId}
+            customerEmail={userEmail}
+            metadata={{ package: pkg }}
+            returnUrl={`${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`}
+          />
+        )}
       </div>
     </div>
   );
