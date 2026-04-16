@@ -2,24 +2,24 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { AdminStats } from "@/components/admin/AdminStats";
+import { AdminCaseCard } from "@/components/admin/AdminCaseCard";
+import { Search } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
 type CaseStep = Database["public"]["Tables"]["case_steps"]["Row"];
+type Message = Database["public"]["Tables"]["messages"]["Row"];
+type DocRow = Database["public"]["Tables"]["documents"]["Row"];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
-const STEP_NAMES = [
-  "Payment Received",
-  "Documents Submitted",
-  "Articles of Organization Filed",
-  "EIN Application Submitted",
-  "EIN Received",
-  "Registered Agent Confirmed",
-  "Mercury Bank Account",
-  "Process Complete 🎉",
-];
+type EnrichedCase = Case & {
+  steps?: CaseStep[];
+  messages?: Message[];
+  documents?: DocRow[];
+  profile?: Profile | null;
+};
 
 export const Route = createFileRoute("/_authenticated/_admin/admin")({
   component: AdminPanel,
@@ -29,10 +29,10 @@ export const Route = createFileRoute("/_authenticated/_admin/admin")({
 });
 
 function AdminPanel() {
-  const [cases, setCases] = useState<(Case & { steps?: CaseStep[] })[]>([]);
-  const [selectedCase, setSelectedCase] = useState<string | null>(null);
+  const [cases, setCases] = useState<EnrichedCase[]>([]);
   const [loading, setLoading] = useState(true);
-  const [messageContent, setMessageContent] = useState("");
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
 
   useEffect(() => {
     loadCases();
@@ -42,7 +42,6 @@ function AdminPanel() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // Check if superadmin
     const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
     const isSuperAdmin = roles?.some((r) => r.role === "superadmin");
 
@@ -52,73 +51,70 @@ function AdminPanel() {
     }
 
     const { data: casesData } = await query;
-
-    if (casesData) {
-      const withSteps = await Promise.all(
-        casesData.map(async (c) => {
-          const { data: steps } = await supabase
-            .from("case_steps")
-            .select("*")
-            .eq("case_id", c.id)
-            .order("step_number");
-          return { ...c, steps: steps ?? [] };
-        })
-      );
-      setCases(withSteps);
+    if (!casesData) {
+      setLoading(false);
+      return;
     }
+
+    const caseIds = casesData.map((c) => c.id);
+    const userIds = [...new Set(casesData.map((c) => c.user_id))];
+
+    // Fetch all related data in parallel
+    const [stepsRes, msgsRes, docsRes, profilesRes] = await Promise.all([
+      supabase.from("case_steps").select("*").in("case_id", caseIds).order("step_number"),
+      supabase.from("messages").select("*").in("case_id", caseIds).order("created_at"),
+      supabase.from("documents").select("*").in("case_id", caseIds).order("created_at", { ascending: false }),
+      supabase.from("profiles").select("*").in("user_id", userIds),
+    ]);
+
+    const steps = stepsRes.data ?? [];
+    const msgs = msgsRes.data ?? [];
+    const docs = docsRes.data ?? [];
+    const profiles = profilesRes.data ?? [];
+
+    const enriched: EnrichedCase[] = casesData.map((c) => ({
+      ...c,
+      steps: steps.filter((s) => s.case_id === c.id),
+      messages: msgs.filter((m) => m.case_id === c.id),
+      documents: docs.filter((d) => d.case_id === c.id),
+      profile: profiles.find((p) => p.user_id === c.user_id) ?? null,
+    }));
+
+    setCases(enriched);
     setLoading(false);
   };
 
-  const updateStep = async (caseId: string, stepNumber: number, status: Database["public"]["Enums"]["step_status"]) => {
-    await supabase
-      .from("case_steps")
-      .update({
-        status,
-        completed_at: status === "completed" ? new Date().toISOString() : null,
-      })
-      .eq("case_id", caseId)
-      .eq("step_number", stepNumber);
-    loadCases();
-  };
+  const activeCases = cases.filter((c) => c.current_step < 5);
+  const completedCases = cases.filter((c) => c.current_step >= 5);
+  const revenue = cases.filter((c) => c.payment_status === "completed").reduce((sum, c) => {
+    const prices: Record<string, number> = { basic: 299, popular: 399, premium: 699 };
+    return sum + (prices[c.package] ?? 399);
+  }, 0);
 
-  const sendMessage = async (caseId: string) => {
-    if (!messageContent.trim()) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    await supabase.from("messages").insert({
-      case_id: caseId,
-      sender_id: user.id,
-      sender_role: "admin" as const,
-      content: messageContent.trim(),
-    });
-    setMessageContent("");
-  };
-
-  const handleDocUpload = async (caseId: string, file: File) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const filePath = `admin/${caseId}/${Date.now()}-${file.name}`;
-    const { error } = await supabase.storage.from("documents").upload(filePath, file);
-    if (error) return;
-
-    await supabase.from("documents").insert({
-      case_id: caseId,
-      uploaded_by: user.id,
-      file_url: filePath,
-      file_name: file.name,
-      document_type: "llc_document",
-    });
-    loadCases();
-  };
+  const filtered = cases.filter((c) => {
+    if (filter === "active" && c.current_step >= 5) return false;
+    if (filter === "completed" && c.current_step < 5) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      return (
+        c.llc_name?.toLowerCase().includes(q) ||
+        c.first_name?.toLowerCase().includes(q) ||
+        c.last_name?.toLowerCase().includes(q) ||
+        c.package?.toLowerCase().includes(q)
+      );
+    }
+    return true;
+  });
 
   if (loading) {
     return (
       <>
         <Navbar />
         <div className="min-h-screen bg-background pt-20 flex items-center justify-center">
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+            <p className="text-muted-foreground">Loading cases...</p>
+          </div>
         </div>
       </>
     );
@@ -129,72 +125,60 @@ function AdminPanel() {
       <Navbar />
       <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+            <p className="text-muted-foreground mt-1">Manage client cases, documents, and communications.</p>
+          </div>
 
-          {cases.length === 0 ? (
-            <p className="text-muted-foreground">No cases assigned to you.</p>
+          {/* Stats */}
+          <div className="mb-8">
+            <AdminStats
+              totalCases={cases.length}
+              activeCases={activeCases.length}
+              completedCases={completedCases.length}
+              revenue={revenue}
+            />
+          </div>
+
+          {/* Search & Filter */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, LLC, or package..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="flex gap-2">
+              {(["all", "active", "completed"] as const).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors capitalize ${
+                    filter === f
+                      ? "bg-gold text-gold-foreground"
+                      : "bg-muted/50 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {f} {f === "all" ? `(${cases.length})` : f === "active" ? `(${activeCases.length})` : `(${completedCases.length})`}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Cases List */}
+          {filtered.length === 0 ? (
+            <div className="bg-card border border-border rounded-2xl p-12 text-center">
+              <p className="text-muted-foreground">
+                {search ? "No cases match your search." : "No cases found."}
+              </p>
+            </div>
           ) : (
             <div className="space-y-4">
-              {cases.map((c) => (
-                <div key={c.id} className="bg-card border border-border rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setSelectedCase(selectedCase === c.id ? null : c.id)}>
-                    <div>
-                      <h3 className="font-bold text-lg">{c.llc_name || "Unnamed LLC"}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {c.first_name} {c.last_name} • <span className="capitalize">{c.package}</span> • Step {c.current_step}/8
-                      </p>
-                    </div>
-                    <span className="text-muted-foreground">{selectedCase === c.id ? "▲" : "▼"}</span>
-                  </div>
-
-                  {selectedCase === c.id && (
-                    <div className="space-y-6 border-t border-border pt-4">
-                      {/* Steps */}
-                      <div>
-                        <h4 className="font-semibold mb-3">Progress Steps</h4>
-                        <div className="space-y-2">
-                          {STEP_NAMES.map((name, i) => {
-                            const step = c.steps?.find((s) => s.step_number === i + 1);
-                            const status = step?.status ?? "pending";
-                            return (
-                              <div key={i} className="flex items-center justify-between py-2 px-3 bg-muted/30 rounded-lg">
-                                <span className="text-sm">{i + 1}. {name}</span>
-                                <select
-                                  value={status}
-                                  onChange={(e) => updateStep(c.id, i + 1, e.target.value as any)}
-                                  className="text-sm bg-background border border-border rounded px-2 py-1"
-                                >
-                                  <option value="pending">Pending</option>
-                                  <option value="in_progress">In Progress</option>
-                                  <option value="completed">Completed</option>
-                                  <option value="locked">Locked</option>
-                                </select>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Upload Document */}
-                      <div>
-                        <h4 className="font-semibold mb-2">Upload Document for Client</h4>
-                        <Input type="file" onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleDocUpload(c.id, file);
-                        }} />
-                      </div>
-
-                      {/* Send Message */}
-                      <div>
-                        <h4 className="font-semibold mb-2">Send Message</h4>
-                        <div className="flex gap-2">
-                          <Textarea placeholder="Message to client..." value={messageContent} onChange={(e) => setMessageContent(e.target.value)} className="flex-1" rows={2} />
-                          <Button variant="gold" onClick={() => sendMessage(c.id)} className="self-end">Send</Button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+              {filtered.map((c) => (
+                <AdminCaseCard key={c.id} caseData={c} onRefresh={loadCases} />
               ))}
             </div>
           )}
