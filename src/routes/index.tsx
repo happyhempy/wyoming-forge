@@ -14,7 +14,7 @@ import { LeadCaptureSection } from "@/components/landing/LeadCaptureSection";
 import { AffiliateSection } from "@/components/landing/AffiliateSection";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { WhatsAppButton } from "@/components/WhatsAppButton";
+
 import { ChatWidget } from "@/components/ChatWidget";
 
 export const Route = createFileRoute("/")({
