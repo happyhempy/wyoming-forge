@@ -44,7 +44,7 @@ export function HeroSection() {
           <Button
             variant="outline"
             size="xl"
-            className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:border-primary-foreground/50 backdrop-blur-sm"
+            className="border-2 border-gold text-gold hover:bg-gold/15 hover:border-gold backdrop-blur-sm"
             onClick={() => {
               const chatBtn = document.querySelector<HTMLButtonElement>('[aria-label="Open chat"], [aria-label="Close chat"]');
               if (chatBtn?.getAttribute("aria-label") === "Open chat") chatBtn.click();
