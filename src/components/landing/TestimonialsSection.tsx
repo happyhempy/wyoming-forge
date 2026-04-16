@@ -10,7 +10,7 @@ const testimonials = [
   {
     name: "Carlos M.",
     business: "Shopify Store Owner",
-    quote: "I opened my US LLC in 3 days. The team handled everything — I just filled out a form. Incredible service!",
+    quote: "I opened my US LLC in 3 days. The team handled everything - I just filled out a form. Incredible service!",
     image: testimonialCarlos,
   },
   {
@@ -40,7 +40,7 @@ const testimonials = [
   {
     name: "Amara T.",
     business: "E-Commerce Entrepreneur",
-    quote: "From filing to EIN to bank account — they handled it all. I could focus on growing my business instead of paperwork.",
+    quote: "From filing to EIN to bank account - they handled it all. I could focus on growing my business instead of paperwork.",
     image: testimonialAmara,
   },
 ];

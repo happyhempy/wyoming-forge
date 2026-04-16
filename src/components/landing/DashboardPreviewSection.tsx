@@ -7,7 +7,7 @@ const features = [
   {
     icon: LayoutDashboard,
     title: "Real-Time Progress Tracking",
-    desc: "See exactly where your LLC stands — every step, from filing to EIN approval.",
+    desc: "See exactly where your LLC stands - every step, from filing to EIN approval.",
   },
   {
     icon: MessageSquare,
@@ -22,7 +22,7 @@ const features = [
   {
     icon: Bell,
     title: "Action Alerts",
-    desc: "We'll tell you exactly what's needed from you — no confusion, no missed steps.",
+    desc: "We'll tell you exactly what's needed from you - no confusion, no missed steps.",
   },
   {
     icon: CheckCircle2,
@@ -51,7 +51,7 @@ export function DashboardPreviewSection() {
             Sign up and get <span className="text-gold">full visibility</span> into your LLC process
           </h2>
           <p className="text-primary-foreground/70 max-w-2xl mx-auto text-lg">
-            Once you sign up, you get access to a personal dashboard where you can track every step, upload documents, and communicate with our team — all in one place.
+            Once you sign up, you get access to a personal dashboard where you can track every step, upload documents, and communicate with our team - all in one place.
           </p>
         </div>
 

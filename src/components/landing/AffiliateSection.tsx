@@ -30,7 +30,7 @@ export function AffiliateSection() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`text-center mb-10 ${isVisible ? "animate-fade-up" : "opacity-0"}`}>
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Partner with us — <span className="text-gold">Earn by referring clients</span> 🤝
+            Partner with us - <span className="text-gold">Earn by referring clients</span> 🤝
           </h2>
           <p className="text-primary-foreground/70">
             Are you a content creator, consultant, or business advisor? Join our affiliate program and earn a commission for every client you refer. Fill out the form below and we'll get back to you.

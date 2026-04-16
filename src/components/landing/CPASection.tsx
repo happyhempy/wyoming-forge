@@ -16,7 +16,7 @@ export function CPASection() {
             Working alongside a licensed <span className="text-gold">US CPA firm</span>
           </h2>
           <p className="text-primary-foreground/70 text-lg max-w-2xl mx-auto">
-            Every LLC we open is handled in full coordination with our certified US accounting partners — ensuring complete legal and tax compliance from day one.
+            Every LLC we open is handled in full coordination with our certified US accounting partners - ensuring complete legal and tax compliance from day one.
           </p>
         </div>
       </div>
