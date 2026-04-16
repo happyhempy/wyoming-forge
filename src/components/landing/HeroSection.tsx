@@ -35,6 +35,12 @@ export function HeroSection() {
           From filing to EIN to your bank account. Track it all in your personal dashboard.
         </p>
 
+        <div className="mt-4 animate-fade-up delay-250">
+          <span className="inline-flex items-center gap-2 bg-green-500/15 border border-green-400/30 rounded-full px-5 py-2 text-green-300 text-sm font-semibold">
+            🛡️ 100% Money-Back Guarantee — If we don't deliver, you get a full refund
+          </span>
+        </div>
+
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">
           <Link to="/pricing">
             <Button variant="gold" size="xl">

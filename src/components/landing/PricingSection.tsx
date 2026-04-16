@@ -123,7 +123,13 @@ export function PricingSection() {
           })}
         </div>
 
-        <div className={`mt-12 text-center ${isVisible ? "animate-fade-up" : "opacity-0"}`}>
+        <div className={`mt-8 text-center ${isVisible ? "animate-fade-up" : "opacity-0"}`}>
+          <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-6 py-3 mb-4">
+            <span className="text-2xl">🛡️</span>
+            <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+              100% Money-Back Guarantee — If your LLC isn't successfully formed, we'll refund every penny.
+            </p>
+          </div>
           <p className="text-sm text-muted-foreground">
             🔒 Secure payment · 📞 24/7 WhatsApp support · ⚡ LLC ready in 48–72 hours
           </p>
