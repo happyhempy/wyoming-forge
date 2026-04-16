@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { ChatWidget } from "@/components/ChatWidget";
 
 export const Route = createFileRoute("/why-wyoming")({
   component: WhyWyomingPage,
@@ -139,7 +139,7 @@ function WhyWyomingPage() {
         </section>
       </main>
       <Footer />
-      <WhatsAppButton />
+      <ChatWidget />
     </>
   );
 }

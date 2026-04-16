@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { ChatWidget } from "@/components/ChatWidget";
 import { Button } from "@/components/ui/button";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
@@ -131,7 +131,7 @@ function AboutPage() {
         </section>
       </main>
       <Footer />
-      <WhatsAppButton />
+      <ChatWidget />
     </>
   );
 }

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { ChatWidget } from "@/components/ChatWidget";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -117,7 +117,7 @@ function ContactPage() {
         </section>
       </main>
       <Footer />
-      <WhatsAppButton />
+      <ChatWidget />
     </>
   );
 }
