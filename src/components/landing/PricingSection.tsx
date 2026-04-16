@@ -10,7 +10,7 @@ const packages = [
     description: "Ideal for entrepreneurs who only need a legal U.S. company.",
     features: [
       "Get your Wyoming LLC formed in 48–72 hours",
-      "Registered Agent included for the first year — no extra fees",
+      "Registered Agent included for the first year - no extra fees",
       "Full compliance with U.S. state requirements",
       "Personal dashboard to track every step in real time",
     ],
@@ -24,7 +24,7 @@ const packages = [
     description: "Best for sellers who want to operate and receive payments in the U.S.",
     features: [
       "Everything in Basic Formation",
-      "EIN (Tax ID) from the IRS — required to open a bank account",
+      "EIN (Tax ID) from the IRS - required to open a bank account",
       "Accept payments through Stripe, PayPal & more",
       "Start selling on Amazon, Shopify, or any U.S. platform",
       "Dedicated support throughout the entire process",
@@ -36,13 +36,13 @@ const packages = [
     name: "Full Setup",
     price: 699,
     badge: "💎 COMPLETE",
-    description: "Complete solution for running a compliant U.S. business — stress-free.",
+    description: "Complete solution for running a compliant U.S. business - stress-free.",
     features: [
       "Everything in Formation + EIN",
       "Annual tax filing covered for the following year",
       "Stay compliant with zero paperwork on your end",
       "All mandatory state fees for 2 years fully included",
-      "Priority support — we handle everything for you",
+      "Priority support - we handle everything for you",
     ],
     cta: "Get Started",
     packageKey: "premium",
@@ -60,7 +60,7 @@ export function PricingSection() {
             Simple, transparent pricing
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            No hidden fees. No surprises. Choose the plan that fits your business — and we'll handle the rest.
+            No hidden fees. No surprises. Choose the plan that fits your business - and we'll handle the rest.
           </p>
         </div>
 
@@ -127,7 +127,7 @@ export function PricingSection() {
           <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-6 py-3 mb-4">
             <span className="text-2xl">🛡️</span>
             <p className="text-sm font-semibold text-green-600 dark:text-green-400">
-              100% Money-Back Guarantee — If your LLC isn't successfully formed, we'll refund every penny.
+              100% Money-Back Guarantee - If your LLC isn't successfully formed, we'll refund every penny.
             </p>
           </div>
           <p className="text-sm text-muted-foreground">

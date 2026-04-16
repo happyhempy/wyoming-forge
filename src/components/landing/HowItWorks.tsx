@@ -16,7 +16,7 @@ export function HowItWorks() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`text-center mb-14 ${isVisible ? "animate-fade-up" : "opacity-0"}`}>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            How it works — <span className="text-gold">5 simple steps</span>
+            How it works - <span className="text-gold">5 simple steps</span>
           </h2>
         </div>
 

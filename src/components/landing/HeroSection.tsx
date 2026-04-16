@@ -26,18 +26,18 @@ export function HeroSection() {
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-foreground leading-tight animate-fade-up delay-100">
-          Your US LLC —{" "}
+          Your US LLC -{" "}
           <span className="text-gold">Ready in 48 Hours</span>
         </h1>
 
         <p className="mt-6 text-lg sm:text-xl text-primary-foreground/80 max-w-2xl mx-auto animate-fade-up delay-200">
-          Whether you sell on Amazon, offer freelance services, or run an online course — we handle <strong className="text-primary-foreground">everything</strong>.
+          Whether you sell on Amazon, offer freelance services, or run an online course - we handle <strong className="text-primary-foreground">everything</strong>.
           From filing to EIN to your bank account. Track it all in your personal dashboard.
         </p>
 
         <div className="mt-4 animate-fade-up delay-250">
           <span className="inline-flex items-center gap-2 bg-green-500/15 border border-green-400/30 rounded-full px-5 py-2 text-green-300 text-sm font-semibold">
-            🛡️ 100% Money-Back Guarantee — If we don't deliver, you get a full refund
+            🛡️ 100% Money-Back Guarantee - If we don't deliver, you get a full refund
           </span>
         </div>
 
