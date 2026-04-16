@@ -37,6 +37,7 @@ function CheckoutPage() {
         </div>
         <StripeEmbeddedCheckout
           priceId={selected.priceId}
+          metadata={{ package: pkg }}
           returnUrl={`${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`}
         />
       </div>
