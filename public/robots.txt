@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://example.com/sitemap.xml
+
+# Disallow admin and authenticated routes
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /super-admin
+Disallow: /settings
+Disallow: /checkout
+Disallow: /login
+Disallow: /reset-password
