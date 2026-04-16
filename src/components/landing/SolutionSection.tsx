@@ -4,7 +4,7 @@ const benefits = [
   { icon: "✅", title: "Full Legal Compliance", desc: "Every LLC is filed in full compliance with state and federal requirements. We work with a licensed US CPA firm." },
   { icon: "⚡", title: "48-Hour Turnaround", desc: "Your LLC is ready in 48-72 business hours. We file immediately — no delays, no excuses." },
   { icon: "🤝", title: "We're With You Every Step", desc: "From filing to EIN to your bank account — you get a personal dashboard and direct messaging with our team." },
-  { icon: "🔒", title: "Your Own Secure Dashboard", desc: "Track progress, upload documents, and receive your LLC papers — all in one place. No email chains." },
+  { icon: "🛡️", title: "100% Money-Back Guarantee", desc: "If we don't successfully complete your LLC formation, you'll receive a full refund. No questions asked. Zero risk." },
 ];
 
 export function SolutionSection() {
