@@ -77,8 +77,10 @@ function BlogPostPage() {
 
         <section className="py-16 bg-background">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="prose prose-lg max-w-none text-foreground whitespace-pre-wrap">
-              {post.content}
+            <div className="prose prose-lg max-w-none text-foreground prose-headings:text-foreground prose-strong:text-foreground prose-a:text-gold prose-th:text-foreground prose-td:text-foreground/80 prose-li:text-foreground/80">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {post.content ?? ""}
+              </ReactMarkdown>
             </div>
             <div className="mt-12 pt-8 border-t border-border">
               <Link to="/blog"><Button variant="navyOutline">← Back to Blog</Button></Link>
