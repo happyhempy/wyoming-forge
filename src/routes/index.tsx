@@ -14,6 +14,8 @@ import { LeadCaptureSection } from "@/components/landing/LeadCaptureSection";
 import { AffiliateSection } from "@/components/landing/AffiliateSection";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { CountdownPromo } from "@/components/landing/CountdownPromo";
+import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 
 import { ChatWidget } from "@/components/ChatWidget";
 
@@ -40,6 +42,7 @@ function Index() {
         <SolutionSection />
         <HowItWorks />
         <DashboardPreviewSection />
+        <CountdownPromo />
         <PricingSection />
         <TestimonialsSection />
         <MiniTestimonialsSection />
@@ -51,6 +54,7 @@ function Index() {
       </main>
       <Footer />
       <ChatWidget />
+      <ExitIntentPopup />
     </>
   );
 }
