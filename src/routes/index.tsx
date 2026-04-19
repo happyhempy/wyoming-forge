@@ -11,7 +11,7 @@ import { TestimonialsSection, MiniTestimonialsSection } from "@/components/landi
 import { CPASection } from "@/components/landing/CPASection";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { LeadCaptureSection } from "@/components/landing/LeadCaptureSection";
-import { AffiliateSection } from "@/components/landing/AffiliateSection";
+
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { CountdownPromo } from "@/components/landing/CountdownPromo";
@@ -50,7 +50,6 @@ function Index() {
         <CPASection />
         <FAQSection />
         <LeadCaptureSection />
-        <AffiliateSection />
       </main>
       <Footer />
       <ChatWidget />
