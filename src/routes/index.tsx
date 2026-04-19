@@ -50,7 +50,6 @@ function Index() {
         <CPASection />
         <FAQSection />
         <LeadCaptureSection />
-        <AffiliateSection />
       </main>
       <Footer />
       <ChatWidget />

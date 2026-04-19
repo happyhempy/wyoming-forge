@@ -23,6 +23,7 @@ export function Footer() {
               <Link to="/why-wyoming" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Why Wyoming</Link>
               <Link to="/about" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">About Us</Link>
               <Link to="/blog" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Blog</Link>
+              <Link to="/affiliate" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Affiliate Program</Link>
               <Link to="/contact" className="block text-sm text-primary-foreground/60 hover:text-gold transition-colors">Contact</Link>
             </div>
           </div>
