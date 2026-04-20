@@ -14,13 +14,16 @@ const PRICE_TO_PACKAGE: Record<string, string> = {
   llc_premium_price: "premium",
 };
 
-// Default steps for every new LLC case
+// Default steps for every new LLC case (must match ProgressTracker STEP_NAMES)
 const DEFAULT_STEPS = [
   { step_number: 1, step_name: "Payment Received" },
-  { step_number: 2, step_name: "Information Review" },
-  { step_number: 3, step_name: "LLC Filing with State" },
-  { step_number: 4, step_name: "EIN Application" },
-  { step_number: 5, step_name: "Documents Ready" },
+  { step_number: 2, step_name: "Documents Submitted" },
+  { step_number: 3, step_name: "Articles of Organization Filed" },
+  { step_number: 4, step_name: "EIN Application Submitted" },
+  { step_number: 5, step_name: "EIN Received" },
+  { step_number: 6, step_name: "Registered Agent Confirmed" },
+  { step_number: 7, step_name: "Mercury Bank Account" },
+  { step_number: 8, step_name: "Process Complete" },
 ];
 
 serve(async (req) => {
