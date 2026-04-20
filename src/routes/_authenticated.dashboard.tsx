@@ -31,38 +31,68 @@ function DashboardPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showIntake, setShowIntake] = useState(false);
 
   const loadDashboard = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      setError(null);
+      const { data: { user }, error: userErr } = await supabase.auth.getUser();
+      if (userErr) throw userErr;
+      if (!user) return;
 
-    const { data: cases } = await supabase
-      .from("cases")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(1);
+      const { data: cases, error: casesErr } = await supabase
+        .from("cases")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
 
-    if (cases && cases.length > 0) {
-      const c = cases[0];
-      setUserCase(c);
-      if (!c.first_name || !c.last_name) setShowIntake(true);
+      if (casesErr) throw casesErr;
 
-      const [stepsRes, docsRes, msgsRes] = await Promise.all([
-        supabase.from("case_steps").select("*").eq("case_id", c.id).order("step_number"),
-        supabase.from("documents").select("*").eq("case_id", c.id).order("created_at", { ascending: false }),
-        supabase.from("messages").select("*").eq("case_id", c.id).order("created_at"),
-      ]);
+      if (cases && cases.length > 0) {
+        const c = cases[0];
+        setUserCase(c);
+        if (!c.first_name || !c.last_name) setShowIntake(true);
 
-      setSteps(stepsRes.data ?? []);
-      setDocuments(docsRes.data ?? []);
-      setMessages(msgsRes.data ?? []);
+        const [stepsRes, docsRes, msgsRes] = await Promise.all([
+          supabase.from("case_steps").select("*").eq("case_id", c.id).order("step_number"),
+          supabase.from("documents").select("*").eq("case_id", c.id).order("created_at", { ascending: false }),
+          supabase.from("messages").select("*").eq("case_id", c.id).order("created_at"),
+        ]);
+
+        if (stepsRes.error) throw stepsRes.error;
+        if (docsRes.error) throw docsRes.error;
+        if (msgsRes.error) throw msgsRes.error;
+
+        setSteps(stepsRes.data ?? []);
+        setDocuments(docsRes.data ?? []);
+        setMessages(msgsRes.data ?? []);
+      }
+    } catch (e: any) {
+      console.error("Dashboard load error:", e);
+      setError(e?.message ?? "Failed to load dashboard");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => { loadDashboard(); }, [loadDashboard]);
+
+  // Realtime subscriptions — refresh dashboard on any change to user's case
+  useEffect(() => {
+    if (!userCase?.id) return;
+
+    const channel = supabase
+      .channel(`case-${userCase.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "cases", filter: `id=eq.${userCase.id}` }, () => loadDashboard())
+      .on("postgres_changes", { event: "*", schema: "public", table: "case_steps", filter: `case_id=eq.${userCase.id}` }, () => loadDashboard())
+      .on("postgres_changes", { event: "*", schema: "public", table: "documents", filter: `case_id=eq.${userCase.id}` }, () => loadDashboard())
+      .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `case_id=eq.${userCase.id}` }, () => loadDashboard())
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [userCase?.id, loadDashboard]);
 
   if (loading) {
     return (
@@ -72,6 +102,26 @@ function DashboardPage() {
           <div className="flex items-center gap-3">
             <div className="w-5 h-5 border-2 border-gold border-t-transparent rounded-full animate-spin" />
             <p className="text-muted-foreground">Loading your dashboard...</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-background pt-20 flex items-center justify-center">
+          <div className="text-center max-w-md px-4">
+            <div className="w-16 h-16 bg-destructive/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">⚠️</span>
+            </div>
+            <h1 className="text-2xl font-bold mb-3">Something went wrong</h1>
+            <p className="text-muted-foreground mb-6">{error}</p>
+            <Button variant="gold" size="lg" onClick={() => { setLoading(true); loadDashboard(); }}>
+              Try Again
+            </Button>
           </div>
         </div>
       </>
