@@ -20,10 +20,13 @@ interface AdminCaseCardProps {
 
 const STEP_NAMES = [
   "Payment Received",
-  "Information Review",
+  "Documents Submitted",
   "Articles of Organization Filed",
   "EIN Application Submitted",
-  "Documents Ready",
+  "EIN Received",
+  "Registered Agent Confirmed",
+  "Mercury Bank Account",
+  "Process Complete",
 ];
 
 const statusColors: Record<string, string> = {
