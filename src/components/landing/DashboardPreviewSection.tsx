@@ -67,11 +67,11 @@ export function DashboardPreviewSection() {
           {/* Mini progress tracker */}
           <div className="space-y-3">
             {[
-              { step: "Payment Confirmed", done: true },
-              { step: "Details Submitted", done: true },
+              { step: "Payment Received", done: true },
+              { step: "Documents Submitted", done: true },
               { step: "Articles of Organization Filed", done: true },
-              { step: "EIN Application", active: true },
-              { step: "Documents Delivered", pending: true },
+              { step: "EIN Application Submitted", active: true },
+              { step: "EIN Received", pending: true },
             ].map((s, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
