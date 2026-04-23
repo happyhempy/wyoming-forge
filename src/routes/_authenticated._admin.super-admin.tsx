@@ -65,7 +65,7 @@ function SuperAdminPanel() {
     const profiles = profilesRes.data ?? [];
     const profileByUserId = new Map(profiles.map((p) => [p.user_id, p]));
 
-    const PACKAGE_PRICE: Record<string, number> = { basic: 299, popular: 399, premium: 699 };
+    const PACKAGE_PRICE: Record<string, number> = { basic: 299, popular: 399, premium: 650 };
     const totalRevenue = cases
       .filter((c) => c.payment_status === "completed")
       .reduce((sum, c) => sum + (PACKAGE_PRICE[c.package] ?? 399), 0);
