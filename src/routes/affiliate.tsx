@@ -7,7 +7,7 @@ export const Route = createFileRoute("/affiliate")({
   component: AffiliatePage,
   head: () => ({
     meta: [
-      { title: "Affiliate Program — Earn by Referring Clients | US LLC Formation" },
+      { title: "Affiliate Program — Earn by Referring Clients | USDOC" },
       { name: "description", content: "Join our affiliate program and earn a commission for every client you refer. For content creators, consultants, and business advisors." },
       { property: "og:title", content: "Affiliate Program — Earn by Referring Clients" },
       { property: "og:description", content: "Join our affiliate program and earn a commission for every client you refer." },

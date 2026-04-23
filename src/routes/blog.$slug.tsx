@@ -14,7 +14,7 @@ type BlogPost = Database["public"]["Tables"]["blog_posts"]["Row"];
 export const Route = createFileRoute("/blog/$slug")({
   component: BlogPostPage,
   head: () => ({
-    meta: [{ title: "Blog Post — US LLC Formation" }],
+    meta: [{ title: "Blog Post — USDOC" }],
   }),
 });
 

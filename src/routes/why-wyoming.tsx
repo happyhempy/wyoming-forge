@@ -7,7 +7,7 @@ export const Route = createFileRoute("/why-wyoming")({
   component: WhyWyomingPage,
   head: () => ({
     meta: [
-      { title: "Why Wyoming for Your LLC? — US LLC Formation" },
+      { title: "Why Wyoming for Your LLC? — USDOC" },
       { name: "description", content: "Discover why Wyoming is the #1 state for LLC formation. No state income tax, strong privacy, low fees, and asset protection for international entrepreneurs." },
       { property: "og:title", content: "Why Wyoming for Your LLC?" },
       { property: "og:description", content: "No state income tax, strong privacy, low fees — why 80% of our clients choose Wyoming." },

@@ -9,9 +9,9 @@ export const Route = createFileRoute("/about")({
   component: AboutPage,
   head: () => ({
     meta: [
-      { title: "About Us — US LLC Formation" },
+      { title: "About Us — USDOC" },
       { name: "description", content: "Learn about our mission to help international entrepreneurs open US LLCs with full legal compliance, speed, and personal support." },
-      { property: "og:title", content: "About Us — US LLC Formation" },
+      { property: "og:title", content: "About Us — USDOC" },
       { property: "og:description", content: "Learn about our mission to help international entrepreneurs open US LLCs." },
     ],
   }),

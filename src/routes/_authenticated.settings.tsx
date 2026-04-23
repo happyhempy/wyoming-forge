@@ -10,7 +10,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
   head: () => ({
-    meta: [{ title: "Account Settings — US LLC Formation" }],
+    meta: [{ title: "Account Settings — USDOC" }],
   }),
 });
 

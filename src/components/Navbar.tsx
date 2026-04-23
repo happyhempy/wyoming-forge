@@ -52,9 +52,9 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
-              <span className="text-navy-dark font-bold text-sm">US</span>
+              <span className="text-navy-dark font-bold text-xs">UD</span>
             </div>
-            <span className="text-primary-foreground font-bold text-lg">LLC Formation</span>
+            <span className="text-primary-foreground font-bold text-lg">USDOC</span>
           </Link>
 
           {/* Desktop nav */}

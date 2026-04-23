@@ -10,8 +10,8 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
     meta: [
-      { title: "Login — US LLC Formation" },
-      { name: "description", content: "Log in to your US LLC Formation dashboard." },
+      { title: "Login — USDOC" },
+      { name: "description", content: "Log in to your USDOC dashboard." },
     ],
   }),
 });

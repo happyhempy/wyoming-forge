@@ -24,7 +24,7 @@ type EnrichedCase = Case & {
 export const Route = createFileRoute("/_authenticated/_admin/admin")({
   component: AdminPanel,
   head: () => ({
-    meta: [{ title: "Admin Panel — US LLC Formation" }],
+    meta: [{ title: "Admin Panel — USDOC" }],
   }),
 });
 
@@ -87,7 +87,7 @@ function AdminPanel() {
   const activeCases = cases.filter((c) => c.current_step < 5);
   const completedCases = cases.filter((c) => c.current_step >= 5);
   const revenue = cases.filter((c) => c.payment_status === "completed").reduce((sum, c) => {
-    const prices: Record<string, number> = { basic: 299, popular: 399, premium: 699 };
+    const prices: Record<string, number> = { basic: 299, popular: 399, premium: 650 };
     return sum + (prices[c.package] ?? 399);
   }, 0);
 

@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 const priceMap: Record<string, { priceId: string; name: string; price: number }> = {
   essential: { priceId: "llc_basic_price", name: "Essential", price: 299 },
   business: { priceId: "llc_popular_price", name: "Business", price: 399 },
-  premium: { priceId: "llc_premium_price", name: "Premium", price: 699 },
+  premium: { priceId: "llc_premium_price", name: "Premium", price: 650 },
 };
 
 export const Route = createFileRoute("/_authenticated/checkout")({
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/checkout")({
   }),
   component: CheckoutPage,
   head: () => ({
-    meta: [{ title: "Checkout — US LLC Formation" }],
+    meta: [{ title: "Checkout — USDOC" }],
   }),
 });
 
