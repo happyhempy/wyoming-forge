@@ -34,7 +34,7 @@ const packages = [
   },
   {
     name: "Full Setup",
-    price: 699,
+    price: 650,
     badge: "💎 COMPLETE",
     description: "Complete solution for running a compliant U.S. business - stress-free.",
     features: [
@@ -42,6 +42,7 @@ const packages = [
       "Annual tax filing covered for the following year",
       "Stay compliant with zero paperwork on your end",
       "All mandatory state fees for 2 years fully included",
+      "Year 2 document renewal & filing — only $300 (save $50)",
       "Priority support - we handle everything for you",
     ],
     cta: "Get Started",

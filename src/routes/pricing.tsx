@@ -7,9 +7,9 @@ import { Check, Shield, Clock, Users, Building2, FileText, CreditCard, Headphone
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing & Packages — US LLC Formation | SmartLLC" },
+      { title: "Pricing & Packages — USDOC" },
       { name: "description", content: "Compare our LLC formation packages. From $299 — includes filing, EIN, registered agent. No hidden fees." },
-      { property: "og:title", content: "LLC Formation Packages — SmartLLC" },
+      { property: "og:title", content: "LLC Formation Packages — USDOC" },
       { property: "og:description", content: "Simple, transparent pricing for your US LLC. Everything included, no surprises." },
     ],
   }),
@@ -55,7 +55,7 @@ const packages = [
   },
   {
     name: "Premium",
-    price: 699,
+    price: 650,
     subtitle: "Full coverage for 2 years — zero hassle",
     badge: "💎 PREMIUM",
     description: "The complete package. We handle everything for the first 2 years, including all mandatory renewals and state payments. You focus on your business, we handle the rest.",
@@ -67,6 +67,7 @@ const packages = [
       { text: "Registered Agent renewal — Year 2", detail: "We renew your registered agent for the second year so you stay compliant" },
       { text: "Wyoming Annual Report — Year 2", detail: "We file your required annual report with the state — miss this and your LLC could be dissolved" },
       { text: "All mandatory state payments for 2 years fully covered", detail: "Every fee the state of Wyoming charges for your LLC is included — no surprise bills" },
+      { text: "Year 2 document renewal & filing for only $300 (save $50)", detail: "When it's time to renew your documents for year 2, you pay only $300 instead of the standard $350 — exclusive Premium discount" },
       { text: "LLC ready in 48-72 hours", detail: "Fast processing so you can start doing business quickly" },
     ],
     notIncluded: [],
