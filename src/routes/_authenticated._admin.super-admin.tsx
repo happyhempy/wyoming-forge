@@ -22,7 +22,7 @@ interface ClientRow extends CaseRow {
 export const Route = createFileRoute("/_authenticated/_admin/super-admin")({
   component: SuperAdminPanel,
   head: () => ({
-    meta: [{ title: "Super Admin — US LLC Formation" }],
+    meta: [{ title: "Super Admin — USDOC" }],
   }),
 });
 

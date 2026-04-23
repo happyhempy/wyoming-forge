@@ -23,9 +23,9 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "US LLC Formation — Open Your LLC in 48 Hours | Trusted by 500+ Entrepreneurs" },
+      { title: "USDOC — Open Your LLC in 48 Hours | Trusted by 500+ Entrepreneurs" },
       { name: "description", content: "Open your US LLC in 48-72 hours. Full-service LLC formation for international entrepreneurs. EIN, Registered Agent, bank account, and a personal dashboard to track every step." },
-      { property: "og:title", content: "US LLC Formation — Open Your LLC in 48 Hours" },
+      { property: "og:title", content: "USDOC — Open Your LLC in 48 Hours" },
       { property: "og:description", content: "Full-service US LLC formation. Track your progress in a personal dashboard. Trusted by 500+ entrepreneurs worldwide." },
     ],
   }),

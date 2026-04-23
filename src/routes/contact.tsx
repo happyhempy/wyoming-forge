@@ -14,9 +14,9 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
   head: () => ({
     meta: [
-      { title: "Contact Us — US LLC Formation" },
+      { title: "Contact Us — USDOC" },
       { name: "description", content: "Get in touch with our LLC formation team. We respond within 24 hours via email or instantly on WhatsApp." },
-      { property: "og:title", content: "Contact Us — US LLC Formation" },
+      { property: "og:title", content: "Contact Us — USDOC" },
       { property: "og:description", content: "Questions about forming your US LLC? We're here to help." },
     ],
   }),
