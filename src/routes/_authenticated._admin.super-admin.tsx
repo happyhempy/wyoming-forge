@@ -11,6 +11,13 @@ import type { Database } from "@/integrations/supabase/types";
 type Lead = Database["public"]["Tables"]["leads"]["Row"];
 type Affiliate = Database["public"]["Tables"]["affiliates"]["Row"];
 type BlogPost = Database["public"]["Tables"]["blog_posts"]["Row"];
+type CaseRow = Database["public"]["Tables"]["cases"]["Row"];
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+
+interface ClientRow extends CaseRow {
+  profile?: ProfileRow | null;
+  user_email?: string | null;
+}
 
 export const Route = createFileRoute("/_authenticated/_admin/super-admin")({
   component: SuperAdminPanel,
@@ -25,6 +32,7 @@ function SuperAdminPanel() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [clients, setClients] = useState<ClientRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Blog form
@@ -45,20 +53,35 @@ function SuperAdminPanel() {
   }, []);
 
   const loadData = async () => {
-    const [casesRes, leadsRes, affiliatesRes, blogRes] = await Promise.all([
-      supabase.from("cases").select("*"),
+    const [casesRes, leadsRes, affiliatesRes, blogRes, profilesRes] = await Promise.all([
+      supabase.from("cases").select("*").order("created_at", { ascending: false }),
       supabase.from("leads").select("*").order("created_at", { ascending: false }),
       supabase.from("affiliates").select("*").order("created_at", { ascending: false }),
       supabase.from("blog_posts").select("*").order("created_at", { ascending: false }),
+      supabase.from("profiles").select("*"),
     ]);
 
     const cases = casesRes.data ?? [];
+    const profiles = profilesRes.data ?? [];
+    const profileByUserId = new Map(profiles.map((p) => [p.user_id, p]));
+
+    const PACKAGE_PRICE: Record<string, number> = { basic: 299, popular: 399, premium: 699 };
+    const totalRevenue = cases
+      .filter((c) => c.payment_status === "completed")
+      .reduce((sum, c) => sum + (PACKAGE_PRICE[c.package] ?? 399), 0);
+
     setStats({
       totalClients: cases.length,
-      totalRevenue: cases.filter((c) => c.payment_status === "completed").length * 399,
+      totalRevenue,
       activeCases: cases.filter((c) => c.current_step < 8).length,
       completedCases: cases.filter((c) => c.current_step >= 8).length,
     });
+
+    const enrichedClients: ClientRow[] = cases.map((c) => ({
+      ...c,
+      profile: profileByUserId.get(c.user_id) ?? null,
+    }));
+    setClients(enrichedClients);
 
     setLeads(leadsRes.data ?? []);
     setAffiliates(affiliatesRes.data ?? []);
@@ -293,11 +316,65 @@ function SuperAdminPanel() {
             </div>
           )}
 
-          {/* Clients tab placeholder */}
+          {/* Clients tab */}
           {tab === "clients" && (
             <div className="bg-card border border-border rounded-2xl p-6">
-              <h2 className="text-xl font-bold mb-4">All Clients</h2>
-              <p className="text-muted-foreground text-sm">Client management is available in the Admin Panel. Navigate to /admin to manage individual cases.</p>
+              <h2 className="text-xl font-bold mb-4">All Clients ({clients.length})</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left py-2 pr-4">Name</th>
+                      <th className="text-left py-2 pr-4">LLC Name</th>
+                      <th className="text-left py-2 pr-4">Package</th>
+                      <th className="text-left py-2 pr-4">Years</th>
+                      <th className="text-left py-2 pr-4">Status</th>
+                      <th className="text-left py-2 pr-4">Step</th>
+                      <th className="text-left py-2 pr-4">Paid At</th>
+                      <th className="text-left py-2 pr-4">Expires</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {clients.map((c) => {
+                      const expiresDate = c.expires_at ? new Date(c.expires_at) : null;
+                      const now = new Date();
+                      const daysUntilExpiry = expiresDate
+                        ? Math.floor((expiresDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+                        : null;
+                      const expiringSoon = daysUntilExpiry !== null && daysUntilExpiry <= 30 && daysUntilExpiry >= 0;
+                      const expired = daysUntilExpiry !== null && daysUntilExpiry < 0;
+
+                      return (
+                        <tr key={c.id} className="border-b border-border/50">
+                          <td className="py-2 pr-4">{c.profile?.full_name || `${c.first_name ?? ""} ${c.last_name ?? ""}`.trim() || "—"}</td>
+                          <td className="py-2 pr-4">{c.llc_name || "—"}</td>
+                          <td className="py-2 pr-4 capitalize">{c.package}</td>
+                          <td className="py-2 pr-4">{c.years_paid}y {c.years_paid === 2 && <span className="text-xs text-gold">(covered)</span>}</td>
+                          <td className="py-2 pr-4 capitalize">
+                            <span className={c.payment_status === "completed" ? "text-green-600" : "text-muted-foreground"}>
+                              {c.payment_status}
+                            </span>
+                          </td>
+                          <td className="py-2 pr-4">{c.current_step}/8</td>
+                          <td className="py-2 pr-4">{c.paid_at ? new Date(c.paid_at).toLocaleDateString() : "—"}</td>
+                          <td className="py-2 pr-4">
+                            {expiresDate ? (
+                              <span className={expired ? "text-destructive" : expiringSoon ? "text-orange-600" : ""}>
+                                {expiresDate.toLocaleDateString()}
+                                {expired && " (expired)"}
+                                {expiringSoon && ` (${daysUntilExpiry}d)`}
+                              </span>
+                            ) : "—"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {clients.length === 0 && (
+                      <tr><td colSpan={8} className="py-8 text-center text-muted-foreground">No clients yet</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 

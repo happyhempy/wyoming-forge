@@ -67,6 +67,12 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
   const packageName = session.metadata?.package || "basic";
   const packageType = ["basic", "popular", "premium"].includes(packageName) ? packageName : "basic";
 
+  // Premium plan = 2 years coverage, others = 1 year
+  const yearsPaid = packageType === "premium" ? 2 : 1;
+  const paidAt = new Date();
+  const expiresAt = new Date(paidAt);
+  expiresAt.setFullYear(expiresAt.getFullYear() + yearsPaid);
+
   // Check if a case already exists for this user with pending payment
   const { data: existingCase } = await supabase
     .from("cases")
@@ -83,6 +89,9 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
         payment_status: "completed",
         stripe_session_id: session.id,
         package: packageType,
+        years_paid: yearsPaid,
+        paid_at: paidAt.toISOString(),
+        expires_at: expiresAt.toISOString(),
       })
       .eq("id", existingCase.id);
 
@@ -116,6 +125,9 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
         payment_status: "completed",
         stripe_session_id: session.id,
         current_step: 2,
+        years_paid: yearsPaid,
+        paid_at: paidAt.toISOString(),
+        expires_at: expiresAt.toISOString(),
       })
       .select("id")
       .single();

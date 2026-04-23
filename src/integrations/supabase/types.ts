@@ -128,19 +128,24 @@ export type Database = {
           business_start_date: string | null
           created_at: string
           current_step: number
+          expired_notification_sent_at: string | null
+          expires_at: string | null
           first_name: string | null
           id: string
           last_name: string | null
           llc_name: string | null
           package: Database["public"]["Enums"]["package_type"]
+          paid_at: string | null
           passport_url: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
           products_services: string | null
+          renewal_reminder_sent_at: string | null
           sole_owner: boolean | null
           stripe_session_id: string | null
           trade_name: string | null
           updated_at: string
           user_id: string
+          years_paid: number
         }
         Insert: {
           assigned_admin?: string | null
@@ -148,19 +153,24 @@ export type Database = {
           business_start_date?: string | null
           created_at?: string
           current_step?: number
+          expired_notification_sent_at?: string | null
+          expires_at?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
           llc_name?: string | null
           package?: Database["public"]["Enums"]["package_type"]
+          paid_at?: string | null
           passport_url?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           products_services?: string | null
+          renewal_reminder_sent_at?: string | null
           sole_owner?: boolean | null
           stripe_session_id?: string | null
           trade_name?: string | null
           updated_at?: string
           user_id: string
+          years_paid?: number
         }
         Update: {
           assigned_admin?: string | null
@@ -168,19 +178,24 @@ export type Database = {
           business_start_date?: string | null
           created_at?: string
           current_step?: number
+          expired_notification_sent_at?: string | null
+          expires_at?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
           llc_name?: string | null
           package?: Database["public"]["Enums"]["package_type"]
+          paid_at?: string | null
           passport_url?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           products_services?: string | null
+          renewal_reminder_sent_at?: string | null
           sole_owner?: boolean | null
           stripe_session_id?: string | null
           trade_name?: string | null
           updated_at?: string
           user_id?: string
+          years_paid?: number
         }
         Relationships: []
       }
@@ -215,6 +230,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "documents_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_log: {
+        Row: {
+          case_id: string
+          email_type: string
+          id: string
+          metadata: Json | null
+          recipient_email: string
+          sent_at: string
+        }
+        Insert: {
+          case_id: string
+          email_type: string
+          id?: string
+          metadata?: Json | null
+          recipient_email: string
+          sent_at?: string
+        }
+        Update: {
+          case_id?: string
+          email_type?: string
+          id?: string
+          metadata?: Json | null
+          recipient_email?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_log_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
             referencedRelation: "cases"
