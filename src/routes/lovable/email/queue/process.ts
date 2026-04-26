@@ -92,7 +92,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
           return Response.json({ error: 'Forbidden' }, { status: 403 })
         }
 
-        const supabase = createClient(supabaseUrl, supabaseServiceKey)
+        const supabase: AnySupabase = createClient(supabaseUrl, supabaseServiceKey) as AnySupabase
 
         // 1. Check rate-limit cooldown and read queue config
         const { data: state } = await supabase
