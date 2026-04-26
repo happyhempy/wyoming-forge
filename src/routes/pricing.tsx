@@ -7,9 +7,9 @@ import { Check, Shield, Clock, Users, Building2, FileText, CreditCard, Headphone
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing & Packages — USDOC" },
+      { title: "Pricing & Packages — USADOC" },
       { name: "description", content: "Compare our LLC formation packages. From $299 — includes filing, EIN, registered agent. No hidden fees." },
-      { property: "og:title", content: "LLC Formation Packages — USDOC" },
+      { property: "og:title", content: "LLC Formation Packages — USADOC" },
       { property: "og:description", content: "Simple, transparent pricing for your US LLC. Everything included, no surprises." },
     ],
   }),

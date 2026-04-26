@@ -14,9 +14,9 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
   head: () => ({
     meta: [
-      { title: "Contact Us — USDOC" },
+      { title: "Contact Us — USADOC" },
       { name: "description", content: "Get in touch with our LLC formation team. We respond within 24 hours via email or instantly on WhatsApp." },
-      { property: "og:title", content: "Contact Us — USDOC" },
+      { property: "og:title", content: "Contact Us — USADOC" },
       { property: "og:description", content: "Questions about forming your US LLC? We're here to help." },
     ],
   }),
@@ -92,7 +92,7 @@ function ContactPage() {
             <div className="space-y-6">
               <div className="bg-card border border-border rounded-2xl p-6">
                 <h3 className="font-bold text-lg mb-3">📧 Email</h3>
-                <p className="text-muted-foreground">support@llcformation.com</p>
+                <p className="text-muted-foreground">support@usadoc.net</p>
                 <p className="text-sm text-muted-foreground mt-1">We respond within 24 hours</p>
               </div>
               <div className="bg-card border border-border rounded-2xl p-6">

@@ -6,7 +6,7 @@ export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
   head: () => ({
     meta: [
-      { title: "Privacy Policy — USDOC" },
+      { title: "Privacy Policy — USADOC" },
       { name: "description", content: "Read our privacy policy. Learn how we collect, use, and protect your personal information." },
     ],
   }),

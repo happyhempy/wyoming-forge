@@ -8,9 +8,9 @@ export function Footer() {
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
-                <span className="text-navy-dark font-bold text-xs">UD</span>
+                <span className="text-navy-dark font-bold text-xs">UA</span>
               </div>
-              <span className="font-bold text-lg">USDOC</span>
+              <span className="font-bold text-lg">USADOC</span>
             </div>
             <p className="text-primary-foreground/60 text-sm max-w-md">
               The fastest way for international entrepreneurs to open a US LLC. Working alongside a licensed US CPA firm for complete compliance.
@@ -38,7 +38,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-gold">Contact</h4>
             <div className="space-y-2 text-sm text-primary-foreground/60">
-              <p>support@llcformation.com</p>
+              <p>support@usadoc.net</p>
               <a
                 href="https://wa.me/1234567890"
                 target="_blank"
@@ -52,7 +52,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-primary-foreground/10 mt-12 pt-8 text-center text-sm text-primary-foreground/40">
-          <p>&copy; {new Date().getFullYear()} USDOC. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} USADOC. All rights reserved.</p>
         </div>
       </div>
     </footer>

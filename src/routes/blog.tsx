@@ -13,9 +13,9 @@ export const Route = createFileRoute("/blog")({
   component: BlogPage,
   head: () => ({
     meta: [
-      { title: "Blog — USDOC Tips & Guides" },
+      { title: "Blog — USADOC Tips & Guides" },
       { name: "description", content: "Expert guides on US LLC formation, Wyoming LLCs, EIN applications, and business banking for international entrepreneurs." },
-      { property: "og:title", content: "Blog — USDOC Tips & Guides" },
+      { property: "og:title", content: "Blog — USADOC Tips & Guides" },
       { property: "og:description", content: "Expert guides on US LLC formation for international entrepreneurs." },
     ],
   }),

@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/checkout")({
   }),
   component: CheckoutPage,
   head: () => ({
-    meta: [{ title: "Checkout — USDOC" }],
+    meta: [{ title: "Checkout — USADOC" }],
   }),
 });
 
