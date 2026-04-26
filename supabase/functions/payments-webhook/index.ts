@@ -1,11 +1,23 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { type StripeEnv, verifyWebhook } from "../_shared/stripe.ts";
+import { sendUsadocEmail } from "../_shared/send-email.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 );
+
+const PACKAGE_LABELS: Record<string, string> = {
+  basic: "Essential",
+  popular: "Business",
+  premium: "Premium",
+};
+const PACKAGE_AMOUNTS: Record<string, string> = {
+  basic: "$299",
+  popular: "$399",
+  premium: "$650",
+};
 
 // Map price lookup keys to package types
 const PRICE_TO_PACKAGE: Record<string, string> = {
