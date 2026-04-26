@@ -38,7 +38,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-gold">Contact</h4>
             <div className="space-y-2 text-sm text-primary-foreground/60">
-              <p>support@llcformation.com</p>
+              <p>support@usadoc.net</p>
               <a
                 href="https://wa.me/1234567890"
                 target="_blank"

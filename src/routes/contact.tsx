@@ -92,7 +92,7 @@ function ContactPage() {
             <div className="space-y-6">
               <div className="bg-card border border-border rounded-2xl p-6">
                 <h3 className="font-bold text-lg mb-3">📧 Email</h3>
-                <p className="text-muted-foreground">support@llcformation.com</p>
+                <p className="text-muted-foreground">support@usadoc.net</p>
                 <p className="text-sm text-muted-foreground mt-1">We respond within 24 hours</p>
               </div>
               <div className="bg-card border border-border rounded-2xl p-6">
