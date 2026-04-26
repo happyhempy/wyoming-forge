@@ -1,11 +1,23 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { type StripeEnv, verifyWebhook } from "../_shared/stripe.ts";
+import { sendUsadocEmail } from "../_shared/send-email.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 );
+
+const PACKAGE_LABELS: Record<string, string> = {
+  basic: "Essential",
+  popular: "Business",
+  premium: "Premium",
+};
+const PACKAGE_AMOUNTS: Record<string, string> = {
+  basic: "$299",
+  popular: "$399",
+  premium: "$650",
+};
 
 // Map price lookup keys to package types
 const PRICE_TO_PACKAGE: Record<string, string> = {
@@ -155,5 +167,48 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
     }
 
     console.log("Created new case:", newCase.id, "with package:", packageType);
+  }
+
+  // --- Send transactional emails (best-effort, never block) ---
+  try {
+    // Resolve recipient email + first name
+    const recipient =
+      session.customer_details?.email ||
+      session.customer_email ||
+      (await supabase.auth.admin.getUserById(userId)).data.user?.email;
+
+    const { data: caseRow } = await supabase
+      .from("cases")
+      .select("id, first_name")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (recipient) {
+      const firstName = caseRow?.first_name ?? undefined;
+      const packageLabel = PACKAGE_LABELS[packageType] || "LLC formation";
+      const amount = PACKAGE_AMOUNTS[packageType];
+
+      // 1. Payment confirmation
+      await sendUsadocEmail({
+        templateName: "payment-confirmation",
+        recipientEmail: recipient,
+        idempotencyKey: `payment-${session.id}`,
+        templateData: { firstName, packageName: packageLabel, amount },
+      });
+
+      // 2. Welcome / next-steps instructions
+      await sendUsadocEmail({
+        templateName: "welcome-instructions",
+        recipientEmail: recipient,
+        idempotencyKey: `welcome-${session.id}`,
+        templateData: { firstName },
+      });
+    } else {
+      console.warn("No recipient email resolved for user", userId);
+    }
+  } catch (emailErr) {
+    console.error("Failed to enqueue post-payment emails:", emailErr);
   }
 }
