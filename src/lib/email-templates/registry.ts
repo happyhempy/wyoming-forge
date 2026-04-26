@@ -17,7 +17,20 @@ export interface TemplateEntry {
  *   import { template as welcomeTemplate } from './welcome'
  *   // then add to TEMPLATES: 'welcome': welcomeTemplate
  */
+import { template as paymentConfirmation } from './payment-confirmation'
+import { template as welcomeInstructions } from './welcome-instructions'
+import { template as documentsReceived } from './documents-received'
+import { template as statusUpdate } from './status-update'
+import { template as llcCompleted } from './llc-completed'
+import { template as renewalReminder } from './renewal-reminder'
+import { template as coverageExpired } from './coverage-expired'
+
 export const TEMPLATES: Record<string, TemplateEntry> = {
-  // Add templates here as they are created, e.g.:
-  // 'welcome': welcomeTemplate,
+  'payment-confirmation': paymentConfirmation,
+  'welcome-instructions': welcomeInstructions,
+  'documents-received': documentsReceived,
+  'status-update': statusUpdate,
+  'llc-completed': llcCompleted,
+  'renewal-reminder': renewalReminder,
+  'coverage-expired': coverageExpired,
 }
