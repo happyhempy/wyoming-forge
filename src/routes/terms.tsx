@@ -6,7 +6,7 @@ export const Route = createFileRoute("/terms")({
   component: TermsPage,
   head: () => ({
     meta: [
-      { title: "Terms of Service — USDOC" },
+      { title: "Terms of Service — USADOC" },
       { name: "description", content: "Read our terms of service. Understand the conditions for using our LLC formation services." },
     ],
   }),
@@ -24,7 +24,7 @@ function TermsPage() {
 
             <section>
               <h2 className="text-xl font-bold text-foreground mt-8 mb-3">1. Services</h2>
-              <p>USDOC provides LLC formation services, EIN acquisition, registered agent services, and related business formation assistance. We act as your authorized representative to file documents with state authorities and the IRS.</p>
+              <p>USADOC provides LLC formation services, EIN acquisition, registered agent services, and related business formation assistance. We act as your authorized representative to file documents with state authorities and the IRS.</p>
             </section>
 
             <section>

@@ -6,7 +6,7 @@ export const Route = createFileRoute("/refund-policy")({
   component: RefundPolicyPage,
   head: () => ({
     meta: [
-      { title: "Refund Policy — USDOC" },
+      { title: "Refund Policy — USADOC" },
       { name: "description", content: "Our refund policy for LLC formation services. Full refund before filing, partial refund after." },
     ],
   }),

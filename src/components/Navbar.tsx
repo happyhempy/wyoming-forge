@@ -54,7 +54,7 @@ export function Navbar() {
             <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
               <span className="text-navy-dark font-bold text-xs">UD</span>
             </div>
-            <span className="text-primary-foreground font-bold text-lg">USDOC</span>
+            <span className="text-primary-foreground font-bold text-lg">USADOC</span>
           </Link>
 
           {/* Desktop nav */}

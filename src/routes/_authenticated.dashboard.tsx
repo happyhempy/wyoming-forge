@@ -21,7 +21,7 @@ type Message = Database["public"]["Tables"]["messages"]["Row"];
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
   head: () => ({
-    meta: [{ title: "Dashboard — USDOC" }],
+    meta: [{ title: "Dashboard — USADOC" }],
   }),
 });
 

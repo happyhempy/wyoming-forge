@@ -24,7 +24,7 @@ type EnrichedCase = Case & {
 export const Route = createFileRoute("/_authenticated/_admin/admin")({
   component: AdminPanel,
   head: () => ({
-    meta: [{ title: "Admin Panel — USDOC" }],
+    meta: [{ title: "Admin Panel — USADOC" }],
   }),
 });
 
