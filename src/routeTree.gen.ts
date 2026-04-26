@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhyWyomingRouteImport } from './routes/why-wyoming'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
@@ -41,6 +42,11 @@ import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/em
 const WhyWyomingRoute = WhyWyomingRouteImport.update({
   id: '/why-wyoming',
   path: '/why-wyoming',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/refund-policy': typeof RefundPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/why-wyoming': typeof WhyWyomingRoute
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -221,6 +228,7 @@ export interface FileRoutesByTo {
   '/refund-policy': typeof RefundPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/why-wyoming': typeof WhyWyomingRoute
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -251,6 +259,7 @@ export interface FileRoutesById {
   '/refund-policy': typeof RefundPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/why-wyoming': typeof WhyWyomingRoute
   '/_authenticated/_admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/checkout': typeof AuthenticatedCheckoutRoute
@@ -282,6 +291,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/reset-password'
     | '/terms'
+    | '/unsubscribe'
     | '/why-wyoming'
     | '/checkout'
     | '/dashboard'
@@ -310,6 +320,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/reset-password'
     | '/terms'
+    | '/unsubscribe'
     | '/why-wyoming'
     | '/checkout'
     | '/dashboard'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/reset-password'
     | '/terms'
+    | '/unsubscribe'
     | '/why-wyoming'
     | '/_authenticated/_admin'
     | '/_authenticated/checkout'
@@ -370,6 +382,7 @@ export interface RootRouteChildren {
   RefundPolicyRoute: typeof RefundPolicyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
   WhyWyomingRoute: typeof WhyWyomingRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
@@ -388,6 +401,13 @@ declare module '@tanstack/react-router' {
       path: '/why-wyoming'
       fullPath: '/why-wyoming'
       preLoaderRoute: typeof WhyWyomingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -636,6 +656,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefundPolicyRoute: RefundPolicyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
   WhyWyomingRoute: WhyWyomingRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
