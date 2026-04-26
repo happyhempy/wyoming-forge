@@ -8,7 +8,7 @@ export function Footer() {
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
-                <span className="text-navy-dark font-bold text-xs">UD</span>
+                <span className="text-navy-dark font-bold text-xs">UA</span>
               </div>
               <span className="font-bold text-lg">USADOC</span>
             </div>
