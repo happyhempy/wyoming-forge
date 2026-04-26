@@ -168,4 +168,47 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
 
     console.log("Created new case:", newCase.id, "with package:", packageType);
   }
+
+  // --- Send transactional emails (best-effort, never block) ---
+  try {
+    // Resolve recipient email + first name
+    const recipient =
+      session.customer_details?.email ||
+      session.customer_email ||
+      (await supabase.auth.admin.getUserById(userId)).data.user?.email;
+
+    const { data: caseRow } = await supabase
+      .from("cases")
+      .select("id, first_name")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (recipient) {
+      const firstName = caseRow?.first_name ?? undefined;
+      const packageLabel = PACKAGE_LABELS[packageType] || "LLC formation";
+      const amount = PACKAGE_AMOUNTS[packageType];
+
+      // 1. Payment confirmation
+      await sendUsadocEmail({
+        templateName: "payment-confirmation",
+        recipientEmail: recipient,
+        idempotencyKey: `payment-${session.id}`,
+        templateData: { firstName, packageName: packageLabel, amount },
+      });
+
+      // 2. Welcome / next-steps instructions
+      await sendUsadocEmail({
+        templateName: "welcome-instructions",
+        recipientEmail: recipient,
+        idempotencyKey: `welcome-${session.id}`,
+        templateData: { firstName },
+      });
+    } else {
+      console.warn("No recipient email resolved for user", userId);
+    }
+  } catch (emailErr) {
+    console.error("Failed to enqueue post-payment emails:", emailErr);
+  }
 }
