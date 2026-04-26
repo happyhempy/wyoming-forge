@@ -30,6 +30,7 @@ import { Route as AuthenticatedCheckoutRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated._admin'
 import { Route as AuthenticatedAdminSuperAdminRouteImport } from './routes/_authenticated._admin.super-admin'
 import { Route as AuthenticatedAdminAdminRouteImport } from './routes/_authenticated._admin.admin'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const WhyWyomingRoute = WhyWyomingRouteImport.update({
   id: '/why-wyoming',
@@ -135,6 +136,12 @@ const AuthenticatedAdminAdminRoute = AuthenticatedAdminAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/checkout/return': typeof CheckoutReturnRoute
   '/admin': typeof AuthenticatedAdminAdminRoute
   '/super-admin': typeof AuthenticatedAdminSuperAdminRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -177,6 +185,7 @@ export interface FileRoutesByTo {
   '/checkout/return': typeof CheckoutReturnRoute
   '/admin': typeof AuthenticatedAdminAdminRoute
   '/super-admin': typeof AuthenticatedAdminSuperAdminRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -201,6 +210,7 @@ export interface FileRoutesById {
   '/checkout/return': typeof CheckoutReturnRoute
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRoute
   '/_authenticated/_admin/super-admin': typeof AuthenticatedAdminSuperAdminRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -224,6 +234,7 @@ export interface FileRouteTypes {
     | '/checkout/return'
     | '/admin'
     | '/super-admin'
+    | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -245,6 +256,7 @@ export interface FileRouteTypes {
     | '/checkout/return'
     | '/admin'
     | '/super-admin'
+    | '/lovable/email/queue/process'
   id:
     | '__root__'
     | '/'
@@ -268,6 +280,7 @@ export interface FileRouteTypes {
     | '/checkout/return'
     | '/_authenticated/_admin/admin'
     | '/_authenticated/_admin/super-admin'
+    | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -285,6 +298,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   WhyWyomingRoute: typeof WhyWyomingRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -436,6 +450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -495,6 +516,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   WhyWyomingRoute: WhyWyomingRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
