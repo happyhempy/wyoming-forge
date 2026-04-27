@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import logoUrl from "@/assets/usadoc-logo.png";
 
 export function Footer() {
   return (
@@ -7,8 +8,8 @@ export function Footer() {
         <div className="grid md:grid-cols-5 gap-8">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
-                <span className="text-navy-dark font-bold text-xs">UA</span>
+              <div className="bg-white rounded-lg p-1 flex items-center justify-center">
+                <img src={logoUrl} alt="USADOC" className="h-8 w-8 object-contain" />
               </div>
               <span className="font-bold text-lg">USADOC</span>
             </div>
