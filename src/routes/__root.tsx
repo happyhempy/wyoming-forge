@@ -70,7 +70,7 @@ export const Route = createRootRoute({
           "@type": "Organization",
           name: "USADOC",
           url: "https://usadoc.net",
-          logo: "https://usadoc.net/favicon.ico",
+          logo: "https://usadoc.net/usadoc-logo.png",
           description: "US LLC formation services for international entrepreneurs. Wyoming LLC specialists.",
           contactPoint: {
             "@type": "ContactPoint",
