@@ -44,6 +44,8 @@ export const Route = createRootRoute({
       { name: "twitter:description", content: "Open your US LLC in 48-72 hours with USADOC. Wyoming LLC formation for international entrepreneurs. EIN, Registered Agent, and Mercury bank account included." },
     ],
     links: [
+      { rel: "icon", type: "image/png", href: "/usadoc-logo.png" },
+      { rel: "apple-touch-icon", href: "/usadoc-logo.png" },
       {
         rel: "preconnect",
         href: "https://fonts.googleapis.com",
