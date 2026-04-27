@@ -61,7 +61,7 @@ function TermsPage() {
 
             <section>
               <h2 className="text-xl font-bold text-foreground mt-8 mb-3">7. Contact</h2>
-              <p>Questions about these terms? Contact us at <a href="mailto:support@llcformation.com" className="text-gold hover:underline">support@llcformation.com</a>.</p>
+              <p>Questions about these terms? Contact us at <a href="mailto:support@usadoc.net" className="text-gold hover:underline">support@usadoc.net</a>.</p>
             </section>
           </div>
         </div>
