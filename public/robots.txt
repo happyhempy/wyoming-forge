@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://usadoc.net/sitemap.xml
 
 # Disallow admin and authenticated routes
 Disallow: /dashboard
@@ -11,3 +11,4 @@ Disallow: /settings
 Disallow: /checkout
 Disallow: /login
 Disallow: /reset-password
+Disallow: /unsubscribe

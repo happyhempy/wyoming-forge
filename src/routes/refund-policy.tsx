@@ -53,7 +53,7 @@ function RefundPolicyPage() {
 
             <section>
               <h2 className="text-xl font-bold text-foreground mt-8 mb-3">How to Request a Refund</h2>
-              <p>Contact us at <a href="mailto:support@llcformation.com" className="text-gold hover:underline">support@llcformation.com</a> or via WhatsApp. Include your order details and we'll process your request within 3-5 business days.</p>
+              <p>Contact us at <a href="mailto:support@usadoc.net" className="text-gold hover:underline">support@usadoc.net</a> or via WhatsApp. Include your order details and we'll process your request within 3-5 business days.</p>
             </section>
 
             <section className="bg-card border border-gold/30 rounded-2xl p-6 mt-8">

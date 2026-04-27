@@ -58,7 +58,7 @@ function PrivacyPage() {
 
             <section>
               <h2 className="text-xl font-bold text-foreground mt-8 mb-3">5. Data Retention</h2>
-              <p>We retain your data for as long as your account is active or as needed to provide services. You may request deletion of your account and data by contacting us at support@llcformation.com.</p>
+              <p>We retain your data for as long as your account is active or as needed to provide services. You may request deletion of your account and data by contacting us at support@usadoc.net.</p>
             </section>
 
             <section>
@@ -68,7 +68,7 @@ function PrivacyPage() {
 
             <section>
               <h2 className="text-xl font-bold text-foreground mt-8 mb-3">7. Contact</h2>
-              <p>For privacy-related questions, contact us at <a href="mailto:support@llcformation.com" className="text-gold hover:underline">support@llcformation.com</a>.</p>
+              <p>For privacy-related questions, contact us at <a href="mailto:support@usadoc.net" className="text-gold hover:underline">support@usadoc.net</a>.</p>
             </section>
           </div>
         </div>
