@@ -99,6 +99,49 @@ function LoginPage() {
         </div>
 
         <div className="bg-card rounded-2xl p-8 shadow-xl border border-navy-light/20">
+          {/* TEMP demo access — remove later */}
+          <div className="mb-6 space-y-2 pb-6 border-b border-border">
+            <Button
+              type="button"
+              variant="gold"
+              className="w-full"
+              disabled={loading}
+              onClick={async () => {
+                setError("");
+                setLoading(true);
+                const { error } = await supabase.auth.signInWithPassword({
+                  email: "testclient@usadoc.net",
+                  password: "Test2026!",
+                });
+                if (error) setError(error.message);
+                else navigate({ to: "/dashboard" });
+                setLoading(false);
+              }}
+            >
+              🚀 Demo Login (Client View)
+            </Button>
+            <Button
+              type="button"
+              variant="navyOutline"
+              className="w-full"
+              disabled={loading}
+              onClick={async () => {
+                setError("");
+                setLoading(true);
+                const { error } = await supabase.auth.signInWithPassword({
+                  email: "admin@usadoc.net",
+                  password: "Admin2026!",
+                });
+                if (error) setError(error.message);
+                else navigate({ to: "/admin" });
+                setLoading(false);
+              }}
+            >
+              🛡️ Demo Login (Admin View)
+            </Button>
+            <p className="text-xs text-muted-foreground text-center">Temporary — for preview only</p>
+          </div>
+
           {mode === "login" && (
             <>
               <h1 className="text-2xl font-bold text-card-foreground mb-6">Welcome Back</h1>
