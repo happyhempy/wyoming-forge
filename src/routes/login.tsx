@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,27 @@ function LoginPage() {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [resetSent, setResetSent] = useState(false);
   const [signupName, setSignupName] = useState("");
+  const autoRan = useRef(false);
+
+  // TEMP: auto-login as demo client on mount (preview only)
+  useEffect(() => {
+    if (autoRan.current) return;
+    autoRan.current = true;
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate({ to: "/dashboard" });
+        return;
+      }
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: "testclient@usadoc.net",
+        password: "Test2026!",
+      });
+      setLoading(false);
+      if (!error) navigate({ to: "/dashboard" });
+    })();
+  }, [navigate]);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
