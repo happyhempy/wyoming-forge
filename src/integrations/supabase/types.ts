@@ -123,6 +123,8 @@ export type Database = {
       }
       cases: {
         Row: {
+          articles_signature_name: string | null
+          articles_signed_at: string | null
           assigned_admin: string | null
           business_purpose: string | null
           business_start_date: string | null
@@ -148,6 +150,8 @@ export type Database = {
           years_paid: number
         }
         Insert: {
+          articles_signature_name?: string | null
+          articles_signed_at?: string | null
           assigned_admin?: string | null
           business_purpose?: string | null
           business_start_date?: string | null
@@ -173,6 +177,8 @@ export type Database = {
           years_paid?: number
         }
         Update: {
+          articles_signature_name?: string | null
+          articles_signed_at?: string | null
           assigned_admin?: string | null
           business_purpose?: string | null
           business_start_date?: string | null
