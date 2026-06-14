@@ -1,4 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { SiteGate } from "@/components/SiteGate";
 
 import appCss from "../styles.css?url";
 
@@ -104,5 +105,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <SiteGate>
+      <Outlet />
+    </SiteGate>
+  );
 }

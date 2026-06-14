@@ -114,7 +114,7 @@ export function PricingSection() {
                   ))}
                 </ul>
 
-                <Link to="/checkout" search={{ package: pkg.packageKey }} className="w-full">
+                <Link to="/dashboard" className="w-full">
                   <Button variant={isPopular ? "gold" : "navyOutline"} size="lg" className="w-full">
                     {pkg.cta}
                   </Button>

@@ -27,25 +27,8 @@ function LoginPage() {
   const [signupName, setSignupName] = useState("");
   const autoRan = useRef(false);
 
-  // TEMP: auto-login as demo client on mount (preview only)
-  useEffect(() => {
-    if (autoRan.current) return;
-    autoRan.current = true;
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate({ to: "/dashboard" });
-        return;
-      }
-      setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({
-        email: "testclient@usadoc.net",
-        password: "Test2026!",
-      });
-      setLoading(false);
-      if (!error) navigate({ to: "/dashboard" });
-    })();
-  }, [navigate]);
+  // no auto-login — site gate handles demo access
+  useEffect(() => { autoRan.current = true; }, []);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
