@@ -42,11 +42,11 @@ export function SiteGate({ children }: { children: ReactNode }) {
   const demoLogin = (kind: DemoMode) => {
     setError("");
     setLoading(true);
-    if (kind === "client") resetDemoClientFlow();
     setDemoMode(kind);
     unlock();
     window.location.href = kind === "admin" ? "/admin" : "/dashboard";
   };
+
 
   if (!checked) return null;
   if (unlocked) return <>{children}</>;
