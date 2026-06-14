@@ -222,25 +222,51 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
           <div className="space-y-4">
             <div>
               <Label>Business Purpose / Type of Activity</Label>
-              <Textarea
-                value={businessPurpose}
-                onChange={(e) => setBusinessPurpose(e.target.value)}
-                required
-                className="mt-1"
-                placeholder="e.g. E-commerce, Consulting, Software Development, Dropshipping..."
-                rows={2}
-              />
+              <Select value={businessPurposeChoice} onValueChange={setBusinessPurposeChoice}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Select your business activity" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUSINESS_PURPOSE_OPTIONS.map((opt) => (
+                    <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                  ))}
+                  <SelectItem value="Other">Other (specify)</SelectItem>
+                </SelectContent>
+              </Select>
+              {businessPurposeChoice === "Other" && (
+                <Textarea
+                  value={businessPurposeOther}
+                  onChange={(e) => setBusinessPurposeOther(e.target.value)}
+                  required
+                  className="mt-2"
+                  placeholder="Describe your business activity"
+                  rows={2}
+                />
+              )}
             </div>
             <div>
               <Label>Products or Services</Label>
-              <Textarea
-                value={productsServices}
-                onChange={(e) => setProductsServices(e.target.value)}
-                required
-                className="mt-1"
-                placeholder="e.g. Online retail of electronics, Marketing consulting services..."
-                rows={2}
-              />
+              <Select value={productsServicesChoice} onValueChange={setProductsServicesChoice}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Select what you sell or offer" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PRODUCTS_SERVICES_OPTIONS.map((opt) => (
+                    <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                  ))}
+                  <SelectItem value="Other">Other (specify)</SelectItem>
+                </SelectContent>
+              </Select>
+              {productsServicesChoice === "Other" && (
+                <Textarea
+                  value={productsServicesOther}
+                  onChange={(e) => setProductsServicesOther(e.target.value)}
+                  required
+                  className="mt-2"
+                  placeholder="Describe your products or services"
+                  rows={2}
+                />
+              )}
             </div>
             <div>
               <Label>Expected Business Start Date <span className="text-muted-foreground font-normal">(optional)</span></Label>
