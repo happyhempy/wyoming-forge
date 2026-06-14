@@ -13,6 +13,7 @@ import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import { IntakeForm } from "@/components/dashboard/IntakeForm";
 import { LLCReviewSignature } from "@/components/dashboard/LLCReviewSignature";
 import { ProcessingStatus } from "@/components/dashboard/ProcessingStatus";
+import { SS4Review } from "@/components/dashboard/SS4Review";
 import { getDemoClientData, getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
