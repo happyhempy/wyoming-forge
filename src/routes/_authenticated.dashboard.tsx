@@ -11,6 +11,7 @@ import { LLCDetailsCard } from "@/components/dashboard/LLCDetailsCard";
 import { ActionAlerts } from "@/components/dashboard/ActionAlerts";
 import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import { IntakeForm } from "@/components/dashboard/IntakeForm";
+import { demoCase, demoDocuments, demoMessages, demoSteps, getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -37,6 +38,15 @@ function DashboardPage() {
   const loadDashboard = useCallback(async () => {
     try {
       setError(null);
+      if (getDemoMode() === "client") {
+        setUserCase(demoCase);
+        setSteps(demoSteps);
+        setDocuments(demoDocuments);
+        setMessages(demoMessages);
+        setShowIntake(false);
+        return;
+      }
+
       const { data: { user }, error: userErr } = await supabase.auth.getUser();
       if (userErr) throw userErr;
       if (!user) return;
@@ -82,6 +92,7 @@ function DashboardPage() {
   // Realtime subscriptions — refresh dashboard on any change to user's case
   useEffect(() => {
     if (!userCase?.id) return;
+    if (getDemoMode()) return;
 
     const channel = supabase
       .channel(`case-${userCase.id}`)
