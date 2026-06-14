@@ -284,10 +284,13 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
         {includesEIN && (
           <div className="border border-gold/30 rounded-lg p-5 bg-gold/5">
             <h3 className="text-sm font-semibold text-gold uppercase tracking-wide mb-3">
-              EIN Authorization (IRS Form SS-4)
+              EIN Application — Authorization
             </h3>
+            <p className="text-sm text-muted-foreground mb-2">
+              You don't need to do anything with the IRS yourself. Once your LLC is approved, <strong>we prepare IRS Form SS-4 for you and submit it to the IRS</strong> to obtain your EIN (Employer Identification Number).
+            </p>
             <p className="text-sm text-muted-foreground mb-4">
-              To apply for your EIN (Employer Identification Number) with the IRS, we need your authorization to submit Form SS-4 on your behalf as a Third Party Designee.
+              All we need from you here is a one-time authorization allowing us to file on your behalf as your Third Party Designee.
             </p>
 
             <div className="space-y-4">
@@ -299,7 +302,7 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
                   className="mt-0.5"
                 />
                 <label htmlFor="ein-auth" className="text-sm leading-relaxed cursor-pointer">
-                  I hereby authorize <strong>Amer LLC</strong> to act as my Third Party Designee and submit IRS Form SS-4 on my behalf to obtain an Employer Identification Number (EIN) for my LLC. I understand this authorization is limited solely to the EIN application process.
+                  I authorize <strong>Amer LLC</strong> to prepare and submit IRS Form SS-4 to the IRS on my behalf, as my Third Party Designee, in order to obtain an EIN for my LLC. This authorization is limited solely to the EIN application.
                 </label>
               </div>
 
