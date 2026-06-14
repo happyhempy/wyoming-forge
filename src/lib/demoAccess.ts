@@ -57,6 +57,8 @@ export const demoCase: Case = {
   expires_at: expires,
   renewal_reminder_sent_at: null,
   expired_notification_sent_at: null,
+  articles_signed_at: null,
+  articles_signature_name: null,
   created_at: now,
   updated_at: now,
 };
