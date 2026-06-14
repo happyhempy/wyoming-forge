@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 
-const STORAGE_KEY = "usadoc_site_unlocked";
+const STORAGE_KEY = "usadoc_gate_v2";
 const GATE_EMAIL = "itamarmanor1@gmail.com";
 const GATE_PASSWORD = "123456";
 
@@ -18,12 +18,14 @@ export function SiteGate({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (localStorage.getItem(STORAGE_KEY) === "1") setUnlocked(true);
+    // clear any legacy persisted unlock so the gate always shows on fresh load
+    try { localStorage.removeItem("usadoc_site_unlocked"); } catch {}
+    if (sessionStorage.getItem(STORAGE_KEY) === "1") setUnlocked(true);
     setChecked(true);
   }, []);
 
   const unlock = () => {
-    localStorage.setItem(STORAGE_KEY, "1");
+    sessionStorage.setItem(STORAGE_KEY, "1");
     setUnlocked(true);
   };
 
