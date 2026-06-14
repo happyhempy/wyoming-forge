@@ -9,18 +9,20 @@ export const DEMO_ADMIN_ID = "demo-admin-user";
 
 export function getDemoMode(): DemoMode | null {
   if (typeof window === "undefined") return null;
-  const value = sessionStorage.getItem(DEMO_MODE_KEY);
+  const value = sessionStorage.getItem(DEMO_MODE_KEY) ?? localStorage.getItem(DEMO_MODE_KEY);
   return value === "client" || value === "admin" ? value : null;
 }
 
 export function setDemoMode(mode: DemoMode) {
   if (typeof window === "undefined") return;
   sessionStorage.setItem(DEMO_MODE_KEY, mode);
+  localStorage.setItem(DEMO_MODE_KEY, mode);
 }
 
 export function clearDemoMode() {
   if (typeof window === "undefined") return;
   sessionStorage.removeItem(DEMO_MODE_KEY);
+  localStorage.removeItem(DEMO_MODE_KEY);
 }
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
