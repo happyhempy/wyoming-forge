@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp, Send, Upload, FileText, Download, User, Mail, Phone } from "lucide-react";
-import { getDemoMode } from "@/lib/demoAccess";
+import { addDemoDocument, addDemoMessage, getDemoMode, updateDemoStep } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -49,6 +49,7 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
 
   const updateStep = async (stepNumber: number, status: Database["public"]["Enums"]["step_status"]) => {
     if (getDemoMode()) {
+      updateDemoStep(stepNumber, status);
       onRefresh();
       return;
     }
@@ -74,6 +75,7 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
     if (!messageContent.trim()) return;
     setSending(true);
     if (getDemoMode()) {
+      addDemoMessage(messageContent.trim(), "admin");
       setMessageContent("");
       setSending(false);
       onRefresh();
@@ -96,6 +98,7 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
 
   const handleDocUpload = async (file: File) => {
     if (getDemoMode()) {
+      addDemoDocument(file.name, "llc_document", caseData.assigned_admin ?? undefined);
       onRefresh();
       return;
     }

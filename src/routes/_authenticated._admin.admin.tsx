@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { AdminCaseCard } from "@/components/admin/AdminCaseCard";
 import { Search } from "lucide-react";
-import { DEMO_CLIENT_ID, demoCase, demoDocuments, demoMessages, demoSteps, getDemoMode } from "@/lib/demoAccess";
+import { DEMO_CLIENT_ID, getDemoClientData, getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -41,19 +41,20 @@ function AdminPanel() {
 
   const loadCases = async () => {
     if (getDemoMode() === "admin") {
+      const demo = getDemoClientData();
       setCases([{
-        ...demoCase,
-        steps: demoSteps,
-        messages: demoMessages,
-        documents: demoDocuments,
+        ...demo.case,
+        steps: demo.steps,
+        messages: demo.messages,
+        documents: demo.documents,
         profile: {
           id: "demo-profile-1",
           user_id: DEMO_CLIENT_ID,
-          full_name: "Itamar Manor",
+          full_name: `${demo.case.first_name ?? "Demo"} ${demo.case.last_name ?? "Client"}`,
           phone: null,
           avatar_url: null,
-          created_at: demoCase.created_at,
-          updated_at: demoCase.updated_at,
+          created_at: demo.case.created_at,
+          updated_at: demo.case.updated_at,
         },
       }]);
       setLoading(false);
