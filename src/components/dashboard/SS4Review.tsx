@@ -147,17 +147,11 @@ export function SS4Review({ userCase }: Props) {
       </div>
 
       {/* Actions */}
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Button variant="outline" size="sm" disabled={!pdfUrl || loading} onClick={openPdf}>
-          <ExternalLink className="w-4 h-4 mr-1" /> Open full PDF
-        </Button>
-        <Button variant="outline" size="sm" disabled={!pdfUrl || loading} onClick={downloadPdf}>
-          <Download className="w-4 h-4 mr-1" /> Download PDF
-        </Button>
-        {loading && (
-          <span className="text-xs text-muted-foreground flex items-center gap-2">
-            <span className="w-3 h-3 border-2 border-gold border-t-transparent rounded-full animate-spin inline-block" />
-            Generating PDF…
+      {error && (
+        <div className="mt-4">
+          <span className="text-xs text-destructive">{error}</span>
+        </div>
+      )}
           </span>
         )}
         {error && <span className="text-xs text-destructive">{error}</span>}
