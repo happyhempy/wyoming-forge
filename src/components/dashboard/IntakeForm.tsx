@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getDemoMode } from "@/lib/demoAccess";
+import { getDemoMode, updateDemoCase } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -38,6 +38,16 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
 
     try {
       if (getDemoMode()) {
+        updateDemoCase({
+          first_name: firstName,
+          last_name: lastName,
+          llc_name: llcName,
+          trade_name: tradeName || null,
+          business_purpose: businessPurpose,
+          products_services: productsServices,
+          business_start_date: businessStartDate || null,
+          sole_owner: soleOwner,
+        });
         onComplete();
         return;
       }

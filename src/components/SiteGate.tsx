@@ -2,7 +2,7 @@ import { useState, useEffect, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { setDemoMode, type DemoMode } from "@/lib/demoAccess";
+import { resetDemoClientFlow, setDemoMode, type DemoMode } from "@/lib/demoAccess";
 
 const STORAGE_KEY = "usadoc_gate_v2";
 const GATE_EMAIL = "itamarmanor1@gmail.com";
@@ -42,6 +42,7 @@ export function SiteGate({ children }: { children: ReactNode }) {
   const demoLogin = (kind: DemoMode) => {
     setError("");
     setLoading(true);
+    if (kind === "client") resetDemoClientFlow();
     setDemoMode(kind);
     unlock();
     window.location.href = kind === "admin" ? "/admin" : "/dashboard";

@@ -11,7 +11,7 @@ import { LLCDetailsCard } from "@/components/dashboard/LLCDetailsCard";
 import { ActionAlerts } from "@/components/dashboard/ActionAlerts";
 import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import { IntakeForm } from "@/components/dashboard/IntakeForm";
-import { demoCase, demoDocuments, demoMessages, demoSteps, getDemoMode } from "@/lib/demoAccess";
+import { getDemoClientData, getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -39,22 +39,24 @@ function DashboardPage() {
     try {
       setError(null);
       if (getDemoMode() === "client") {
-        setUserCase(demoCase);
-        setSteps(demoSteps);
-        setDocuments(demoDocuments);
-        setMessages(demoMessages);
-        setShowIntake(false);
+        const demo = getDemoClientData();
+        setUserCase(demo.case);
+        setSteps(demo.steps);
+        setDocuments(demo.documents);
+        setMessages(demo.messages);
+        setShowIntake(!demo.case.first_name || !demo.case.last_name || !demo.case.llc_name);
         return;
       }
 
       const { data: { user }, error: userErr } = await supabase.auth.getUser();
       if (userErr) throw userErr;
       if (!user) {
-        setUserCase(demoCase);
-        setSteps(demoSteps);
-        setDocuments(demoDocuments);
-        setMessages(demoMessages);
-        setShowIntake(false);
+        const demo = getDemoClientData();
+        setUserCase(demo.case);
+        setSteps(demo.steps);
+        setDocuments(demo.documents);
+        setMessages(demo.messages);
+        setShowIntake(!demo.case.first_name || !demo.case.last_name || !demo.case.llc_name);
         return;
       }
 

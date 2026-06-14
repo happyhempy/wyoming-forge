@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Upload, Check, AlertCircle, Loader2 } from "lucide-react";
-import { getDemoMode } from "@/lib/demoAccess";
+import { addDemoDocument, getDemoMode } from "@/lib/demoAccess";
 
 interface FileUploadZoneProps {
   caseId: string;
@@ -41,6 +41,7 @@ export function FileUploadZone({ caseId, onUploadComplete }: FileUploadZoneProps
 
     try {
       if (getDemoMode()) {
+        addDemoDocument(file.name, "passport");
         setProgress(100);
         setStatus("success");
         onUploadComplete();

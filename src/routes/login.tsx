@@ -5,7 +5,7 @@ import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { setDemoMode } from "@/lib/demoAccess";
+import { resetDemoClientFlow, setDemoMode } from "@/lib/demoAccess";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -37,6 +37,7 @@ function LoginPage() {
     setLoading(true);
     try {
       if (email.trim().toLowerCase() === "itamarmanor1@gmail.com" && password === "123456") {
+        resetDemoClientFlow();
         setDemoMode("client");
         navigate({ to: "/dashboard" });
         return;
@@ -120,6 +121,7 @@ function LoginPage() {
               onClick={async () => {
                 setError("");
                 setLoading(true);
+                resetDemoClientFlow();
                 setDemoMode("client");
                 navigate({ to: "/dashboard" });
                 setLoading(false);
