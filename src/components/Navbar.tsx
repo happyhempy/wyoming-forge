@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
-import { clearDemoMode, getDemoMode } from "@/lib/demoAccess";
+import { clearDemoMode, getDemoMode, resetDemoClientFlow, setDemoMode } from "@/lib/demoAccess";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +42,12 @@ export function Navbar() {
     clearDemoMode();
     await supabase.auth.signOut();
     window.location.href = "/login";
+  };
+
+  const enterDemo = (mode: "client" | "admin") => {
+    if (mode === "client") resetDemoClientFlow();
+    setDemoMode(mode);
+    window.location.href = mode === "admin" ? "/admin" : "/dashboard";
   };
 
   const links = [
@@ -83,6 +89,10 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <div className="flex items-center gap-2">
+              <Button variant="gold" size="sm" onClick={() => enterDemo("client")}>User</Button>
+              <Button variant="navyOutline" size="sm" onClick={() => enterDemo("admin")}>Admin</Button>
+            </div>
             {isLoggedIn ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -151,6 +161,10 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <div className="grid grid-cols-2 gap-2 pt-2">
+              <Button variant="gold" size="default" onClick={() => { enterDemo("client"); setIsOpen(false); }}>User</Button>
+              <Button variant="navyOutline" size="default" onClick={() => { enterDemo("admin"); setIsOpen(false); }}>Admin</Button>
+            </div>
             {isLoggedIn ? (
               <>
                 <Link to="/dashboard" onClick={() => setIsOpen(false)}>
