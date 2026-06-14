@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -36,6 +37,11 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
     setSubmitting(true);
 
     try {
+      if (getDemoMode()) {
+        onComplete();
+        return;
+      }
+
       const { error } = await supabase
         .from("cases")
         .update({
