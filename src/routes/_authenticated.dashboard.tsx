@@ -11,6 +11,8 @@ import { LLCDetailsCard } from "@/components/dashboard/LLCDetailsCard";
 import { ActionAlerts } from "@/components/dashboard/ActionAlerts";
 import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import { IntakeForm } from "@/components/dashboard/IntakeForm";
+import { LLCReviewSignature } from "@/components/dashboard/LLCReviewSignature";
+import { ProcessingStatus } from "@/components/dashboard/ProcessingStatus";
 import { getDemoClientData, getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -202,13 +204,31 @@ function DashboardPage() {
             <IntakeForm userCase={userCase} onComplete={() => { setShowIntake(false); loadDashboard(); }} />
           )}
 
+          {/* Passport Upload & Documents */}
+          {!showIntake && (
+            <div className="bg-card border border-border rounded-2xl p-6 mb-8">
+              <h2 className="text-xl font-bold mb-4">Passport & Documents</h2>
+              <FileUploadZone caseId={userCase.id} onUploadComplete={loadDashboard} />
+              <div className="mt-6">
+                <DocumentsList documents={documents} />
+              </div>
+            </div>
+          )}
+
+          {/* Review & Sign — after intake + passport, before signing */}
+          {!showIntake &&
+            documents.some((d) => d.document_type.toLowerCase().includes("passport")) &&
+            !userCase.articles_signed_at && (
+              <LLCReviewSignature userCase={userCase} onSigned={loadDashboard} />
+          )}
+
+          {/* Filing in progress — after signing */}
+          {userCase.articles_signed_at && <ProcessingStatus userCase={userCase} />}
+
           {/* Progress Tracker */}
           <div className="mb-8">
             <ProgressTracker steps={steps} packageType={userCase.package} />
           </div>
-
-          {/* Passport Upload & Documents */}
-          <div className="bg-card border border-border rounded-2xl p-6 mb-8">
             <h2 className="text-xl font-bold mb-4">Passport & Documents</h2>
             <FileUploadZone caseId={userCase.id} onUploadComplete={loadDashboard} />
             <div className="mt-6">
