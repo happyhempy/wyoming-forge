@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, ChevronUp, Send, Upload, FileText, Download, User, Mail, Phone } from "lucide-react";
+import { ChevronDown, ChevronUp, Send, Upload, FileText, Download, User, FileSignature, Award } from "lucide-react";
 import { addDemoDocument, addDemoMessage, getDemoMode, updateDemoStep } from "@/lib/demoAccess";
+import { generateSS4Pdf, downloadBlob } from "@/lib/generateSS4";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
