@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Download, FileText, CheckCircle2, ExternalLink } from "lucide-react";
-import { generateSS4Pdf } from "@/lib/generateSS4";
+import { FileText, CheckCircle2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -14,18 +13,11 @@ interface Props {
 const approvalKey = (id: string) => `ss4_approved_${id}`;
 
 export function SS4Review({ userCase }: Props) {
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
   const [approvedAt, setApprovedAt] = useState<string | null>(() =>
     typeof window !== "undefined" ? localStorage.getItem(approvalKey(userCase.id)) : null,
   );
-
-  const filename = useMemo(
-    () => `SS-4_${(userCase.llc_name || "LLC").replace(/[^a-z0-9]+/gi, "_")}.pdf`,
-    [userCase.llc_name],
-  );
+  const error: string | null = null;
 
   const fullName = [userCase.first_name, userCase.last_name].filter(Boolean).join(" ").trim();
   const merchandise = (userCase.products_services || userCase.business_purpose || "").trim();
@@ -52,49 +44,6 @@ export function SS4Review({ userCase }: Props) {
     { line: "18", label: "Previously applied for an EIN?", value: "No" },
     { line: "Sig", label: "Applicant signature", value: fullName ? `${fullName}, Member` : "—" },
   ];
-
-  useEffect(() => {
-    let revokeUrl: string | null = null;
-    let cancelled = false;
-    (async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const b = await generateSS4Pdf(userCase, null);
-        if (cancelled) return;
-        const url = URL.createObjectURL(b);
-        revokeUrl = url;
-        setPdfUrl(url);
-      } catch (e: any) {
-        console.error("SS-4 generation failed:", e);
-        if (!cancelled) setError(e?.message || "Failed to generate SS-4");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-      if (revokeUrl) URL.revokeObjectURL(revokeUrl);
-    };
-  }, [userCase]);
-
-  const openPdf = () => {
-    if (!pdfUrl) return;
-    window.open(pdfUrl, "_blank", "noopener,noreferrer");
-  };
-
-  const downloadPdf = () => {
-    if (!pdfUrl) return;
-    // Use a navigation-based download — works inside sandboxed preview iframes
-    const a = document.createElement("a");
-    a.href = pdfUrl;
-    a.download = filename;
-    a.rel = "noopener";
-    a.target = "_blank";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
 
   const handleApprove = () => {
     const at = new Date().toISOString();
@@ -147,21 +96,11 @@ export function SS4Review({ userCase }: Props) {
       </div>
 
       {/* Actions */}
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Button variant="outline" size="sm" disabled={!pdfUrl || loading} onClick={openPdf}>
-          <ExternalLink className="w-4 h-4 mr-1" /> Open full PDF
-        </Button>
-        <Button variant="outline" size="sm" disabled={!pdfUrl || loading} onClick={downloadPdf}>
-          <Download className="w-4 h-4 mr-1" /> Download PDF
-        </Button>
-        {loading && (
-          <span className="text-xs text-muted-foreground flex items-center gap-2">
-            <span className="w-3 h-3 border-2 border-gold border-t-transparent rounded-full animate-spin inline-block" />
-            Generating PDF…
-          </span>
-        )}
-        {error && <span className="text-xs text-destructive">{error}</span>}
-      </div>
+      {error && (
+        <div className="mt-4">
+          <span className="text-xs text-destructive">{error}</span>
+        </div>
+      )}
 
       {!approvedAt ? (
         <div className="mt-5 space-y-4">
