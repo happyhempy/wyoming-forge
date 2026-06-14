@@ -317,24 +317,87 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
 
             {/* Client Info Tab */}
             {activeTab === "info" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { icon: User, label: "Name", value: `${caseData.first_name ?? "—"} ${caseData.last_name ?? ""}` },
-                  { icon: Mail, label: "Email", value: caseData.profile?.full_name ?? "See profile" },
-                  { icon: Phone, label: "Phone", value: caseData.profile?.phone ?? "—" },
-                  { label: "LLC Name", value: caseData.llc_name ?? "—" },
-                  { label: "Trade Name", value: caseData.trade_name ?? "—" },
-                  { label: "Business Purpose", value: caseData.business_purpose ?? "—" },
-                  { label: "Products/Services", value: caseData.products_services ?? "—" },
-                  { label: "Sole Owner", value: caseData.sole_owner ? "Yes" : "No" },
-                  { label: "Package", value: caseData.package?.toUpperCase() ?? "—" },
-                  { label: "Start Date", value: caseData.business_start_date ?? "—" },
-                ].map((item, idx) => (
-                  <div key={idx} className="p-3 bg-muted/20 rounded-xl">
-                    <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
-                    <p className="text-sm font-medium">{item.value}</p>
+              <div className="space-y-6">
+                {/* Personal */}
+                <div>
+                  <h4 className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-2">Personal</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                      { label: "Full Name", value: `${caseData.first_name ?? "—"} ${caseData.last_name ?? ""}` },
+                      { label: "Profile Name", value: caseData.profile?.full_name ?? "—" },
+                      { label: "Phone", value: caseData.profile?.phone ?? "—" },
+                    ].map((item, idx) => (
+                      <div key={idx} className="p-3 bg-muted/20 rounded-xl">
+                        <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
+                        <p className="text-sm font-medium">{item.value}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+
+                {/* LLC Details */}
+                <div>
+                  <h4 className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-2">LLC Details</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                      { label: "LLC Name", value: caseData.llc_name ?? "—" },
+                      { label: "Trade Name (DBA)", value: caseData.trade_name ?? "—" },
+                      { label: "Business Purpose", value: caseData.business_purpose ?? "—" },
+                      { label: "Products / Services", value: caseData.products_services ?? "—" },
+                      { label: "Sole Owner", value: caseData.sole_owner ? "Yes" : "No" },
+                      { label: "Expected Start Date", value: caseData.business_start_date ?? "—" },
+                      { label: "Package", value: caseData.package?.toUpperCase() ?? "—" },
+                      { label: "Years Paid", value: caseData.years_paid ?? "—" },
+                    ].map((item, idx) => (
+                      <div key={idx} className="p-3 bg-muted/20 rounded-xl">
+                        <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
+                        <p className="text-sm font-medium">{String(item.value)}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Passport */}
+                <div>
+                  <h4 className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-2">Passport / ID</h4>
+                  {caseData.passport_url ? (
+                    <div className="p-3 bg-muted/20 rounded-xl flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <FileText className="w-5 h-5 text-gold shrink-0" />
+                        <p className="text-sm font-medium truncate">Passport uploaded</p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                          const { data } = await supabase.storage.from("documents").createSignedUrl(caseData.passport_url!, 3600);
+                          if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+                        }}
+                      >
+                        <Download className="w-4 h-4 mr-1" /> View
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground p-3 bg-muted/20 rounded-xl">Not uploaded yet.</p>
+                  )}
+                </div>
+
+                {/* Articles Signature */}
+                <div>
+                  <h4 className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-2">Articles of Organization — Signature</h4>
+                  {caseData.articles_signed_at ? (
+                    <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
+                      <p className="text-sm">
+                        ✅ Signed by <span className="font-bold italic font-serif">{caseData.articles_signature_name}</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        on {new Date(caseData.articles_signed_at).toLocaleString()}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground p-3 bg-muted/20 rounded-xl">Awaiting client signature.</p>
+                  )}
+                </div>
               </div>
             )}
           </div>
