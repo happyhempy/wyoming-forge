@@ -45,10 +45,10 @@ export function Navbar() {
   };
 
   const enterDemo = (mode: "client" | "admin") => {
-    if (mode === "client") resetDemoClientFlow();
     setDemoMode(mode);
     window.location.href = mode === "admin" ? "/admin" : "/dashboard";
   };
+
 
   const links = [
     { to: "/" as const, label: "Home" },
