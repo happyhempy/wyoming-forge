@@ -5,8 +5,36 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getDemoMode, updateDemoCase } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
+
+const BUSINESS_PURPOSE_OPTIONS = [
+  "E-commerce / Online Retail",
+  "Dropshipping",
+  "Amazon FBA",
+  "Consulting Services",
+  "Software Development",
+  "Digital Marketing",
+  "Coaching / Education",
+  "Content Creation / Influencer",
+  "Real Estate",
+  "Import / Export",
+  "Holding Company",
+];
+
+const PRODUCTS_SERVICES_OPTIONS = [
+  "Physical Products (online retail)",
+  "Digital Products (courses, eBooks, software)",
+  "SaaS / Subscription Software",
+  "Marketing & Advertising Services",
+  "Business Consulting",
+  "Design / Creative Services",
+  "Development / Technical Services",
+  "Coaching / Mentoring",
+  "Affiliate Marketing",
+  "Wholesale / B2B Sales",
+];
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
 
