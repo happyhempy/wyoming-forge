@@ -48,8 +48,10 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
   const [lastName, setLastName] = useState(userCase.last_name ?? "");
   const [llcName, setLlcName] = useState(userCase.llc_name ?? "");
   const [tradeName, setTradeName] = useState("");
-  const [businessPurpose, setBusinessPurpose] = useState("");
-  const [productsServices, setProductsServices] = useState("");
+  const [businessPurposeChoice, setBusinessPurposeChoice] = useState("");
+  const [businessPurposeOther, setBusinessPurposeOther] = useState("");
+  const [productsServicesChoice, setProductsServicesChoice] = useState("");
+  const [productsServicesOther, setProductsServicesOther] = useState("");
   const [businessStartDate, setBusinessStartDate] = useState("");
   const [soleOwner, setSoleOwner] = useState(true);
   const [numMembers, setNumMembers] = useState(1);
@@ -57,6 +59,9 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [einAuthorized, setEinAuthorized] = useState(false);
   const [signatureName, setSignatureName] = useState("");
+
+  const businessPurpose = businessPurposeChoice === "Other" ? businessPurposeOther : businessPurposeChoice;
+  const productsServices = productsServicesChoice === "Other" ? productsServicesOther : productsServicesChoice;
 
   const includesEIN = userCase.package === "popular" || userCase.package === "premium";
 
