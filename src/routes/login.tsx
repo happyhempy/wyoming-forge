@@ -37,11 +37,11 @@ function LoginPage() {
     setLoading(true);
     try {
       if (email.trim().toLowerCase() === "itamarmanor1@gmail.com" && password === "123456") {
-        resetDemoClientFlow();
         setDemoMode("client");
         navigate({ to: "/dashboard" });
         return;
       }
+
 
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
