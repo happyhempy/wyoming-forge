@@ -223,6 +223,11 @@ function DashboardPage() {
               <LLCReviewSignature userCase={userCase} onSigned={loadDashboard} />
           )}
 
+          {/* SS-4 Review — once intake is complete (LLC name + responsible party known) */}
+          {!showIntake && userCase.llc_name && userCase.first_name && userCase.last_name && (
+            <SS4Review userCase={userCase} />
+          )}
+
           {/* Filing in progress — after signing */}
           {userCase.articles_signed_at && <ProcessingStatus userCase={userCase} documents={documents} />}
 
