@@ -5,8 +5,36 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getDemoMode, updateDemoCase } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
+
+const BUSINESS_PURPOSE_OPTIONS = [
+  "E-commerce / Online Retail",
+  "Dropshipping",
+  "Amazon FBA",
+  "Consulting Services",
+  "Software Development",
+  "Digital Marketing",
+  "Coaching / Education",
+  "Content Creation / Influencer",
+  "Real Estate",
+  "Import / Export",
+  "Holding Company",
+];
+
+const PRODUCTS_SERVICES_OPTIONS = [
+  "Physical Products (online retail)",
+  "Digital Products (courses, eBooks, software)",
+  "SaaS / Subscription Software",
+  "Marketing & Advertising Services",
+  "Business Consulting",
+  "Design / Creative Services",
+  "Development / Technical Services",
+  "Coaching / Mentoring",
+  "Affiliate Marketing",
+  "Wholesale / B2B Sales",
+];
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
 
@@ -20,8 +48,10 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
   const [lastName, setLastName] = useState(userCase.last_name ?? "");
   const [llcName, setLlcName] = useState(userCase.llc_name ?? "");
   const [tradeName, setTradeName] = useState("");
-  const [businessPurpose, setBusinessPurpose] = useState("");
-  const [productsServices, setProductsServices] = useState("");
+  const [businessPurposeChoice, setBusinessPurposeChoice] = useState("");
+  const [businessPurposeOther, setBusinessPurposeOther] = useState("");
+  const [productsServicesChoice, setProductsServicesChoice] = useState("");
+  const [productsServicesOther, setProductsServicesOther] = useState("");
   const [businessStartDate, setBusinessStartDate] = useState("");
   const [soleOwner, setSoleOwner] = useState(true);
   const [numMembers, setNumMembers] = useState(1);
@@ -29,6 +59,9 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [einAuthorized, setEinAuthorized] = useState(false);
   const [signatureName, setSignatureName] = useState("");
+
+  const businessPurpose = businessPurposeChoice === "Other" ? businessPurposeOther : businessPurposeChoice;
+  const productsServices = productsServicesChoice === "Other" ? productsServicesOther : productsServicesChoice;
 
   const includesEIN = userCase.package === "popular" || userCase.package === "premium";
 
@@ -189,25 +222,51 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
           <div className="space-y-4">
             <div>
               <Label>Business Purpose / Type of Activity</Label>
-              <Textarea
-                value={businessPurpose}
-                onChange={(e) => setBusinessPurpose(e.target.value)}
-                required
-                className="mt-1"
-                placeholder="e.g. E-commerce, Consulting, Software Development, Dropshipping..."
-                rows={2}
-              />
+              <Select value={businessPurposeChoice} onValueChange={setBusinessPurposeChoice}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Select your business activity" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUSINESS_PURPOSE_OPTIONS.map((opt) => (
+                    <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                  ))}
+                  <SelectItem value="Other">Other (specify)</SelectItem>
+                </SelectContent>
+              </Select>
+              {businessPurposeChoice === "Other" && (
+                <Textarea
+                  value={businessPurposeOther}
+                  onChange={(e) => setBusinessPurposeOther(e.target.value)}
+                  required
+                  className="mt-2"
+                  placeholder="Describe your business activity"
+                  rows={2}
+                />
+              )}
             </div>
             <div>
               <Label>Products or Services</Label>
-              <Textarea
-                value={productsServices}
-                onChange={(e) => setProductsServices(e.target.value)}
-                required
-                className="mt-1"
-                placeholder="e.g. Online retail of electronics, Marketing consulting services..."
-                rows={2}
-              />
+              <Select value={productsServicesChoice} onValueChange={setProductsServicesChoice}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Select what you sell or offer" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PRODUCTS_SERVICES_OPTIONS.map((opt) => (
+                    <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                  ))}
+                  <SelectItem value="Other">Other (specify)</SelectItem>
+                </SelectContent>
+              </Select>
+              {productsServicesChoice === "Other" && (
+                <Textarea
+                  value={productsServicesOther}
+                  onChange={(e) => setProductsServicesOther(e.target.value)}
+                  required
+                  className="mt-2"
+                  placeholder="Describe your products or services"
+                  rows={2}
+                />
+              )}
             </div>
             <div>
               <Label>Expected Business Start Date <span className="text-muted-foreground font-normal">(optional)</span></Label>
@@ -225,10 +284,13 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
         {includesEIN && (
           <div className="border border-gold/30 rounded-lg p-5 bg-gold/5">
             <h3 className="text-sm font-semibold text-gold uppercase tracking-wide mb-3">
-              EIN Authorization (IRS Form SS-4)
+              EIN Application — Authorization
             </h3>
+            <p className="text-sm text-muted-foreground mb-2">
+              You don't need to do anything with the IRS yourself. Once your LLC is approved, <strong>we prepare IRS Form SS-4 for you and submit it to the IRS</strong> to obtain your EIN (Employer Identification Number).
+            </p>
             <p className="text-sm text-muted-foreground mb-4">
-              To apply for your EIN (Employer Identification Number) with the IRS, we need your authorization to submit Form SS-4 on your behalf as a Third Party Designee.
+              All we need from you here is a one-time authorization allowing us to file on your behalf as your Third Party Designee.
             </p>
 
             <div className="space-y-4">
@@ -240,7 +302,7 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
                   className="mt-0.5"
                 />
                 <label htmlFor="ein-auth" className="text-sm leading-relaxed cursor-pointer">
-                  I hereby authorize <strong>Amer LLC</strong> to act as my Third Party Designee and submit IRS Form SS-4 on my behalf to obtain an Employer Identification Number (EIN) for my LLC. I understand this authorization is limited solely to the EIN application process.
+                  I authorize <strong>Amer LLC</strong> to prepare and submit IRS Form SS-4 to the IRS on my behalf, as my Third Party Designee, in order to obtain an EIN for my LLC. This authorization is limited solely to the EIN application.
                 </label>
               </div>
 
