@@ -10,11 +10,10 @@ import { getDemoMode, updateDemoCase } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 const BUSINESS_PURPOSE_OPTIONS = [
-  "E-commerce / Online Retail",
+  "E-commerce / Online Retail & Amazon FBA",
   "Dropshipping",
-  "Amazon FBA",
   "Consulting Services",
-  "Software Development",
+  "Software Development / SaaS",
   "Digital Marketing",
   "Coaching / Education",
   "Content Creation / Influencer",
