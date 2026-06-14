@@ -49,7 +49,14 @@ function DashboardPage() {
 
       const { data: { user }, error: userErr } = await supabase.auth.getUser();
       if (userErr) throw userErr;
-      if (!user) return;
+      if (!user) {
+        setUserCase(demoCase);
+        setSteps(demoSteps);
+        setDocuments(demoDocuments);
+        setMessages(demoMessages);
+        setShowIntake(false);
+        return;
+      }
 
       const { data: cases, error: casesErr } = await supabase
         .from("cases")
