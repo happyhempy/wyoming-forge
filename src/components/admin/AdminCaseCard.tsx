@@ -97,9 +97,9 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
     onRefresh();
   };
 
-  const handleDocUpload = async (file: File) => {
+  const handleDocUpload = async (file: File, documentType: string) => {
     if (getDemoMode()) {
-      addDemoDocument(file.name, "llc_document", caseData.assigned_admin ?? undefined);
+      addDemoDocument(file.name, documentType, caseData.assigned_admin ?? undefined);
       onRefresh();
       return;
     }
@@ -116,9 +116,24 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
       uploaded_by: user.id,
       file_url: filePath,
       file_name: file.name,
-      document_type: "llc_document",
+      document_type: documentType,
     });
     onRefresh();
+  };
+
+  const [generatingSS4, setGeneratingSS4] = useState(false);
+  const handleGenerateSS4 = async () => {
+    setGeneratingSS4(true);
+    try {
+      const blob = await generateSS4Pdf(caseData, caseData.profile ?? null);
+      const safeName = (caseData.llc_name || "case").replace(/[^a-z0-9]+/gi, "_");
+      downloadBlob(blob, `SS4-${safeName}.pdf`);
+    } catch (e) {
+      console.error("SS-4 generation failed:", e);
+      alert("Failed to generate SS-4. See console for details.");
+    } finally {
+      setGeneratingSS4(false);
+    }
   };
 
   const handleDownload = async (doc: Document) => {
