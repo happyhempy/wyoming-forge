@@ -223,7 +223,7 @@ function DashboardPage() {
           )}
 
           {/* Filing in progress — after signing */}
-          {userCase.articles_signed_at && <ProcessingStatus userCase={userCase} />}
+          {userCase.articles_signed_at && <ProcessingStatus userCase={userCase} documents={documents} />}
 
           {/* Progress Tracker */}
           <div className="mb-8">
