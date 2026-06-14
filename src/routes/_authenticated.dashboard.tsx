@@ -13,6 +13,7 @@ import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import { IntakeForm } from "@/components/dashboard/IntakeForm";
 import { LLCReviewSignature } from "@/components/dashboard/LLCReviewSignature";
 import { ProcessingStatus } from "@/components/dashboard/ProcessingStatus";
+import { SS4Review } from "@/components/dashboard/SS4Review";
 import { getDemoClientData, getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -220,6 +221,11 @@ function DashboardPage() {
             documents.some((d) => d.document_type.toLowerCase().includes("passport")) &&
             !userCase.articles_signed_at && (
               <LLCReviewSignature userCase={userCase} onSigned={loadDashboard} />
+          )}
+
+          {/* SS-4 Review — once intake is complete (LLC name + responsible party known) */}
+          {!showIntake && userCase.llc_name && userCase.first_name && userCase.last_name && (
+            <SS4Review userCase={userCase} />
           )}
 
           {/* Filing in progress — after signing */}
