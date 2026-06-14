@@ -229,12 +229,6 @@ function DashboardPage() {
           <div className="mb-8">
             <ProgressTracker steps={steps} packageType={userCase.package} />
           </div>
-            <h2 className="text-xl font-bold mb-4">Passport & Documents</h2>
-            <FileUploadZone caseId={userCase.id} onUploadComplete={loadDashboard} />
-            <div className="mt-6">
-              <DocumentsList documents={documents} />
-            </div>
-          </div>
 
           {/* Messages */}
           <div className="bg-card border border-border rounded-2xl p-6 mb-8">
