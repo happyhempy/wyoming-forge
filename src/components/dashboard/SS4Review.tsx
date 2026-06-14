@@ -152,10 +152,6 @@ export function SS4Review({ userCase }: Props) {
           <span className="text-xs text-destructive">{error}</span>
         </div>
       )}
-          </span>
-        )}
-        {error && <span className="text-xs text-destructive">{error}</span>}
-      </div>
 
       {!approvedAt ? (
         <div className="mt-5 space-y-4">
