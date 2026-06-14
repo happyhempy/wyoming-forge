@@ -121,11 +121,11 @@ function LoginPage() {
               onClick={async () => {
                 setError("");
                 setLoading(true);
-                resetDemoClientFlow();
                 setDemoMode("client");
                 navigate({ to: "/dashboard" });
                 setLoading(false);
               }}
+
             >
               🚀 Demo Login (Client View)
             </Button>
