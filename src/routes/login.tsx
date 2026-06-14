@@ -5,6 +5,7 @@ import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { setDemoMode } from "@/lib/demoAccess";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -35,6 +36,12 @@ function LoginPage() {
     setError("");
     setLoading(true);
     try {
+      if (email.trim().toLowerCase() === "itamarmanor1@gmail.com" && password === "123456") {
+        setDemoMode("client");
+        navigate({ to: "/dashboard" });
+        return;
+      }
+
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       navigate({ to: "/dashboard" });
@@ -113,12 +120,8 @@ function LoginPage() {
               onClick={async () => {
                 setError("");
                 setLoading(true);
-                const { error } = await supabase.auth.signInWithPassword({
-                  email: "testclient@usadoc.net",
-                  password: "Test2026!",
-                });
-                if (error) setError(error.message);
-                else navigate({ to: "/dashboard" });
+                setDemoMode("client");
+                navigate({ to: "/dashboard" });
                 setLoading(false);
               }}
             >
@@ -132,12 +135,8 @@ function LoginPage() {
               onClick={async () => {
                 setError("");
                 setLoading(true);
-                const { error } = await supabase.auth.signInWithPassword({
-                  email: "admin@usadoc.net",
-                  password: "Admin2026!",
-                });
-                if (error) setError(error.message);
-                else navigate({ to: "/admin" });
+                setDemoMode("admin");
+                navigate({ to: "/admin" });
                 setLoading(false);
               }}
             >

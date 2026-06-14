@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp, Send, Upload, FileText, Download, User, Mail, Phone } from "lucide-react";
+import { getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -47,6 +48,11 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
   const progressPercent = Math.round((completedSteps / totalSteps) * 100);
 
   const updateStep = async (stepNumber: number, status: Database["public"]["Enums"]["step_status"]) => {
+    if (getDemoMode()) {
+      onRefresh();
+      return;
+    }
+
     await supabase
       .from("case_steps")
       .update({
@@ -67,6 +73,13 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
   const sendMessage = async () => {
     if (!messageContent.trim()) return;
     setSending(true);
+    if (getDemoMode()) {
+      setMessageContent("");
+      setSending(false);
+      onRefresh();
+      return;
+    }
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -82,6 +95,11 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
   };
 
   const handleDocUpload = async (file: File) => {
+    if (getDemoMode()) {
+      onRefresh();
+      return;
+    }
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -100,6 +118,11 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
   };
 
   const handleDownload = async (doc: Document) => {
+    if (getDemoMode()) {
+      alert(`${doc.file_name} is a demo document.`);
+      return;
+    }
+
     const { data } = await supabase.storage.from("documents").createSignedUrl(doc.file_url, 3600);
     if (data?.signedUrl) window.open(data.signedUrl, "_blank");
   };

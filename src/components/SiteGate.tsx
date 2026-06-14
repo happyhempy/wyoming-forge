@@ -2,7 +2,7 @@ import { useState, useEffect, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
+import { setDemoMode, type DemoMode } from "@/lib/demoAccess";
 
 const STORAGE_KEY = "usadoc_gate_v2";
 const GATE_EMAIL = "itamarmanor1@gmail.com";
@@ -39,18 +39,10 @@ export function SiteGate({ children }: { children: ReactNode }) {
     }
   };
 
-  const demoLogin = async (kind: "client" | "admin") => {
+  const demoLogin = (kind: DemoMode) => {
     setError("");
     setLoading(true);
-    const creds = kind === "admin"
-      ? { email: "admin@usadoc.net", password: "Admin2026!" }
-      : { email: "testclient@usadoc.net", password: "Test2026!" };
-    const { error } = await supabase.auth.signInWithPassword(creds);
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-      return;
-    }
+    setDemoMode(kind);
     unlock();
     window.location.href = kind === "admin" ? "/admin" : "/dashboard";
   };

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
+import { clearDemoMode, getDemoMode } from "@/lib/demoAccess";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +20,13 @@ export function Navbar() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
+    const demoMode = getDemoMode();
+    if (demoMode) {
+      setIsLoggedIn(true);
+      setUserEmail(demoMode === "admin" ? "admin@usadoc.net" : "itamarmanor1@gmail.com");
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsLoggedIn(!!session);
       setUserEmail(session?.user?.email ?? null);
@@ -31,7 +39,9 @@ export function Navbar() {
   }, []);
 
   const handleLogout = async () => {
+    clearDemoMode();
     await supabase.auth.signOut();
+    window.location.href = "/login";
   };
 
   const links = [

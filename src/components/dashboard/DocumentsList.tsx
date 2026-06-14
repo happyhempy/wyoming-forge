@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { FileText, Download } from "lucide-react";
+import { getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 type Document = Database["public"]["Tables"]["documents"]["Row"];
@@ -11,6 +12,11 @@ interface DocumentsListProps {
 
 export function DocumentsList({ documents }: DocumentsListProps) {
   const handleDownload = async (doc: Document) => {
+    if (getDemoMode()) {
+      alert(`${doc.file_name} is a demo document.`);
+      return;
+    }
+
     const { data } = await supabase.storage
       .from("documents")
       .createSignedUrl(doc.file_url, 3600);
