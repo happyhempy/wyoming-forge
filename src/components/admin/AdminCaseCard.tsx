@@ -290,24 +290,89 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
 
             {/* Documents Tab */}
             {activeTab === "documents" && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 border-2 border-dashed border-border rounded-xl">
-                  <Upload className="w-5 h-5 text-muted-foreground" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Upload document for client</p>
-                    <p className="text-xs text-muted-foreground">PDF, images, or other files</p>
+              <div className="space-y-5">
+                {/* SS-4 Auto-Generator */}
+                <div className="p-4 bg-gold/5 border border-gold/30 rounded-xl">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gold/20 flex items-center justify-center shrink-0">
+                      <FileSignature className="w-5 h-5 text-gold" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold">Generate SS-4 (EIN Application)</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Auto-fills the IRS SS-4 form with this client's intake data. Review and complete the Third-Party Designee section manually before submitting.
+                      </p>
+                      <Button
+                        variant="gold"
+                        size="sm"
+                        className="mt-3"
+                        onClick={handleGenerateSS4}
+                        disabled={generatingSS4 || !caseData.llc_name}
+                      >
+                        <Download className="w-4 h-4 mr-1" />
+                        {generatingSS4 ? "Generating..." : "Generate SS-4 PDF"}
+                      </Button>
+                    </div>
                   </div>
+                </div>
+
+                {/* Upload — Filed Articles from Wyoming */}
+                <div className="p-4 border border-border rounded-xl">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Award className="w-4 h-4 text-emerald-500" />
+                    <p className="text-sm font-semibold">Approved LLC document (from State of Wyoming)</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Upload the filed Articles / Certificate of Organization once Wyoming approves the LLC. The client will see it on their dashboard.
+                  </p>
                   <Input
                     type="file"
-                    className="w-auto max-w-[200px]"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) handleDocUpload(file);
+                      if (file) handleDocUpload(file, "llc_certificate");
+                      e.target.value = "";
                     }}
                   />
                 </div>
+
+                {/* Upload — EIN Letter */}
+                <div className="p-4 border border-border rounded-xl">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Award className="w-4 h-4 text-gold" />
+                    <p className="text-sm font-semibold">EIN Confirmation Letter (CP-575)</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Upload the IRS-issued EIN confirmation. The client's "EIN Received" step will reflect this on their dashboard.
+                  </p>
+                  <Input
+                    type="file"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleDocUpload(file, "ein_letter");
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
+
+                {/* Other upload */}
+                <div className="p-4 border border-dashed border-border rounded-xl">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Upload className="w-4 h-4 text-muted-foreground" />
+                    <p className="text-sm font-semibold">Other document</p>
+                  </div>
+                  <Input
+                    type="file"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleDocUpload(file, "llc_document");
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
+
                 {caseData.documents && caseData.documents.length > 0 ? (
-                  <div className="space-y-2">
+                  <div className="space-y-2 pt-2">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground font-semibold">All Documents</p>
                     {caseData.documents.map((doc) => (
                       <div key={doc.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
                         <div className="flex items-center gap-3 min-w-0">
@@ -326,7 +391,7 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-sm text-center py-4">No documents uploaded yet.</p>
+                  <p className="text-muted-foreground text-sm text-center py-2">No documents uploaded yet.</p>
                 )}
               </div>
             )}
