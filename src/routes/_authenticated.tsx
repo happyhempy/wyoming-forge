@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getDemoMode } from "@/lib/demoAccess";
 
 export const Route = createFileRoute("/_authenticated")({
+  ssr: false,
   beforeLoad: async ({ location }) => {
     if (getDemoMode()) return { session: null };
 
