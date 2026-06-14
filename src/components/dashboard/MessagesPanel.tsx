@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
+import { addDemoMessage, getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
 type Message = Database["public"]["Tables"]["messages"]["Row"];
@@ -20,6 +21,14 @@ export function MessagesPanel({ messages, caseId, onMessageSent }: MessagesPanel
   const handleSend = async () => {
     if (!newMessage.trim()) return;
     setSending(true);
+    if (getDemoMode()) {
+      addDemoMessage(newMessage.trim(), "client");
+      setNewMessage("");
+      setSending(false);
+      onMessageSent();
+      return;
+    }
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
