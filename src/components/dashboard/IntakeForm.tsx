@@ -177,6 +177,40 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
           </div>
         </div>
 
+        {/* Section 2.5: Physical Address (required for Articles of Organization + SS-4) */}
+        <div>
+          <h3 className="text-sm font-semibold text-gold uppercase tracking-wide mb-3">
+            Your Mailing Address
+          </h3>
+          <p className="text-xs text-muted-foreground mb-3">
+            Required for both the Articles of Organization (Wyoming) and the SS-4 (IRS).
+          </p>
+          <div className="space-y-4">
+            <div>
+              <Label>Street Address</Label>
+              <Input value={addressLine} onChange={(e) => setAddressLine(e.target.value)} required className="mt-1" placeholder="e.g. 123 Main St, Apt 4B" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>City</Label>
+                <Input value={city} onChange={(e) => setCity(e.target.value)} required className="mt-1" />
+              </div>
+              <div>
+                <Label>State / Region</Label>
+                <Input value={stateRegion} onChange={(e) => setStateRegion(e.target.value)} required className="mt-1" />
+              </div>
+              <div>
+                <Label>Postal Code</Label>
+                <Input value={postalCode} onChange={(e) => setPostalCode(e.target.value)} required className="mt-1" />
+              </div>
+            </div>
+            <div>
+              <Label>Country</Label>
+              <Input value={country} onChange={(e) => setCountry(e.target.value)} required className="mt-1" placeholder="e.g. Israel" />
+            </div>
+          </div>
+        </div>
+
         {/* Section 3: Ownership */}
         <div>
           <h3 className="text-sm font-semibold text-gold uppercase tracking-wide mb-3">

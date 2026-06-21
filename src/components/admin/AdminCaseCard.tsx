@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp, Send, Upload, FileText, Download, User, FileSignature, Award } from "lucide-react";
 import { addDemoDocument, addDemoMessage, getDemoMode, updateDemoStep } from "@/lib/demoAccess";
 import { generateSS4Pdf, downloadBlob } from "@/lib/generateSS4";
+import { generateArticlesPdf } from "@/lib/generateArticles";
 import type { Database } from "@/integrations/supabase/types";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
@@ -122,6 +123,8 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
   };
 
   const [generatingSS4, setGeneratingSS4] = useState(false);
+  const [generatingArticles, setGeneratingArticles] = useState(false);
+
   const handleGenerateSS4 = async () => {
     setGeneratingSS4(true);
     try {
@@ -133,6 +136,20 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
       alert("Failed to generate SS-4. See console for details.");
     } finally {
       setGeneratingSS4(false);
+    }
+  };
+
+  const handleGenerateArticles = async () => {
+    setGeneratingArticles(true);
+    try {
+      const blob = await generateArticlesPdf(caseData, caseData.profile ?? null);
+      const safeName = (caseData.llc_name || "case").replace(/[^a-z0-9]+/gi, "_");
+      downloadBlob(blob, `ArticlesOfOrganization-${safeName}.pdf`);
+    } catch (e) {
+      console.error("Articles generation failed:", e);
+      alert("Failed to generate Articles of Organization. See console for details.");
+    } finally {
+      setGeneratingArticles(false);
     }
   };
 
@@ -291,6 +308,45 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
             {/* Documents Tab */}
             {activeTab === "documents" && (
               <div className="space-y-5">
+                {/* SS-4 Auto-Generator */}
+                <div className="p-4 bg-gold/5 border border-gold/30 rounded-xl">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gold/20 flex items-center justify-center shrink-0">
+                      <FileSignature className="w-5 h-5 text-gold" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold">Generate SS-4 (EIN Application)</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Auto-fills the IRS SS-4 form with this client's intake data. Review and complete the Third-Party Designee section manually before submitting.
+                      </p>
+                {/* Articles of Organization Auto-Generator */}
+                <div className="p-4 bg-emerald-500/5 border border-emerald-500/30 rounded-xl">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center shrink-0">
+                      <FileSignature className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold">Generate Articles of Organization (Wyoming LLC)</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Auto-fills the Wyoming SOS Articles of Organization with this client's intake data. Submit to Wyoming Secretary of State to form the LLC.
+                      </p>
+                      <Button
+                        variant="gold"
+                        size="sm"
+                        className="mt-3"
+                        onClick={handleGenerateArticles}
+                        disabled={generatingArticles || !caseData.llc_name || !caseData.client_address_line}
+                      >
+                        <Download className="w-4 h-4 mr-1" />
+                        {generatingArticles ? "Generating..." : "Generate Articles PDF"}
+                      </Button>
+                      {!caseData.client_address_line && (
+                        <p className="text-xs text-yellow-500 mt-2">Client must complete intake (incl. address) first.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 {/* SS-4 Auto-Generator */}
                 <div className="p-4 bg-gold/5 border border-gold/30 rounded-xl">
                   <div className="flex items-start gap-3">
