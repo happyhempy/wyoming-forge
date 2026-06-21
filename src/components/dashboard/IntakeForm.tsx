@@ -57,6 +57,11 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [einAuthorized, setEinAuthorized] = useState(false);
   const [signatureName, setSignatureName] = useState("");
+  const [addressLine, setAddressLine] = useState(userCase.client_address_line ?? "");
+  const [city, setCity] = useState(userCase.client_city ?? "");
+  const [stateRegion, setStateRegion] = useState(userCase.client_state_region ?? "");
+  const [postalCode, setPostalCode] = useState(userCase.client_postal_code ?? "");
+  const [country, setCountry] = useState(userCase.client_country ?? "");
 
   const businessPurpose = businessPurposeChoice === "Other" ? businessPurposeOther : businessPurposeChoice;
   const productsServices = productsServicesChoice === "Other" ? productsServicesOther : productsServicesChoice;
@@ -78,6 +83,11 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
           products_services: productsServices,
           business_start_date: businessStartDate || null,
           sole_owner: soleOwner,
+          client_address_line: addressLine || null,
+          client_city: city || null,
+          client_state_region: stateRegion || null,
+          client_postal_code: postalCode || null,
+          client_country: country || null,
         });
         onComplete();
         return;
@@ -94,6 +104,11 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
           products_services: productsServices,
           business_start_date: businessStartDate || null,
           sole_owner: soleOwner,
+          client_address_line: addressLine || null,
+          client_city: city || null,
+          client_state_region: stateRegion || null,
+          client_postal_code: postalCode || null,
+          client_country: country || null,
         })
         .eq("id", userCase.id);
 
@@ -158,6 +173,40 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
             <div>
               <Label>Trade Name <span className="text-muted-foreground font-normal">(optional)</span></Label>
               <Input value={tradeName} onChange={(e) => setTradeName(e.target.value)} className="mt-1" placeholder="e.g. MyBrand — only if different from LLC name" />
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2.5: Physical Address (required for Articles of Organization + SS-4) */}
+        <div>
+          <h3 className="text-sm font-semibold text-gold uppercase tracking-wide mb-3">
+            Your Mailing Address
+          </h3>
+          <p className="text-xs text-muted-foreground mb-3">
+            Required for both the Articles of Organization (Wyoming) and the SS-4 (IRS).
+          </p>
+          <div className="space-y-4">
+            <div>
+              <Label>Street Address</Label>
+              <Input value={addressLine} onChange={(e) => setAddressLine(e.target.value)} required className="mt-1" placeholder="e.g. 123 Main St, Apt 4B" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>City</Label>
+                <Input value={city} onChange={(e) => setCity(e.target.value)} required className="mt-1" />
+              </div>
+              <div>
+                <Label>State / Region</Label>
+                <Input value={stateRegion} onChange={(e) => setStateRegion(e.target.value)} required className="mt-1" />
+              </div>
+              <div>
+                <Label>Postal Code</Label>
+                <Input value={postalCode} onChange={(e) => setPostalCode(e.target.value)} required className="mt-1" />
+              </div>
+            </div>
+            <div>
+              <Label>Country</Label>
+              <Input value={country} onChange={(e) => setCountry(e.target.value)} required className="mt-1" placeholder="e.g. Israel" />
             </div>
           </div>
         </div>

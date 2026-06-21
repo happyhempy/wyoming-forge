@@ -59,6 +59,11 @@ export const demoCase: Case = {
   expired_notification_sent_at: null,
   articles_signed_at: null,
   articles_signature_name: null,
+  client_address_line: null,
+  client_city: null,
+  client_state_region: null,
+  client_postal_code: null,
+  client_country: null,
   created_at: now,
   updated_at: now,
 };

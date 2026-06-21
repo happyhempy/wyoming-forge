@@ -128,6 +128,11 @@ export type Database = {
           assigned_admin: string | null
           business_purpose: string | null
           business_start_date: string | null
+          client_address_line: string | null
+          client_city: string | null
+          client_country: string | null
+          client_postal_code: string | null
+          client_state_region: string | null
           created_at: string
           current_step: number
           expired_notification_sent_at: string | null
@@ -155,6 +160,11 @@ export type Database = {
           assigned_admin?: string | null
           business_purpose?: string | null
           business_start_date?: string | null
+          client_address_line?: string | null
+          client_city?: string | null
+          client_country?: string | null
+          client_postal_code?: string | null
+          client_state_region?: string | null
           created_at?: string
           current_step?: number
           expired_notification_sent_at?: string | null
@@ -182,6 +192,11 @@ export type Database = {
           assigned_admin?: string | null
           business_purpose?: string | null
           business_start_date?: string | null
+          client_address_line?: string | null
+          client_city?: string | null
+          client_country?: string | null
+          client_postal_code?: string | null
+          client_state_region?: string | null
           created_at?: string
           current_step?: number
           expired_notification_sent_at?: string | null
