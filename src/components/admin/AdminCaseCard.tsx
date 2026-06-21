@@ -308,17 +308,6 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
             {/* Documents Tab */}
             {activeTab === "documents" && (
               <div className="space-y-5">
-                {/* SS-4 Auto-Generator */}
-                <div className="p-4 bg-gold/5 border border-gold/30 rounded-xl">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gold/20 flex items-center justify-center shrink-0">
-                      <FileSignature className="w-5 h-5 text-gold" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold">Generate SS-4 (EIN Application)</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Auto-fills the IRS SS-4 form with this client's intake data. Review and complete the Third-Party Designee section manually before submitting.
-                      </p>
                 {/* Articles of Organization Auto-Generator */}
                 <div className="p-4 bg-emerald-500/5 border border-emerald-500/30 rounded-xl">
                   <div className="flex items-start gap-3">
