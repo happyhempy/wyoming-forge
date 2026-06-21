@@ -13,7 +13,7 @@ import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import { IntakeForm } from "@/components/dashboard/IntakeForm";
 import { LLCReviewSignature } from "@/components/dashboard/LLCReviewSignature";
 import { ProcessingStatus } from "@/components/dashboard/ProcessingStatus";
-import { SS4Review } from "@/components/dashboard/SS4Review";
+// SS4Review removed from client dashboard — admin generates SS-4 from intake data
 import { getDemoClientData, getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -223,10 +223,8 @@ function DashboardPage() {
               <LLCReviewSignature userCase={userCase} onSigned={loadDashboard} />
           )}
 
-          {/* SS-4 Review — once intake is complete (LLC name + responsible party known) */}
-          {!showIntake && userCase.llc_name && userCase.first_name && userCase.last_name && (
-            <SS4Review userCase={userCase} />
-          )}
+          {/* SS-4 client review removed — admin auto-generates SS-4 from intake data */}
+
 
           {/* Filing in progress — after signing */}
           {userCase.articles_signed_at && <ProcessingStatus userCase={userCase} documents={documents} />}

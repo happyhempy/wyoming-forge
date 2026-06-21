@@ -57,6 +57,11 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [einAuthorized, setEinAuthorized] = useState(false);
   const [signatureName, setSignatureName] = useState("");
+  const [addressLine, setAddressLine] = useState(userCase.client_address_line ?? "");
+  const [city, setCity] = useState(userCase.client_city ?? "");
+  const [stateRegion, setStateRegion] = useState(userCase.client_state_region ?? "");
+  const [postalCode, setPostalCode] = useState(userCase.client_postal_code ?? "");
+  const [country, setCountry] = useState(userCase.client_country ?? "");
 
   const businessPurpose = businessPurposeChoice === "Other" ? businessPurposeOther : businessPurposeChoice;
   const productsServices = productsServicesChoice === "Other" ? productsServicesOther : productsServicesChoice;
@@ -78,6 +83,11 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
           products_services: productsServices,
           business_start_date: businessStartDate || null,
           sole_owner: soleOwner,
+          client_address_line: addressLine || null,
+          client_city: city || null,
+          client_state_region: stateRegion || null,
+          client_postal_code: postalCode || null,
+          client_country: country || null,
         });
         onComplete();
         return;
@@ -94,6 +104,11 @@ export function IntakeForm({ userCase, onComplete }: IntakeFormProps) {
           products_services: productsServices,
           business_start_date: businessStartDate || null,
           sole_owner: soleOwner,
+          client_address_line: addressLine || null,
+          client_city: city || null,
+          client_state_region: stateRegion || null,
+          client_postal_code: postalCode || null,
+          client_country: country || null,
         })
         .eq("id", userCase.id);
 
