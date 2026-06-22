@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { ProgressTracker } from "@/components/dashboard/ProgressTracker";
 import { FileUploadZone } from "@/components/dashboard/FileUploadZone";
-import { DocumentsList } from "@/components/dashboard/DocumentsList";
+import { YourFiles } from "@/components/dashboard/YourFiles";
 import { MessagesPanel } from "@/components/dashboard/MessagesPanel";
 import { LLCDetailsCard } from "@/components/dashboard/LLCDetailsCard";
 import { ActionAlerts } from "@/components/dashboard/ActionAlerts";
