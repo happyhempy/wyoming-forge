@@ -159,8 +159,24 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
       return;
     }
 
-    const { data } = await supabase.storage.from("documents").createSignedUrl(doc.file_url, 3600);
-    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !sessionData.session?.access_token) {
+      alert("Admin session expired. Please sign in again.");
+      return;
+    }
+
+    const response = await fetch(`/api/admin/documents/${encodeURIComponent(doc.id)}`, {
+      headers: { Authorization: `Bearer ${sessionData.session.access_token}` },
+    });
+
+    if (!response.ok) {
+      const message = await response.text();
+      alert(message || "Download failed. Please try again.");
+      return;
+    }
+
+    const blob = await response.blob();
+    downloadBlob(blob, doc.file_name);
   };
 
   const paymentBadge = caseData.payment_status === "completed"
