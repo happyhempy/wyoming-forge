@@ -11,7 +11,6 @@ import { LLCDetailsCard } from "@/components/dashboard/LLCDetailsCard";
 import { ActionAlerts } from "@/components/dashboard/ActionAlerts";
 import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import { IntakeForm } from "@/components/dashboard/IntakeForm";
-import { LLCReviewSignature } from "@/components/dashboard/LLCReviewSignature";
 import { ProcessingStatus } from "@/components/dashboard/ProcessingStatus";
 // SS4Review removed from client dashboard — admin generates SS-4 from intake data
 import { getDemoClientData, getDemoMode } from "@/lib/demoAccess";
@@ -216,18 +215,13 @@ function DashboardPage() {
           {/* Your Files — central place for all documents */}
           {!showIntake && <YourFiles documents={documents} />}
 
-          {/* Review & Sign — after intake + passport, before signing */}
+          {/* Filing in progress — after intake + passport */}
           {!showIntake &&
-            documents.some((d) => d.document_type.toLowerCase().includes("passport")) &&
-            !userCase.articles_signed_at && (
-              <LLCReviewSignature userCase={userCase} onSigned={loadDashboard} />
+            documents.some((d) => d.document_type.toLowerCase().includes("passport")) && (
+              <ProcessingStatus userCase={userCase} documents={documents} />
           )}
 
           {/* SS-4 client review removed — admin auto-generates SS-4 from intake data */}
-
-
-          {/* Filing in progress — after signing */}
-          {userCase.articles_signed_at && <ProcessingStatus userCase={userCase} documents={documents} />}
 
           {/* Progress Tracker */}
           <div className="mb-8">
