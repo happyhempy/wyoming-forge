@@ -1,7 +1,6 @@
 import { PDFDocument } from "pdf-lib";
 import type { Database } from "@/integrations/supabase/types";
-
-const SS4_TEMPLATE_URL = "https://www.irs.gov/pub/irs-pdf/fss4.pdf";
+import ss4TemplateUrl from "@/assets/forms/ss4-blank.pdf";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
