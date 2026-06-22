@@ -238,13 +238,6 @@ function DashboardPage() {
               <ProcessingStatus userCase={userCase} documents={documents} />
           )}
 
-          {/* SS-4 client review removed — admin auto-generates SS-4 from intake data */}
-
-          {/* Progress Tracker */}
-          <div className="mb-8">
-            <ProgressTracker steps={steps} packageType={userCase.package} />
-          </div>
-
           {/* Messages */}
           <div className="bg-card border border-border rounded-2xl p-6 mb-8">
             <h2 className="text-xl font-bold mb-4">Messages</h2>
