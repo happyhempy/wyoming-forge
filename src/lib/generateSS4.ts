@@ -109,25 +109,91 @@ export async function generateSS4Pdf(c: Case, profile?: Profile | null): Promise
   return new Blob([new Uint8Array(bytes)], { type: "application/pdf" });
 }
 
-export function downloadBlob(blob: Blob, filename: string) {
-  const url = URL.createObjectURL(blob);
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
-  // Try anchor-download first (works on the published site / standalone tab)
+function escapeAttribute(value: string) {
+  return escapeHtml(value).replace(/'/g, "&#39;");
+}
+
+function renderPdfTab(win: Window, url: string, filename: string) {
+  const safeFilename = escapeHtml(filename);
+  const safeUrl = escapeAttribute(url);
+  win.document.open();
+  win.document.write(`<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${safeFilename}</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #111827; font-family: Arial, sans-serif; }
+      .bar { height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 16px; color: #fff; background: #111827; box-sizing: border-box; }
+      .bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .bar a { color: #111827; background: #d4af37; text-decoration: none; font-weight: 700; border-radius: 6px; padding: 9px 14px; white-space: nowrap; }
+      iframe { width: 100%; height: calc(100% - 52px); border: 0; background: #fff; }
+    </style>
+  </head>
+  <body>
+    <div class="bar"><span>${safeFilename}</span><a href="${safeUrl}" download="${safeFilename}">Download</a></div>
+    <iframe src="${safeUrl}" title="${safeFilename}"></iframe>
+  </body>
+</html>`);
+  win.document.close();
+}
+
+function renderPdfTabFromBlob(win: Window, blob: Blob, filename: string) {
+  const reader = new FileReader();
+  reader.onload = () => renderPdfTab(win, String(reader.result), filename);
+  reader.onerror = () => {
+    const url = URL.createObjectURL(blob);
+    renderPdfTab(win, url, filename);
+    setTimeout(() => URL.revokeObjectURL(url), 600_000);
+  };
+  reader.readAsDataURL(blob);
+}
+
+export function preparePdfDownloadTab(filename: string): Window | null {
+  const inIframe = typeof window !== "undefined" && window.top !== window.self;
+  if (!inIframe) return null;
+
+  const win = window.open("", "_blank");
+  if (!win) return null;
+
+  const safeFilename = escapeHtml(filename);
+  win.document.write(`<!doctype html><html><head><title>${safeFilename}</title></head><body style="margin:0;background:#111827;color:white;font-family:Arial,sans-serif;display:grid;place-items:center;height:100vh"><div>Preparing PDF...</div></body></html>`);
+  win.document.close();
+  return win;
+}
+
+export function downloadBlob(blob: Blob, filename: string, preparedTab?: Window | null) {
+  if (preparedTab && !preparedTab.closed) {
+    renderPdfTabFromBlob(preparedTab, blob, filename);
+    return;
+  }
+
+  const inIframe = typeof window !== "undefined" && window.top !== window.self;
+  if (inIframe) {
+    const win = window.open("", "_blank");
+    if (win) {
+      renderPdfTabFromBlob(win, blob, filename);
+      return;
+    }
+  }
+
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
   a.rel = "noopener";
-  a.target = "_blank";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-
-  // Fallback for sandboxed iframes (Lovable preview blocks <a download>):
-  // open the PDF in a new top-level tab so the user can save it from there.
-  const inIframe = typeof window !== "undefined" && window.top !== window.self;
-  if (inIframe) {
-    window.open(url, "_blank", "noopener,noreferrer");
-  }
 
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
