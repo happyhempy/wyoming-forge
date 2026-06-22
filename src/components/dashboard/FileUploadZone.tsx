@@ -74,6 +74,24 @@ export function FileUploadZone({ caseId, onUploadComplete }: FileUploadZoneProps
       });
 
       if (dbError) throw dbError;
+
+      await supabase
+        .from("cases")
+        .update({ passport_url: filePath, current_step: 2 })
+        .eq("id", caseId);
+
+      await supabase
+        .from("case_steps")
+        .update({ status: "completed", completed_at: new Date().toISOString() })
+        .eq("case_id", caseId)
+        .eq("step_number", 2);
+
+      await supabase
+        .from("case_steps")
+        .update({ status: "in_progress" })
+        .eq("case_id", caseId)
+        .eq("step_number", 3);
+
       setProgress(100);
       setStatus("success");
       onUploadComplete();
