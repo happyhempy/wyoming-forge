@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Clock } from "lucide-react";
+import { FileText, Download, Clock, ChevronDown, ChevronUp } from "lucide-react";
 import { getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
+
 
 type Document = Database["public"]["Tables"]["documents"]["Row"];
 

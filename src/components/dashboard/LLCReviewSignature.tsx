@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { getDemoMode, updateDemoCase, updateDemoStep, getDemoClientData, saveDemoClientData } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
+
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
 
