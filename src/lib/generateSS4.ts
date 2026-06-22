@@ -1,7 +1,8 @@
 import { PDFDocument } from "pdf-lib";
 import type { Database } from "@/integrations/supabase/types";
+import ss4TemplateAsset from "@/assets/forms/ss4-blank.pdf.asset.json";
 
-const SS4_TEMPLATE_URL = "/ss4-blank.pdf";
+const SS4_TEMPLATE_URL = ss4TemplateAsset.url;
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
