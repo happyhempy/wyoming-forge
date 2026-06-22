@@ -37,7 +37,7 @@ interface Props {
 const NewClientAlert = ({ clientName, clientEmail, llcName, packageName, amount }: Props) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>New client payment — {clientName || "New client"} ({packageName})</Preview>
+    <Preview>{`New client payment — ${clientName || "New client"} (${packageName || "—"})`}</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={brandBar}>{SITE_NAME} — Admin Alert</Section>
