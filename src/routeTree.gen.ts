@@ -26,6 +26,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminDocumentDownloadRouteImport } from './routes/admin.document-download'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedCheckoutRouteImport } from './routes/_authenticated.checkout'
@@ -124,6 +125,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const AdminDocumentDownloadRoute = AdminDocumentDownloadRouteImport.update({
+  id: '/admin/document-download',
+  path: '/admin/document-download',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -211,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/document-download': typeof AdminDocumentDownloadRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -241,6 +248,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/document-download': typeof AdminDocumentDownloadRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -274,6 +282,7 @@ export interface FileRoutesById {
   '/_authenticated/checkout': typeof AuthenticatedCheckoutRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/admin/document-download': typeof AdminDocumentDownloadRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -306,6 +315,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/dashboard'
     | '/settings'
+    | '/admin/document-download'
     | '/blog/$slug'
     | '/checkout/return'
     | '/email/unsubscribe'
@@ -336,6 +346,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/dashboard'
     | '/settings'
+    | '/admin/document-download'
     | '/blog/$slug'
     | '/checkout/return'
     | '/email/unsubscribe'
@@ -368,6 +379,7 @@ export interface FileRouteTypes {
     | '/_authenticated/checkout'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
+    | '/admin/document-download'
     | '/blog/$slug'
     | '/checkout/return'
     | '/email/unsubscribe'
@@ -397,6 +409,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   WhyWyomingRoute: typeof WhyWyomingRoute
+  AdminDocumentDownloadRoute: typeof AdminDocumentDownloadRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -528,6 +541,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
+    }
+    '/admin/document-download': {
+      id: '/admin/document-download'
+      path: '/admin/document-download'
+      fullPath: '/admin/document-download'
+      preLoaderRoute: typeof AdminDocumentDownloadRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -679,6 +699,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   WhyWyomingRoute: WhyWyomingRoute,
+  AdminDocumentDownloadRoute: AdminDocumentDownloadRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
