@@ -111,11 +111,24 @@ export async function generateSS4Pdf(c: Case, profile?: Profile | null): Promise
 
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
+
+  // Try anchor-download first (works on the published site / standalone tab)
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  a.rel = "noopener";
+  a.target = "_blank";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  // Fallback for sandboxed iframes (Lovable preview blocks <a download>):
+  // open the PDF in a new top-level tab so the user can save it from there.
+  const inIframe = typeof window !== "undefined" && window.top !== window.self;
+  if (inIframe) {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
+
