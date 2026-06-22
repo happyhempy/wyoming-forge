@@ -4,9 +4,13 @@ import { clearDemoMode, DEMO_ADMIN_ID, getDemoMode } from "@/lib/demoAccess";
 
 export const Route = createFileRoute("/_authenticated/_admin")({
   beforeLoad: async () => {
+    // Demo mode takes precedence so the Admin button always works
+    if (getDemoMode() === "admin") {
+      return { userRoles: ["admin"], userId: DEMO_ADMIN_ID };
+    }
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      if (getDemoMode() === "admin") return { userRoles: ["admin"], userId: DEMO_ADMIN_ID };
       throw redirect({ to: "/login" });
     }
 
