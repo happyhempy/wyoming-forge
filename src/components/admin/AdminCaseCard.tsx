@@ -159,8 +159,16 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
       return;
     }
 
-    const { data } = await supabase.storage.from("documents").createSignedUrl(doc.file_url, 3600);
-    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+    const { data, error } = await supabase.storage.from("documents").createSignedUrl(doc.file_url, 3600, {
+      download: doc.file_name,
+    });
+    if (error || !data?.signedUrl) {
+      console.error("Admin document download failed:", error);
+      alert(error?.message || "Download failed. Please try again.");
+      return;
+    }
+
+    window.location.href = data.signedUrl;
   };
 
   const paymentBadge = caseData.payment_status === "completed"
