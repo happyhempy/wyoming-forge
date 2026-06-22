@@ -1,6 +1,7 @@
 import { PDFDocument } from "pdf-lib";
-import templateAsset from "@/assets/forms/ss4-blank.pdf.asset.json";
 import type { Database } from "@/integrations/supabase/types";
+
+const SS4_TEMPLATE_URL = "https://www.irs.gov/pub/irs-pdf/fss4.pdf";
 
 type Case = Database["public"]["Tables"]["cases"]["Row"];
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -75,7 +76,7 @@ const CHECKBOXES_TO_CHECK = [
 ];
 
 export async function generateSS4Pdf(c: Case, profile?: Profile | null): Promise<Blob> {
-  const res = await fetch(templateAsset.url);
+  const res = await fetch(SS4_TEMPLATE_URL);
   if (!res.ok) throw new Error("Failed to load SS-4 template");
   const templateBytes = await res.arrayBuffer();
 
