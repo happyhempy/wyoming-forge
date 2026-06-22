@@ -56,6 +56,7 @@ export const demoCase: Case = {
   stripe_session_id: null,
   expires_at: expires,
   renewal_reminder_sent_at: null,
+  renewal_cancelled_at: null,
   expired_notification_sent_at: null,
   articles_signed_at: null,
   articles_signature_name: null,

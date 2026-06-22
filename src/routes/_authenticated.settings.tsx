@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { getDemoMode, getDemoClientData, updateDemoCase } from "@/lib/demoAccess";
+import type { Database } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
@@ -14,12 +16,31 @@ export const Route = createFileRoute("/_authenticated/settings")({
   }),
 });
 
+type Case = Database["public"]["Tables"]["cases"]["Row"];
+
+const PACKAGE_LABELS: Record<string, string> = {
+  basic: "Essential",
+  popular: "Business",
+  premium: "Premium",
+};
+
+function formatDate(dateStr: string | null) {
+  if (!dateStr) return "N/A";
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 function SettingsPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [userCase, setUserCase] = useState<Case | null>(null);
+  const [cancellingRenewal, setCancellingRenewal] = useState(false);
 
   // Password
   const [newPassword, setNewPassword] = useState("");
@@ -28,20 +49,44 @@ function SettingsPage() {
 
   useEffect(() => {
     async function load() {
+      if (getDemoMode() === "client") {
+        const demo = getDemoClientData();
+        setUserCase(demo.case);
+        setEmail("demo-client@example.com");
+        setFullName("Demo Client");
+        setPhone("");
+        setLoading(false);
+        return;
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
       setEmail(user.email ?? "");
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", user.id)
-        .limit(1)
-        .maybeSingle();
+      const [{ data: profile }, { data: cases }] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", user.id)
+          .limit(1)
+          .maybeSingle(),
+        supabase
+          .from("cases")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1),
+      ]);
 
       if (profile) {
         setFullName(profile.full_name ?? "");
         setPhone(profile.phone ?? "");
+      }
+      if (cases && cases.length > 0) {
+        setUserCase(cases[0]);
       }
       setLoading(false);
     }
@@ -89,6 +134,33 @@ function SettingsPage() {
     setChangingPassword(false);
   };
 
+  const handleCancelRenewal = async () => {
+    if (!userCase) return;
+    if (!confirm("Are you sure you want to cancel auto-renewal? Your registered agent service will remain active until the renewal date.")) {
+      return;
+    }
+    setCancellingRenewal(true);
+
+    if (getDemoMode() === "client") {
+      const updated = updateDemoCase({ renewal_cancelled_at: new Date().toISOString() });
+      setUserCase(updated.case);
+      toast.success("Auto-renewal cancelled");
+      setCancellingRenewal(false);
+      return;
+    }
+
+    const { error } = await supabase.rpc("cancel_renewal");
+    if (error) {
+      toast.error(error.message || "Failed to cancel auto-renewal");
+    } else {
+      toast.success("Auto-renewal cancelled");
+      setUserCase({ ...userCase, renewal_cancelled_at: new Date().toISOString() } as Case);
+    }
+    setCancellingRenewal(false);
+  };
+
+  const isRenewalCancelled = !!userCase?.renewal_cancelled_at;
+
   if (loading) {
     return (
       <>
@@ -131,6 +203,68 @@ function SettingsPage() {
                 {saving ? "Saving..." : "Save Changes"}
               </Button>
             </form>
+          </div>
+
+          {/* Plan & Renewals */}
+          <div className="bg-card border border-border rounded-2xl p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4">Your Plan & Renewals</h2>
+            {userCase ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Package</p>
+                    <p className="font-semibold capitalize text-foreground">
+                      {PACKAGE_LABELS[userCase.package] ?? userCase.package}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Status</p>
+                    <p className="font-semibold capitalize text-foreground">
+                      {userCase.payment_status === "completed" ? "Active" : userCase.payment_status}
+                    </p>
+                  </div>
+                  {userCase.paid_at && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Paid on</p>
+                      <p className="font-semibold text-foreground">{formatDate(userCase.paid_at)}</p>
+                    </div>
+                  )}
+                  {userCase.expires_at && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Renews on</p>
+                      <p className="font-semibold text-foreground">{formatDate(userCase.expires_at)}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t border-border">
+                  {isRenewalCancelled ? (
+                    <div className="bg-muted rounded-xl p-4">
+                      <p className="font-semibold text-foreground">Auto-renewal cancelled</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Your registered agent service will not renew automatically. It remains active until{" "}
+                        {formatDate(userCase.expires_at)}.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Your registered agent service renews automatically on {formatDate(userCase.expires_at)}.
+                      </p>
+                      <Button
+                        variant="outline"
+                        onClick={handleCancelRenewal}
+                        disabled={cancellingRenewal || !userCase.expires_at}
+                      >
+                        {cancellingRenewal ? "Cancelling..." : "Cancel auto-renewal"}
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <p className="text-muted-foreground">No active plan found.</p>
+            )}
           </div>
 
           {/* Password */}
