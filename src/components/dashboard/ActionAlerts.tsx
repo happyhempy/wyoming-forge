@@ -13,26 +13,23 @@ interface ActionAlertsProps {
 export function ActionAlerts({ userCase, steps, documents }: ActionAlertsProps) {
   const alerts: { icon: string; message: string; priority: "high" | "medium" }[] = [];
 
-  // Check if intake is incomplete
-  if (!userCase.first_name || !userCase.last_name) {
-    alerts.push({ icon: "📝", message: "Complete your personal details to start the formation process.", priority: "high" });
-  }
-
-  // Check if passport is missing
+  const intakeComplete = !!(userCase.first_name && userCase.last_name && userCase.llc_name);
   const hasPassport = documents.some((d) => d.document_type.toLowerCase().includes("passport"));
-  if (!hasPassport) {
-    alerts.push({ icon: "🪪", message: "Upload a copy of your passport for identity verification.", priority: "high" });
+
+  // Only show alerts for steps not already shown as dedicated UI sections
+  if (intakeComplete && !hasPassport && !userCase.articles_signed_at) {
+    alerts.push({ icon: "🪪", message: "Upload your passport to continue — scroll down.", priority: "high" });
   }
 
-  // Check if LLC name is missing
-  if (!userCase.llc_name) {
-    alerts.push({ icon: "✏️", message: "Choose a name for your LLC.", priority: "high" });
+  if (intakeComplete && hasPassport && !userCase.articles_signed_at) {
+    alerts.push({ icon: "✍️", message: "Review and sign your Articles of Organization — scroll down.", priority: "high" });
   }
 
-  // Check current step actions
-  const currentStep = steps.find((s) => s.status === "in_progress");
-  if (currentStep) {
-    alerts.push({ icon: "⏳", message: `In progress: ${currentStep.step_name}`, priority: "medium" });
+  if (userCase.articles_signed_at) {
+    const currentStep = steps.find((s) => s.status === "in_progress");
+    if (currentStep) {
+      alerts.push({ icon: "⏳", message: `In progress: ${currentStep.step_name}`, priority: "medium" });
+    }
   }
 
   if (alerts.length === 0) return null;

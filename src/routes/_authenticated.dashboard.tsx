@@ -232,10 +232,9 @@ function DashboardPage() {
           {/* Your Files — central place for all documents */}
           {!showIntake && <YourFiles documents={documents} />}
 
-          {/* Filing in progress — after intake + passport */}
-          {!showIntake &&
-            documents.some((d) => d.document_type.toLowerCase().includes("passport")) && (
-              <ProcessingStatus userCase={userCase} documents={documents} />
+          {/* Filing in progress — only after client has signed */}
+          {!showIntake && userCase.articles_signed_at && (
+            <ProcessingStatus userCase={userCase} documents={documents} />
           )}
 
           {/* Messages */}
