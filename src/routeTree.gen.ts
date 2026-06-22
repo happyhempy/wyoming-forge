@@ -39,7 +39,6 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-import { Route as ApiAdminDocumentsDocumentIdRouteImport } from './routes/api/admin.documents.$documentId'
 
 const WhyWyomingRoute = WhyWyomingRouteImport.update({
   id: '/why-wyoming',
@@ -193,12 +192,6 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAdminDocumentsDocumentIdRoute =
-  ApiAdminDocumentsDocumentIdRouteImport.update({
-    id: '/api/admin/documents/$documentId',
-    path: '/api/admin/documents/$documentId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -224,7 +217,6 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminAdminRoute
   '/super-admin': typeof AuthenticatedAdminSuperAdminRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
-  '/api/admin/documents/$documentId': typeof ApiAdminDocumentsDocumentIdRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -255,7 +247,6 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminAdminRoute
   '/super-admin': typeof AuthenticatedAdminSuperAdminRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
-  '/api/admin/documents/$documentId': typeof ApiAdminDocumentsDocumentIdRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -289,7 +280,6 @@ export interface FileRoutesById {
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRoute
   '/_authenticated/_admin/super-admin': typeof AuthenticatedAdminSuperAdminRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
-  '/api/admin/documents/$documentId': typeof ApiAdminDocumentsDocumentIdRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -322,7 +312,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/super-admin'
     | '/lovable/email/suppression'
-    | '/api/admin/documents/$documentId'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -353,7 +342,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/super-admin'
     | '/lovable/email/suppression'
-    | '/api/admin/documents/$documentId'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -386,7 +374,6 @@ export interface FileRouteTypes {
     | '/_authenticated/_admin/admin'
     | '/_authenticated/_admin/super-admin'
     | '/lovable/email/suppression'
-    | '/api/admin/documents/$documentId'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -413,7 +400,6 @@ export interface RootRouteChildren {
   CheckoutReturnRoute: typeof CheckoutReturnRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
-  ApiAdminDocumentsDocumentIdRoute: typeof ApiAdminDocumentsDocumentIdRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -633,13 +619,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/admin/documents/$documentId': {
-      id: '/api/admin/documents/$documentId'
-      path: '/api/admin/documents/$documentId'
-      fullPath: '/api/admin/documents/$documentId'
-      preLoaderRoute: typeof ApiAdminDocumentsDocumentIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -703,7 +682,6 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutReturnRoute: CheckoutReturnRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
-  ApiAdminDocumentsDocumentIdRoute: ApiAdminDocumentsDocumentIdRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
