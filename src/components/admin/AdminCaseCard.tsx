@@ -165,7 +165,7 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
       return;
     }
 
-    const response = await fetch(`/api/admin/documents/${encodeURIComponent(doc.id)}`, {
+    const response = await fetch(`/admin/document-download?documentId=${encodeURIComponent(doc.id)}`, {
       headers: { Authorization: `Bearer ${sessionData.session.access_token}` },
     });
 
