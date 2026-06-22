@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Clock } from "lucide-react";
+import { FileText, Download, Clock, ChevronDown, ChevronUp } from "lucide-react";
 import { getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -54,6 +55,9 @@ const FILE_SPECS: FileSpec[] = [
 ];
 
 export function YourFiles({ documents }: YourFilesProps) {
+  const [open, setOpen] = useState(true);
+  const readyCount = documents.length;
+
   const handleDownload = async (doc: Document) => {
     if (getDemoMode()) {
       alert(`${doc.file_name} is a demo document.`);
@@ -71,70 +75,86 @@ export function YourFiles({ documents }: YourFilesProps) {
 
   return (
     <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 bg-gold/10 rounded-xl flex items-center justify-center">
-          <span className="text-xl">📁</span>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between gap-3 text-left"
+        aria-expanded={open}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gold/10 rounded-xl flex items-center justify-center">
+            <span className="text-xl">📁</span>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">Your Files</h2>
+            <p className="text-sm text-muted-foreground">
+              {readyCount > 0
+                ? `${readyCount} document${readyCount === 1 ? "" : "s"} ready for download`
+                : "All your documents in one place — download whenever you need them."}
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-bold">Your Files</h2>
-          <p className="text-sm text-muted-foreground">
-            All your documents in one place — download whenever you need them.
-          </p>
-        </div>
-      </div>
+        {open ? (
+          <ChevronUp className="w-5 h-5 text-muted-foreground shrink-0" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-muted-foreground shrink-0" />
+        )}
+      </button>
 
-      <div className="space-y-2">
-        {FILE_SPECS.map((spec) => {
-          const doc = documents.find(spec.match);
-          if (doc) {
+      {open && (
+        <div className="space-y-2 mt-4">
+          {FILE_SPECS.map((spec) => {
+            const doc = documents.find(spec.match);
+            if (doc) {
+              return (
+                <div
+                  key={spec.key}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <FileText className="w-5 h-5 text-gold shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold truncate">{spec.label}</p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {doc.file_name} · {new Date(doc.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDownload(doc)}
+                    className="shrink-0 ml-2"
+                  >
+                    <Download className="w-4 h-4 mr-1" /> Download
+                  </Button>
+                </div>
+              );
+            }
             return (
               <div
                 key={spec.key}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
+                className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-dashed border-border"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <FileText className="w-5 h-5 text-gold shrink-0" />
+                  <Clock className="w-5 h-5 text-muted-foreground shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold truncate">{spec.label}</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {doc.file_name} · {new Date(doc.created_at).toLocaleDateString()}
+                    <p className="text-sm font-medium text-muted-foreground truncate">
+                      {spec.label}
+                    </p>
+                    <p className="text-xs text-muted-foreground/80 truncate">
+                      {spec.description}
                     </p>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDownload(doc)}
-                  className="shrink-0 ml-2"
-                >
-                  <Download className="w-4 h-4 mr-1" /> Download
-                </Button>
+                <span className="text-xs text-muted-foreground shrink-0 ml-2">
+                  Not ready yet
+                </span>
               </div>
             );
-          }
-          return (
-            <div
-              key={spec.key}
-              className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-dashed border-border"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <Clock className="w-5 h-5 text-muted-foreground shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground truncate">
-                    {spec.label}
-                  </p>
-                  <p className="text-xs text-muted-foreground/80 truncate">
-                    {spec.description}
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs text-muted-foreground shrink-0 ml-2">
-                Not ready yet
-              </span>
-            </div>
-          );
-        })}
-      </div>
+          })}
+        </div>
+      )}
     </div>
   );
 }
