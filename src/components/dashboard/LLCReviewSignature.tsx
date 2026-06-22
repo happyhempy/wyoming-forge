@@ -8,7 +8,6 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { getDemoMode, updateDemoCase, updateDemoStep, getDemoClientData, saveDemoClientData } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
-
 type Case = Database["public"]["Tables"]["cases"]["Row"];
 
 interface Props {
@@ -21,7 +20,6 @@ export function LLCReviewSignature({ userCase, onSigned }: Props) {
   const [confirmed, setConfirmed] = useState(false);
   const [signature, setSignature] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
 
   const fullName = `${userCase.first_name ?? ""} ${userCase.last_name ?? ""}`.trim();
   const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });

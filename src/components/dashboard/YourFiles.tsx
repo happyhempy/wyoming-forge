@@ -5,7 +5,6 @@ import { FileText, Download, Clock, ChevronDown, ChevronUp } from "lucide-react"
 import { getDemoMode } from "@/lib/demoAccess";
 import type { Database } from "@/integrations/supabase/types";
 
-
 type Document = Database["public"]["Tables"]["documents"]["Row"];
 
 interface YourFilesProps {
