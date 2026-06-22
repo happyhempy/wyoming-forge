@@ -146,6 +146,7 @@ export type Database = {
           passport_url: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
           products_services: string | null
+          renewal_cancelled_at: string | null
           renewal_reminder_sent_at: string | null
           sole_owner: boolean | null
           stripe_session_id: string | null
@@ -178,6 +179,7 @@ export type Database = {
           passport_url?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           products_services?: string | null
+          renewal_cancelled_at?: string | null
           renewal_reminder_sent_at?: string | null
           sole_owner?: boolean | null
           stripe_session_id?: string | null
@@ -210,6 +212,7 @@ export type Database = {
           passport_url?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           products_services?: string | null
+          renewal_cancelled_at?: string | null
           renewal_reminder_sent_at?: string | null
           sole_owner?: boolean | null
           stripe_session_id?: string | null
@@ -557,6 +560,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_renewal: { Args: never; Returns: undefined }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
