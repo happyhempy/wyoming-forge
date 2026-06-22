@@ -5,7 +5,7 @@ import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { resetDemoClientFlow, setDemoMode } from "@/lib/demoAccess";
+import { clearDemoMode, resetDemoClientFlow, setDemoMode } from "@/lib/demoAccess";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -43,6 +43,7 @@ function LoginPage() {
       }
 
 
+      clearDemoMode();
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       navigate({ to: "/dashboard" });
@@ -58,6 +59,7 @@ function LoginPage() {
     setError("");
     setLoading(true);
     try {
+      clearDemoMode();
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -175,6 +177,7 @@ function LoginPage() {
                 disabled={loading}
                 onClick={async () => {
                   setLoading(true);
+                  clearDemoMode();
                   const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
                   if (result.error) setError(result.error.message);
                   setLoading(false);
@@ -229,6 +232,7 @@ function LoginPage() {
                 disabled={loading}
                 onClick={async () => {
                   setLoading(true);
+                  clearDemoMode();
                   const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
                   if (result.error) setError(result.error.message);
                   setLoading(false);
