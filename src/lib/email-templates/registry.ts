@@ -24,6 +24,7 @@ import { template as statusUpdate } from './status-update'
 import { template as llcCompleted } from './llc-completed'
 import { template as renewalReminder } from './renewal-reminder'
 import { template as coverageExpired } from './coverage-expired'
+import { template as newClientAlert } from './new-client-alert'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'payment-confirmation': paymentConfirmation,
@@ -33,4 +34,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'llc-completed': llcCompleted,
   'renewal-reminder': renewalReminder,
   'coverage-expired': coverageExpired,
+  'new-client-alert': newClientAlert,
 }

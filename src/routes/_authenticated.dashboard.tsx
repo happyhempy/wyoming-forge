@@ -178,15 +178,26 @@ function DashboardPage() {
       <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold">Your Dashboard</h1>
-            <p className="text-muted-foreground mt-1">
-              {userCase.llc_name && (
-                <span className="font-semibold text-foreground">{userCase.llc_name}</span>
-              )}
-              {userCase.llc_name && " · "}
-              Package: <span className="font-semibold capitalize text-gold">{userCase.package}</span>
-            </p>
+          <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">
+                {userCase.llc_name ? (
+                  <>{userCase.llc_name}</>
+                ) : (
+                  "Your Dashboard"
+                )}
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                <span className="capitalize font-medium text-gold">{userCase.package}</span> package
+                {userCase.expires_at && (
+                  <> · Coverage until <span className="text-foreground font-medium">{new Date(userCase.expires_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span></>
+                )}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-2 text-green-500 text-sm font-semibold self-start sm:self-auto">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              Active case
+            </div>
           </div>
 
           {/* Action Alerts */}
@@ -206,8 +217,14 @@ function DashboardPage() {
 
           {/* Passport Upload — only until passport is uploaded */}
           {!showIntake && !documents.some((d) => d.document_type.toLowerCase().includes("passport")) && (
-            <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-              <h2 className="text-xl font-bold mb-4">Upload Your Passport</h2>
+            <div className="bg-card border border-gold/40 rounded-2xl p-6 mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-gold text-navy-dark flex items-center justify-center text-sm font-bold shrink-0">2</div>
+                <div>
+                  <h2 className="text-xl font-bold">Upload Your Passport</h2>
+                  <p className="text-sm text-muted-foreground">Required to verify your identity before we file with Wyoming</p>
+                </div>
+              </div>
               <FileUploadZone caseId={userCase.id} onUploadComplete={loadDashboard} />
             </div>
           )}

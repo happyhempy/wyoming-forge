@@ -208,6 +208,24 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
     } else {
       console.warn("No recipient email resolved for user", userId);
     }
+
+    // 3. Admin notification (fixed recipient set in template registry)
+    const packageLabel = PACKAGE_LABELS[packageType] || "LLC formation";
+    const amount = PACKAGE_AMOUNTS[packageType];
+    const clientName = (await supabase.auth.admin.getUserById(userId)).data.user?.user_metadata?.full_name
+      ?? recipient
+      ?? "Unknown";
+    await sendUsadocEmail({
+      templateName: "new-client-alert",
+      recipientEmail: "happyhempyil@gmail.com",
+      idempotencyKey: `admin-alert-${session.id}`,
+      templateData: {
+        clientName,
+        clientEmail: recipient ?? "",
+        packageName: packageLabel,
+        amount,
+      },
+    });
   } catch (emailErr) {
     console.error("Failed to enqueue post-payment emails:", emailErr);
   }

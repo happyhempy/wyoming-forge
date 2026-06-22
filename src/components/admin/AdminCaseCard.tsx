@@ -108,7 +108,7 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const filePath = `admin/${caseData.id}/${Date.now()}-${file.name}`;
+    const filePath = `${caseData.user_id}/${Date.now()}-${file.name}`;
     const { error } = await supabase.storage.from("documents").upload(filePath, file);
     if (error) return;
 

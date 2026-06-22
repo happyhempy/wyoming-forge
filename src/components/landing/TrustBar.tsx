@@ -1,11 +1,11 @@
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const trustItems = [
-  { icon: "🏢", text: "500+ Companies Opened" },
-  { icon: "⚡", text: "LLC in 48-72 Hours" },
-  { icon: "👨‍💼", text: "Licensed CPA Partner" },
+  { icon: "🏢", text: "500+ LLCs Opened" },
+  { icon: "⚡", text: "Ready in 48–72 Hours" },
+  { icon: "🛡️", text: "100% Money-Back Guarantee" },
   { icon: "🔒", text: "Stripe Secure Payments" },
-  { icon: "🌎", text: "US LLC Experts" },
+  { icon: "👨‍💼", text: "Licensed CPA Partner" },
 ];
 
 export function TrustBar() {

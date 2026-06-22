@@ -17,8 +17,11 @@ export function LLCDetailsCard({ userCase }: LLCDetailsCardProps) {
     { label: "State", value: "Wyoming" },
     { label: "Package", value: userCase.package.charAt(0).toUpperCase() + userCase.package.slice(1) },
     { label: "Owner", value: userCase.first_name && userCase.last_name ? `${userCase.first_name} ${userCase.last_name}` : "Pending" },
-    { label: "Payment Status", value: userCase.payment_status.charAt(0).toUpperCase() + userCase.payment_status.slice(1) },
+    { label: "Registered Agent", value: "USADOC Registered Agent Services LLC" },
+    { label: "Agent Address", value: "30 N Gould St, Ste R, Sheridan, WY 82801" },
+    { label: "Payment", value: userCase.payment_status.charAt(0).toUpperCase() + userCase.payment_status.slice(1) },
     { label: "Started", value: new Date(userCase.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) },
+    ...(userCase.expires_at ? [{ label: "Coverage Until", value: new Date(userCase.expires_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) }] : []),
   ];
 
   return (
