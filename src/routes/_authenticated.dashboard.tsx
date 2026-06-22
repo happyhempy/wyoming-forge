@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { ProgressTracker } from "@/components/dashboard/ProgressTracker";
 import { FileUploadZone } from "@/components/dashboard/FileUploadZone";
-import { DocumentsList } from "@/components/dashboard/DocumentsList";
+import { YourFiles } from "@/components/dashboard/YourFiles";
 import { MessagesPanel } from "@/components/dashboard/MessagesPanel";
 import { LLCDetailsCard } from "@/components/dashboard/LLCDetailsCard";
 import { ActionAlerts } from "@/components/dashboard/ActionAlerts";
@@ -205,16 +205,16 @@ function DashboardPage() {
             <IntakeForm userCase={userCase} onComplete={() => { setShowIntake(false); loadDashboard(); }} />
           )}
 
-          {/* Passport Upload & Documents */}
-          {!showIntake && (
+          {/* Passport Upload — only until passport is uploaded */}
+          {!showIntake && !documents.some((d) => d.document_type.toLowerCase().includes("passport")) && (
             <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-              <h2 className="text-xl font-bold mb-4">Passport & Documents</h2>
+              <h2 className="text-xl font-bold mb-4">Upload Your Passport</h2>
               <FileUploadZone caseId={userCase.id} onUploadComplete={loadDashboard} />
-              <div className="mt-6">
-                <DocumentsList documents={documents} />
-              </div>
             </div>
           )}
+
+          {/* Your Files — central place for all documents */}
+          {!showIntake && <YourFiles documents={documents} />}
 
           {/* Review & Sign — after intake + passport, before signing */}
           {!showIntake &&
