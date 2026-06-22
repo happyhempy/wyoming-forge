@@ -119,6 +119,44 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
       file_name: file.name,
       document_type: documentType,
     });
+
+    // Notify client by email
+    try {
+      const clientUser = await supabase.auth.admin?.getUserById?.(caseData.user_id);
+      const clientEmail = clientUser?.data?.user?.email;
+      if (clientEmail) {
+        const { data: { session } } = await supabase.auth.getSession();
+        const stepMap: Record<string, { stepName: string; stepNumber: number }> = {
+          llc_certificate: { stepName: "Wyoming LLC Approved", stepNumber: 3 },
+          llc_document: { stepName: "Wyoming LLC Approved", stepNumber: 3 },
+          ein_letter: { stepName: "EIN Received from IRS", stepNumber: 5 },
+        };
+        const stepInfo = stepMap[documentType];
+        if (stepInfo && session?.access_token) {
+          await fetch("/lovable/email/transactional/send", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({
+              templateName: "status-update",
+              recipientEmail: clientEmail,
+              idempotencyKey: `doc-upload-${caseData.id}-${documentType}`,
+              templateData: {
+                firstName: caseData.first_name ?? undefined,
+                stepName: stepInfo.stepName,
+                stepNumber: stepInfo.stepNumber,
+                totalSteps: 8,
+              },
+            }),
+          });
+        }
+      }
+    } catch {
+      // email failure is non-blocking
+    }
+
     onRefresh();
   };
 
