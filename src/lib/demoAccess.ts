@@ -7,6 +7,17 @@ const DEMO_CLIENT_STATE_KEY = "usadoc_demo_client_state_v1";
 
 export const DEMO_CLIENT_ID = "demo-client-user";
 export const DEMO_ADMIN_ID = "demo-admin-user";
+export const DEMO_CLIENT_EMAIL = "user@usadoc.demo";
+export const DEMO_CLIENT_PASSWORD = "user123";
+export const DEMO_ADMIN_EMAIL = "admin@usadoc.demo";
+export const DEMO_ADMIN_PASSWORD = "admin123";
+
+export function getDemoLoginMode(email: string, password: string): DemoMode | null {
+  const normalizedEmail = email.trim().toLowerCase();
+  if (normalizedEmail === DEMO_CLIENT_EMAIL && password === DEMO_CLIENT_PASSWORD) return "client";
+  if (normalizedEmail === DEMO_ADMIN_EMAIL && password === DEMO_ADMIN_PASSWORD) return "admin";
+  return null;
+}
 
 export function getDemoMode(): DemoMode | null {
   if (typeof window === "undefined") return null;
