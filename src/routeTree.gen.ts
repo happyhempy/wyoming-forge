@@ -17,6 +17,8 @@ import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DemoUserRouteImport } from './routes/demo-user'
+import { Route as DemoAdminRouteImport } from './routes/demo-admin'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AffiliateRouteImport } from './routes/affiliate'
@@ -77,6 +79,16 @@ const PricingRoute = PricingRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoUserRoute = DemoUserRouteImport.update({
+  id: '/demo-user',
+  path: '/demo-user',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoAdminRoute = DemoAdminRouteImport.update({
+  id: '/demo-admin',
+  path: '/demo-admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -193,6 +205,8 @@ export interface FileRoutesByFullPath {
   '/affiliate': typeof AffiliateRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
+  '/demo-admin': typeof DemoAdminRoute
+  '/demo-user': typeof DemoUserRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -222,6 +236,8 @@ export interface FileRoutesByTo {
   '/affiliate': typeof AffiliateRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
+  '/demo-admin': typeof DemoAdminRoute
+  '/demo-user': typeof DemoUserRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -253,6 +269,8 @@ export interface FileRoutesById {
   '/affiliate': typeof AffiliateRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
+  '/demo-admin': typeof DemoAdminRoute
+  '/demo-user': typeof DemoUserRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
@@ -285,6 +303,8 @@ export interface FileRouteTypes {
     | '/affiliate'
     | '/blog'
     | '/contact'
+    | '/demo-admin'
+    | '/demo-user'
     | '/login'
     | '/pricing'
     | '/privacy'
@@ -314,6 +334,8 @@ export interface FileRouteTypes {
     | '/affiliate'
     | '/blog'
     | '/contact'
+    | '/demo-admin'
+    | '/demo-user'
     | '/login'
     | '/pricing'
     | '/privacy'
@@ -344,6 +366,8 @@ export interface FileRouteTypes {
     | '/affiliate'
     | '/blog'
     | '/contact'
+    | '/demo-admin'
+    | '/demo-user'
     | '/login'
     | '/pricing'
     | '/privacy'
@@ -376,6 +400,8 @@ export interface RootRouteChildren {
   AffiliateRoute: typeof AffiliateRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
+  DemoAdminRoute: typeof DemoAdminRoute
+  DemoUserRoute: typeof DemoUserRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -450,6 +476,20 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo-user': {
+      id: '/demo-user'
+      path: '/demo-user'
+      fullPath: '/demo-user'
+      preLoaderRoute: typeof DemoUserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo-admin': {
+      id: '/demo-admin'
+      path: '/demo-admin'
+      fullPath: '/demo-admin'
+      preLoaderRoute: typeof DemoAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -650,6 +690,8 @@ const rootRouteChildren: RootRouteChildren = {
   AffiliateRoute: AffiliateRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
+  DemoAdminRoute: DemoAdminRoute,
+  DemoUserRoute: DemoUserRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
