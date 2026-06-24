@@ -40,8 +40,7 @@ export function SiteGate({ children }: { children: ReactNode }) {
     window.location.href = kind === "admin" ? "/admin" : "/dashboard";
   };
 
-  // Suppress unused-var lint for legacy gate constants (kept for future use)
-  void GATE_EMAIL; void GATE_PASSWORD; void getDemoLoginMode;
+
 
   if (!checked) return null;
   if (unlocked) return <>{children}</>;
