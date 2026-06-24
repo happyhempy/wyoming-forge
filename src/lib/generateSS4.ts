@@ -1,4 +1,4 @@
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import type { Database } from "@/integrations/supabase/types";
 import ss4TemplateAsset from "@/assets/forms/ss4-blank.pdf.asset.json";
 
@@ -8,103 +8,105 @@ type Case = Database["public"]["Tables"]["cases"]["Row"];
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 /**
- * SS-4 field map (AcroForm names from the IRS PDF).
- * Only fields we can auto-fill from client intake data are listed here.
- * Empty fields will be left blank for the admin to complete manually.
+ * Coordinate-based overlay for IRS Form SS-4.
+ * pdf-lib does NOT support XFA (the format the IRS template uses), so we
+ * cannot fill AcroForm fields reliably. Instead we draw text directly on
+ * top of the template page. Output is a flat, standard PDF that opens in
+ * any reader and downloads correctly.
+ *
+ * Coordinates are in PDF points from the BOTTOM-LEFT of the page.
+ * Page size: US Letter = 612 x 792 pts. Tune values below if alignment drifts.
  */
-function buildFieldValues(c: Case, profile?: Profile | null) {
-  const fullName = [c.first_name, c.last_name].filter(Boolean).join(" ").trim();
-  const merchandise = (c.products_services || c.business_purpose || "").trim();
+type Draw = { x: number; y: number; text: string; size?: number };
+
+function buildDraws(c: Case, profile?: Profile | null): Draw[] {
+  const fullName = [c.first_name, c.last_name].filter(Boolean).join(" ").trim().toUpperCase();
+  const merchandise = (c.products_services || c.business_purpose || "").trim().toUpperCase();
   const startDate = c.business_start_date
     ? new Date(c.business_start_date).toLocaleDateString("en-US")
     : "";
 
-  return {
-    // Line 1 — Legal name of entity (LLC name)
-    "topmostSubform[0].Page1[0].f1_2[0]": c.llc_name ?? "",
-    // Line 2 — Trade name (DBA)
-    "topmostSubform[0].Page1[0].f1_3[0]": c.trade_name ?? "",
-    // Line 6 — County and state where principal business is located
-    "topmostSubform[0].Page1[0].f1_9[0]": "LARAMIE, WY",
-    // Line 7a — Name of responsible party
-    "topmostSubform[0].Page1[0].f1_10[0]": fullName,
-    // Line 7b — SSN/ITIN/EIN of responsible party (non-resident default)
-    "topmostSubform[0].Page1[0].f1_11[0]": "FOREIGN",
-    // Line 8b — If LLC, number of members
-    "topmostSubform[0].Page1[0].f1_12[0]": c.sole_owner ? "1" : "",
-    // Line 9a — "Other" type-of-entity description
-    "topmostSubform[0].Page1[0].f1_19[0]": c.sole_owner
-      ? "Disregarded entity-sole proprietorship"
-      : "",
-    // Line 10 — "Started new business" specify
-    "topmostSubform[0].Page1[0].f1_25[0]": merchandise.toUpperCase(),
-    // Line 11 — Date business started
-    "topmostSubform[0].Page1[0].f1_31[0]": startDate,
-    // Line 12 — Closing month of accounting year
-    "topmostSubform[0].Page1[0].f1_32[0]": "12",
-    // Line 13 — Highest number of employees (agricultural / household / other)
-    "topmostSubform[0].Page1[0].f1_33[0]": "0",
-    "topmostSubform[0].Page1[0].f1_34[0]": "0",
-    "topmostSubform[0].Page1[0].f1_35[0]": "0",
-    // Line 16 — Principal activity
-    "topmostSubform[0].Page1[0].f1_37[0]": merchandise.toUpperCase(),
-    // Line 17 — Principal line of merchandise
-    "topmostSubform[0].Page1[0].f1_38[0]": merchandise.toUpperCase(),
-    // Applicant signature block — name & title
-    "topmostSubform[0].Page1[0].f1_44[0]": fullName ? `${fullName}, Member` : "",
-    // Applicant phone (from profile if available)
-    "topmostSubform[0].Page1[0].f1_45[0]": profile?.phone ?? "",
-  } as Record<string, string>;
-}
+  // Default font size for filled values
+  const S = 10;
 
-/**
- * Checkboxes to tick by default (LLC, sole-member treatment, e-commerce/other).
- * The /On export value is determined by inspecting the IRS PDF widget appearance.
- */
-const CHECKBOXES_TO_CHECK = [
-  // Box 8a — "Is this application for a limited liability company (LLC)?" Yes
-  "topmostSubform[0].Page1[0].c1_1[0]",
-  // Box 8c — "If 8a is Yes, was the LLC organized in the United States?" Yes
-  "topmostSubform[0].Page1[0].c1_2[0]",
-  // Line 9a — "Other (specify)" type of entity
-  "topmostSubform[0].Page1[0].c1_3[15]",
-  // Line 10 — "Started new business (specify type)"
-  "topmostSubform[0].Page1[0].c1_4[1]",
-  // Line 16 — "Other (specify)" principal activity
-  "topmostSubform[0].Page1[0].c1_6[11]",
-  // Line 18 — "Has the applicant entity shown on line 1 ever applied for and received an EIN?" No
-  "topmostSubform[0].Page1[0].c1_7[1]",
-];
+  return [
+    // Line 1 — Legal name of entity
+    { x: 60,  y: 690, text: (c.llc_name ?? "").toUpperCase(), size: S },
+    // Line 2 — Trade name (DBA)
+    { x: 60,  y: 666, text: (c.trade_name ?? "").toUpperCase(), size: S },
+    // Line 4a/4b — Mailing address (left blank — admin completes)
+    // Line 6 — County and state
+    { x: 60,  y: 596, text: "LARAMIE, WY", size: S },
+    // Line 7a — Responsible party name
+    { x: 60,  y: 572, text: fullName, size: S },
+    // Line 7b — SSN/ITIN/EIN
+    { x: 360, y: 572, text: "FOREIGN", size: S },
+    // Line 8a — LLC? mark "Yes"
+    { x: 343, y: 548, text: "X", size: 11 },
+    // Line 8b — # of LLC members
+    { x: 470, y: 548, text: c.sole_owner ? "1" : "", size: S },
+    // Line 8c — Organized in US? "Yes"
+    { x: 343, y: 530, text: "X", size: 11 },
+    // Line 9a — "Other" checkbox + description
+    { x: 60,  y: 460, text: "X", size: 11 }, // Other checkbox
+    { x: 195, y: 460, text: c.sole_owner ? "DISREGARDED ENTITY - SOLE PROPRIETORSHIP" : "", size: S },
+    // Line 10 — "Started new business" checkbox + specify
+    { x: 60,  y: 388, text: "X", size: 11 },
+    { x: 250, y: 388, text: merchandise, size: S },
+    // Line 11 — Date business started
+    { x: 360, y: 340, text: startDate, size: S },
+    // Line 12 — Closing month of accounting year
+    { x: 480, y: 340, text: "12", size: S },
+    // Line 13 — Number of employees (agricultural / household / other)
+    { x: 180, y: 316, text: "0", size: S },
+    { x: 300, y: 316, text: "0", size: S },
+    { x: 430, y: 316, text: "0", size: S },
+    // Line 16 — Principal activity "Other (specify)"
+    { x: 430, y: 232, text: "X", size: 11 },
+    { x: 480, y: 232, text: merchandise, size: S },
+    // Line 17 — Principal merchandise
+    { x: 60,  y: 200, text: merchandise, size: S },
+    // Line 18 — Ever applied for EIN? "No"
+    { x: 360, y: 168, text: "X", size: 11 },
+    // Signature block — name & title
+    { x: 60,  y: 110, text: fullName ? `${fullName}, MEMBER` : "", size: S },
+    // Phone
+    { x: 430, y: 110, text: profile?.phone ?? "", size: S },
+  ].filter(d => d.text && d.text.length > 0);
+}
 
 export async function generateSS4Pdf(c: Case, profile?: Profile | null): Promise<Blob> {
   const res = await fetch(SS4_TEMPLATE_URL);
   if (!res.ok) throw new Error("Failed to load SS-4 template");
   const templateBytes = await res.arrayBuffer();
 
-  const pdfDoc = await PDFDocument.load(templateBytes);
-  const form = pdfDoc.getForm();
+  // ignoreEncryption + updateMetadata false keeps the original template intact
+  const pdfDoc = await PDFDocument.load(templateBytes, { ignoreEncryption: true });
 
-  const values = buildFieldValues(c, profile);
-  for (const [name, value] of Object.entries(values)) {
-    if (!value) continue;
-    try {
-      const field = form.getTextField(name);
-      field.setText(value);
-    } catch {
-      // field name missing in this template version — skip silently
-    }
+  // Strip the XFA form so the resulting PDF is a clean static PDF
+  try {
+    const form = pdfDoc.getForm();
+    form.flatten();
+  } catch {
+    // No AcroForm to flatten — fine
   }
 
-  for (const name of CHECKBOXES_TO_CHECK) {
-    try {
-      const cb = form.getCheckBox(name);
-      cb.check();
-    } catch {
-      // skip if not a simple checkbox in this template
-    }
+  const helv = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const helvBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const page = pdfDoc.getPages()[0];
+  const black = rgb(0, 0, 0);
+
+  for (const d of buildDraws(c, profile)) {
+    const isMark = d.text === "X";
+    page.drawText(d.text, {
+      x: d.x,
+      y: d.y,
+      size: d.size ?? 10,
+      font: isMark ? helvBold : helv,
+      color: black,
+    });
   }
 
-  // Don't flatten — admin/IRS may still need to edit
   const bytes = await pdfDoc.save();
   return new Blob([new Uint8Array(bytes)], { type: "application/pdf" });
 }
