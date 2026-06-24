@@ -1,12 +1,9 @@
-import { useState, useEffect, type FormEvent, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { getDemoLoginMode, resetDemoClientFlow, setDemoMode, type DemoMode } from "@/lib/demoAccess";
+import { resetDemoClientFlow, setDemoMode, type DemoMode } from "@/lib/demoAccess";
 
 const STORAGE_KEY = "usadoc_gate_v2";
-const GATE_EMAIL = "itamarmanor1@gmail.com";
-const GATE_PASSWORD = "123456";
+
 
 export function SiteGate({ children }: { children: ReactNode }) {
   const [unlocked, setUnlocked] = useState(false);
