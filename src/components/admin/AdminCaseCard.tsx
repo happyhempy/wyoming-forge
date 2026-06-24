@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp, Send, Upload, FileText, Download, User, FileSignature, Award } from "lucide-react";
 import { addDemoDocument, addDemoMessage, getDemoMode, updateDemoStep } from "@/lib/demoAccess";
-import { generateSS4Pdf, downloadBlob, preparePdfDownloadTab } from "@/lib/generateSS4";
+import { generateSS4Pdf, downloadBlob } from "@/lib/generateSS4";
 import { generateArticlesPdf } from "@/lib/generateArticles";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -167,12 +167,10 @@ export function AdminCaseCard({ caseData, onRefresh }: AdminCaseCardProps) {
     setGeneratingSS4(true);
     const safeName = (caseData.llc_name || "case").replace(/[^a-z0-9]+/gi, "_");
     const filename = `SS4-${safeName}.pdf`;
-    const pdfTab = preparePdfDownloadTab(filename);
     try {
       const blob = await generateSS4Pdf(caseData, caseData.profile ?? null);
-      downloadBlob(blob, filename, pdfTab);
+      downloadBlob(blob, filename);
     } catch (e) {
-      pdfTab?.close();
       console.error("SS-4 generation failed:", e);
       alert("Failed to generate SS-4. See console for details.");
     } finally {
