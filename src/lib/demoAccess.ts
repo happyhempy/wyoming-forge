@@ -18,6 +18,10 @@ export function setDemoMode(mode: DemoMode) {
   if (typeof window === "undefined") return;
   sessionStorage.setItem(DEMO_MODE_KEY, mode);
   localStorage.setItem(DEMO_MODE_KEY, mode);
+  const current = getDemoClientData();
+  if (!current.case.llc_name || !current.case.first_name || !current.case.last_name) {
+    saveDemoClientData(getFreshDemoClientData());
+  }
 }
 
 export function clearDemoMode() {
@@ -39,19 +43,19 @@ export const demoCase: Case = {
   id: "demo-case-001",
   user_id: DEMO_CLIENT_ID,
   assigned_admin: DEMO_ADMIN_ID,
-  first_name: null,
-  last_name: null,
-  llc_name: null,
+  first_name: "Daniel",
+  last_name: "Cohen",
+  llc_name: "Wyoming Test Ventures LLC",
   package: "premium",
   payment_status: "completed",
   paid_at: now,
   years_paid: 2,
-  current_step: 1,
+  current_step: 4,
   passport_url: null,
-  trade_name: null,
-  business_purpose: null,
-  products_services: null,
-  business_start_date: null,
+  trade_name: "Wyoming Test Ventures",
+  business_purpose: "Online consulting and digital services",
+  products_services: "Business consulting and online services",
+  business_start_date: "2026-01-01",
   sole_owner: true,
   stripe_session_id: null,
   expires_at: expires,
@@ -60,20 +64,20 @@ export const demoCase: Case = {
   expired_notification_sent_at: null,
   articles_signed_at: null,
   articles_signature_name: null,
-  client_address_line: null,
-  client_city: null,
-  client_state_region: null,
-  client_postal_code: null,
-  client_country: null,
+  client_address_line: "123 Market Street",
+  client_city: "Tel Aviv",
+  client_state_region: "Tel Aviv District",
+  client_postal_code: "6100001",
+  client_country: "Israel",
   created_at: now,
   updated_at: now,
 };
 
 export const demoSteps: CaseStep[] = [
-  { id: "demo-step-1", case_id: demoCase.id, step_number: 1, step_name: "Intake & KYC", status: "in_progress", completed_at: null, created_at: now },
-  { id: "demo-step-2", case_id: demoCase.id, step_number: 2, step_name: "LLC Name Reservation", status: "pending", completed_at: null, created_at: now },
-  { id: "demo-step-3", case_id: demoCase.id, step_number: 3, step_name: "Articles of Organization", status: "pending", completed_at: null, created_at: now },
-  { id: "demo-step-4", case_id: demoCase.id, step_number: 4, step_name: "EIN Application", status: "pending", completed_at: null, created_at: now },
+  { id: "demo-step-1", case_id: demoCase.id, step_number: 1, step_name: "Intake & KYC", status: "completed", completed_at: now, created_at: now },
+  { id: "demo-step-2", case_id: demoCase.id, step_number: 2, step_name: "LLC Name Reservation", status: "completed", completed_at: now, created_at: now },
+  { id: "demo-step-3", case_id: demoCase.id, step_number: 3, step_name: "Articles of Organization", status: "completed", completed_at: now, created_at: now },
+  { id: "demo-step-4", case_id: demoCase.id, step_number: 4, step_name: "EIN Application", status: "in_progress", completed_at: null, created_at: now },
   { id: "demo-step-5", case_id: demoCase.id, step_number: 5, step_name: "Operating Agreement", status: "pending", completed_at: null, created_at: now },
   { id: "demo-step-6", case_id: demoCase.id, step_number: 6, step_name: "Mercury Bank Account", status: "pending", completed_at: null, created_at: now },
 ];
