@@ -18,6 +18,21 @@ export function SiteGate({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (window.location.pathname === "/demo-user") {
+      resetDemoClientFlow();
+      setDemoMode("client");
+      sessionStorage.setItem(STORAGE_KEY, "1");
+      window.location.replace("/dashboard");
+      return;
+    }
+    if (window.location.pathname === "/demo-admin") {
+      resetDemoClientFlow();
+      setDemoMode("admin");
+      sessionStorage.setItem(STORAGE_KEY, "1");
+      window.location.replace("/admin");
+      return;
+    }
+
     // clear any legacy persisted unlock so the gate always shows on fresh load
     try { localStorage.removeItem("usadoc_site_unlocked"); } catch {}
     if (sessionStorage.getItem(STORAGE_KEY) === "1") setUnlocked(true);
@@ -48,6 +63,7 @@ export function SiteGate({ children }: { children: ReactNode }) {
   const demoLogin = (kind: DemoMode) => {
     setError("");
     setLoading(true);
+    resetDemoClientFlow();
     setDemoMode(kind);
     unlock();
     window.location.href = kind === "admin" ? "/admin" : "/dashboard";
