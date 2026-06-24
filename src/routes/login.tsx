@@ -5,7 +5,7 @@ import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { clearDemoMode, resetDemoClientFlow, setDemoMode } from "@/lib/demoAccess";
+import { clearDemoMode, getDemoLoginMode, resetDemoClientFlow, setDemoMode } from "@/lib/demoAccess";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -36,6 +36,13 @@ function LoginPage() {
     setError("");
     setLoading(true);
     try {
+      const demoMode = getDemoLoginMode(email, password);
+      if (demoMode) {
+        setDemoMode(demoMode);
+        navigate({ to: demoMode === "admin" ? "/admin" : "/dashboard" });
+        return;
+      }
+
       if (email.trim().toLowerCase() === "itamarmanor1@gmail.com" && password === "123456") {
         setDemoMode("client");
         navigate({ to: "/dashboard" });

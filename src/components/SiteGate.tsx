@@ -2,7 +2,7 @@ import { useState, useEffect, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { resetDemoClientFlow, setDemoMode, type DemoMode } from "@/lib/demoAccess";
+import { getDemoLoginMode, resetDemoClientFlow, setDemoMode, type DemoMode } from "@/lib/demoAccess";
 
 const STORAGE_KEY = "usadoc_gate_v2";
 const GATE_EMAIL = "itamarmanor1@gmail.com";
@@ -32,6 +32,12 @@ export function SiteGate({ children }: { children: ReactNode }) {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setError("");
+    const demoMode = getDemoLoginMode(email, password);
+    if (demoMode) {
+      demoLogin(demoMode);
+      return;
+    }
+
     if (email.trim().toLowerCase() === GATE_EMAIL && password === GATE_PASSWORD) {
       unlock();
     } else {
